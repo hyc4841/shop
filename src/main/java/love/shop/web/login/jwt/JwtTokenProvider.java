@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -39,6 +40,9 @@ public class JwtTokenProvider {
         long now = (new Date()).getTime();
         Date issuedAt = new Date();
 
+        // Date accessTokenExpire = new Date(now + 1800000); // 30분
+        Date accessTokenExpire = new Date(System.currentTimeMillis() + 6000); // 1분
+
         // Access Token 생성
         String accessToken = Jwts.builder()
                 .setHeader(createHeaders())
@@ -46,7 +50,7 @@ public class JwtTokenProvider {
                 .claim("iss", "off")                 // 토큰 발급자
                 .claim("aud", authentication.getName()) // 토큰 대상자
                 .claim("auth", authorities)             // 사용자 권한
-                .setExpiration(new Date(now + 1800000))   // 토큰 만료 시간 (30분)
+                .setExpiration(accessTokenExpire)   // 토큰 만료 시간
                 .setIssuedAt(issuedAt)                    // 토큰 발급 시각
                 .signWith(key, SignatureAlgorithm.ES256)  // 서명 알고리즘
                 .compact();// 토큰 생성
@@ -58,7 +62,7 @@ public class JwtTokenProvider {
                 .claim("aud", authentication.getName()) // 토큰 대상자 설정
                 .claim("auth", authorities) // 사용자 권한 설정
                 .claim("add", "ref") // 추가 정보 설정
-                .setExpiration(new Date(now + 604800000)) // 토큰 만료 시간 설정 (7일)
+                .setExpiration(new Date(now + 86400000)) // 토큰 만료 시간 설정 (1일)
                 .setIssuedAt(issuedAt) // 토큰 발급 시각 설정
                 .signWith(key, SignatureAlgorithm.HS256) // 서명 알고리즘 설정
                 .compact();// 토큰 생성
@@ -85,9 +89,10 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication return
-        User principal = new User((String) claims.get("aud"), "", authorities);
+//        User principal = new User((String) claims.get("aud"), "", authorities);
 
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
     public boolean validateToken(String token) {
@@ -103,14 +108,6 @@ public class JwtTokenProvider {
             throw new ApiException(ExceptionCode.INVALID_TOKEN_INFO.toString());
         } catch (Exception e) {
             throw new ApiException(ExceptionCode.INVALID_TOKEN_INFO.toString());
-        }
-    }
-
-    public JwtToken refreshToken(String refreshToken) {
-
-        try {
-            Authentication authentication = getAuthentication(refreshToken);
-            refreshTokenInfoRepository.findById
         }
     }
 
