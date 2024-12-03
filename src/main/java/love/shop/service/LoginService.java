@@ -24,6 +24,7 @@ public class LoginService {
     private final StringRedisTemplate stringRedisTemplate;
     private final PasswordEncoder passwordEncoder;
 
+    // 로그인
     public JwtToken login(String userId, String password, HttpServletResponse response) {
         try {
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성

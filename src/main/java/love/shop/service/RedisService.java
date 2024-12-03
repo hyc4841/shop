@@ -59,5 +59,5 @@ public class RedisService {
         // 만료 시간 동안만 유효
         stringRedisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
     }
-    
+
 }
