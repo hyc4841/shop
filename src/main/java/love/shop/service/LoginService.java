@@ -1,0 +1,77 @@
+package love.shop.service;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import love.shop.web.login.jwt.JwtToken;
+import love.shop.web.login.jwt.JwtTokenProvider;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class LoginService {
+
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final PasswordEncoder passwordEncoder;
+
+    public JwtToken login(String userId, String password, HttpServletResponse response) {
+        try {
+            // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, password);
+            // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+            // authenticate 매서드가 실행될 때 UserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            // 3. 인증 정보를 기반으로 JWT 토큰 생성
+            // 이 토큰에는 사용자의 정보와 권한 등이 포함됨
+            JwtToken tokenInfo = jwtTokenProvider.generateToken(authentication);
+
+            String existRefreshToken = stringRedisTemplate.opsForValue().get(authentication.getName());
+
+            if (existRefreshToken != null) { // 기존에 리프레시 토큰이 있으면 갱신
+                stringRedisTemplate.opsForValue().set(authentication.getName(), tokenInfo.getRefreshToken());
+            } else {
+                stringRedisTemplate.opsForValue().set(authentication.getName(), tokenInfo.getRefreshToken());
+            }
+
+            Cookie cookie = new Cookie("refreshToken", tokenInfo.getRefreshToken());
+            cookie.setMaxAge(7 * 24 * 60 * 60); // 7일
+            cookie.setSecure(true); // 쿠키가 Https 연결에서만 전송되도록 설정
+            cookie.setHttpOnly(true); // javascript로 쿠키에 접근할 수 없도록 설정
+            cookie.setPath("/"); // 쿠키 경로
+
+            response.addCookie(cookie);
+
+            return tokenInfo;
+        } catch (BadCredentialsException e) {
+            throw new RuntimeException("비밀번호가 틀렸습니다");
+        } catch (Exception e) {
+            throw new RuntimeException("로그인 시도중 에러 발생");
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

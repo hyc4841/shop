@@ -20,4 +20,10 @@ public class UserRepository {
                 .getResultList();
     }
 
+    public List<User> findUser(String userId) {
+        return em.createQuery("select u from User u where u:userId = :userId", User.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
 }
