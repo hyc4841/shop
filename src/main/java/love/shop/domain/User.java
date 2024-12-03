@@ -25,4 +25,3 @@ public class User {
         this.memo = memo;
     }
 }
-
