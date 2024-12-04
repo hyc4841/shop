@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import java.security.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,9 +25,8 @@ public class JwtTokenProvider {
 
     private final Key key; // jwt 서명을 위한 key
 
-
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey); // Base64로 인코딩된 secret key를 디코딩 하는 과정
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) throws NoSuchAlgorithmException {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes); // 위에서 디코딩된 코드를 key 객체에 넣어주기
     }
 
@@ -52,7 +51,7 @@ public class JwtTokenProvider {
                 .claim("auth", authorities)             // 사용자 권한
                 .setExpiration(accessTokenExpire)   // 토큰 만료 시간
                 .setIssuedAt(issuedAt)                    // 토큰 발급 시각
-                .signWith(key, SignatureAlgorithm.ES256)  // 서명 알고리즘
+                .signWith(key, SignatureAlgorithm.HS256)  // 서명 알고리즘
                 .compact();// 토큰 생성
 
         String refreshToken = Jwts.builder()
@@ -66,6 +65,8 @@ public class JwtTokenProvider {
                 .setIssuedAt(issuedAt) // 토큰 발급 시각 설정
                 .signWith(key, SignatureAlgorithm.HS256) // 서명 알고리즘 설정
                 .compact();// 토큰 생성
+
+        log.info("리프레스 토큰={}", refreshToken);
 
         // 토큰 객체 생성해서 돌려주기
         return JwtToken.builder()
