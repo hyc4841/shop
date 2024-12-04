@@ -22,4 +22,9 @@ public class MemberRole {
 
     public MemberRole() {
     }
+
+    public MemberRole(Role role, Member member) {
+        this.role = role;
+        this.member = member;
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class InitDb {
 
+    /*
     private final InitService service;
 
     @PostConstruct
@@ -25,11 +26,14 @@ public class InitDb {
 
         private final EntityManager em;
 
+
         public void dbInit() {
-            Member user = new Member("hello", 28, "이것은 테스트입니다");
-            em.persist(user);
+            Member member = new Member("hello", 28, "이것은 테스트입니다");
+            em.persist(member);
         }
 
     }
+
+     */
 
 }
