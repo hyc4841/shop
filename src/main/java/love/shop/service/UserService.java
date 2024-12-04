@@ -2,8 +2,8 @@ package love.shop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.User;
-import love.shop.repository.UserRepository;
+import love.shop.domain.Member.Member;
+import love.shop.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,14 +15,14 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
-    public List<User> findAllUser() {
-        return userRepository.findAllUser();
+    public List<Member> findAllUser() {
+        return memberRepository.findAllUser();
     }
 
-    public List<User> findUser(String userId) {
-        return userRepository.findUser(userId);
+    public Member findUser(String userId) {
+        return memberRepository.findUser(userId);
     }
 
 }
