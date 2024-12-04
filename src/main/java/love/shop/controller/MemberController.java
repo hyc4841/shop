@@ -39,9 +39,9 @@ public class MemberController {
     public ResponseEntity<JwtToken> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
         log.info("로그인 시도");
         log.info("loginDto={}", loginDto);
-        JwtToken tokenInfo = loginService.login(loginDto.getUserId(), loginDto.getPassword(), response);
+        JwtToken tokenInfo = loginService.login(loginDto.getLoginId(), loginDto.getPassword(), response);
 
-        return ResponseEntity.ok(new JwtToken(tokenInfo.getAccessToken(), null));
+        return ResponseEntity.ok(new JwtToken(tokenInfo.getGrantType(), tokenInfo.getAccessToken(), null));
     }
 
 

@@ -27,10 +27,10 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
 
     // 로그인
-    public JwtToken login(String userId, String password, HttpServletResponse response) {
+    public JwtToken login(String loginId, String password, HttpServletResponse response) {
         try {
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, password);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginId, password);
             // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
             // authenticate 매서드가 실행될 때 UserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -58,6 +58,7 @@ public class LoginService {
         } catch (BadCredentialsException e) {
             throw new RuntimeException("비밀번호가 틀렸습니다");
         } catch (Exception e) {
+            log.error("ex", e);
             throw new RuntimeException("로그인 시도중 에러 발생");
         }
 

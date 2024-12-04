@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.Member.Member;
 import love.shop.repository.MemberRepository;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,8 +30,8 @@ public class jwtUserDetailService implements UserDetailsService {
     // 이 부분이 실제로 데이터베이스에 접근해서 해당 userId를 갖고 있는
     @Override
     public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
-
         try {
+            log.info("유저 찾기");
             Member member = memberRepository.findUser(memberId);
             return createUserDetails(member);
         } catch (UsernameNotFoundException e) {
@@ -38,15 +40,20 @@ public class jwtUserDetailService implements UserDetailsService {
     }
 
     private UserDetails createUserDetails(Member member) {
+
+        log.info("비번확인={}", member.getPassword());
+
+        List<GrantedAuthority> grantedAuthorities = member.getMemberRole().stream()
+                .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getRole()))
+                .collect(Collectors.toList());
+
         User user = new User(
                 member.getName(),
-                passwordEncoder.encode(member.getPassword()),
-                member.getMemberRole().stream()
-                        .map(memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.getRole()))
-                        .collect(Collectors.toList())
+                member.getPassword(),
+                grantedAuthorities
         );
 
-        log.info("userDetails={}", user.getAuthorities());
+        log.info("userDetails={}", user);
         return user;
     }
 
