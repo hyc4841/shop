@@ -1,7 +1,9 @@
 package love.shop.service;
 
+import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.UserDuplicationException;
 import love.shop.domain.Member.Member;
 import love.shop.domain.Member.MemberRole;
 import love.shop.domain.Member.Role;
@@ -30,7 +32,7 @@ public class MemberService {
         // 중복 검사
         Member member = memberRepository.findUser(signupDto.getName());
         if (member != null) {
-            throw new IllegalStateException("이미 등록된 ID 입니다.");
+            throw new UserDuplicationException("이미 등록한 ID가 있습니다");
         }
 
         String password = passwordEncoder.encode(signupDto.getPassword());
