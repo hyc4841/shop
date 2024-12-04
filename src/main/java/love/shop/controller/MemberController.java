@@ -3,22 +3,33 @@ package love.shop.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.Member.Member;
 import love.shop.service.LoginService;
-import love.shop.service.UserService;
+import love.shop.service.MemberService;
 import love.shop.web.login.dto.LoginDto;
 import love.shop.web.login.jwt.JwtToken;
+import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
-public class LoginController {
+public class MemberController {
 
-    private final UserService userService;
+    private final MemberService memberService;
     private final LoginService loginService;
+
+    @PostMapping("/signup")
+    public ResponseEntity<Member> signup(@RequestBody SignupRequestDto signupDto) {
+        log.info("회원가입 시작={}", signupDto);
+        Long memberId = memberService.signUp(signupDto);
+
+        Member member = memberService.findUserById(memberId);
+        return ResponseEntity.ok(member);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtToken> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
@@ -28,4 +39,7 @@ public class LoginController {
 
         return ResponseEntity.ok(new JwtToken(tokenInfo.getAccessToken(), null));
     }
+
+
+
 }

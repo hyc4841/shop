@@ -1,9 +1,8 @@
-package love.shop.web.login.dto;
+package love.shop.web.signup.dto;
 
 import lombok.Data;
 import love.shop.domain.Member.Gender;
 import love.shop.domain.Member.Member;
-import love.shop.domain.Member.MemberRole;
 
 @Data
 public class SignupRequestDto {

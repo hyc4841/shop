@@ -16,4 +16,8 @@ public class MemberRoleRepository {
     public MemberRole findMemberRoleById(String memberId) {
         return em.find(MemberRole.class, memberId);
     }
+
+    public void save(MemberRole memberRole) {
+        em.persist(memberRole);
+    }
 }

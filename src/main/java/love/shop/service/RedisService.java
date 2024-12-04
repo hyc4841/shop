@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private UserService userService;
+    private MemberService memberService;
     private final TokenRepository tokenRepository;
     private final StringRedisTemplate stringRedisTemplate;
 
