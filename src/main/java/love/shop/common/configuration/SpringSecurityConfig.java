@@ -1,4 +1,4 @@
-package love.shop.configuration;
+package love.shop.common.configuration;
 
 import lombok.RequiredArgsConstructor;
 import love.shop.service.RedisService;
