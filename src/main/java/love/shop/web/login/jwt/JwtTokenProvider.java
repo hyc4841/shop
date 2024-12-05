@@ -81,9 +81,10 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         // jwt 토큰 복호화
         Claims claims = parseClaims(token);
+        log.info("claims={}", claims);
 
         if (claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new RuntimeException("권한 정보가 없는 토큰입니다."); // exception 나중에 api 응답으로 교체하자
         }
 
         Collection<? extends  GrantedAuthority> authorities = Arrays.stream(claims.get("auth").toString().split(","))
@@ -99,8 +100,12 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token); // 토큰 파싱해서 유효성 검사
+            Jwts.parserBuilder().
+                    setSigningKey(key). // 서명 키 넣고
+                    build().
+                    parseClaimsJws(token); // 토큰 파싱해서 유효성 검사
             return true;
+            // 위에 코드 분석해서 제대로된 토큰인지 검사하는 과정에서 오류가 발생하면 아래로 넘어간다.
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             throw new ApiException(ExceptionCode.INVALID_TOKEN_INFO.toString());
         } catch (ExpiredJwtException e) {
@@ -117,10 +122,14 @@ public class JwtTokenProvider {
         return claims.getExpiration().getTime() - System.currentTimeMillis();
     }
 
+    // 각종 토큰의 정보 추출
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build()
-                    .parseClaimsJws(accessToken).getBody(); // 토큰 파싱하여 클레임 정보 반환
+            return Jwts.parserBuilder()
+                    .setSigningKey(key) // 키 넣고
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody(); // 토큰 파싱하여 클레임 정보 반환
         } catch (ExpiredJwtException e) {
             return e.getClaims(); // 만료된 토큰의 경우 클레임 정보 반환
         }
@@ -134,6 +143,8 @@ public class JwtTokenProvider {
         return headers;
     }
 }
+
+// 리프레시 토큰으로 다시 엑세스 토큰 발급해주는건? -> 이것도 필터에서 한다.
 
 
 

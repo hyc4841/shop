@@ -46,6 +46,7 @@ public class LoginService {
                 stringRedisTemplate.opsForValue().set(authentication.getName(), tokenInfo.getRefreshToken());
             }
 
+            // 리프레시 토큰은 httpOnly 쿠키에 저장한다. 자바스크립트로 접근할 수 없다.
             Cookie cookie = new Cookie("refreshToken", tokenInfo.getRefreshToken());
             cookie.setMaxAge(7 * 24 * 60 * 60); // 7일
             cookie.setSecure(true); // 쿠키가 Https 연결에서만 전송되도록 설정
