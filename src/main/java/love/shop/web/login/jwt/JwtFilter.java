@@ -29,7 +29,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private final RedisService redisService;
 
     @Override
-
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         // request Header에서 Jwt 토큰 추출
@@ -43,6 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (ExpiredJwtException e) { // 엑세스 토큰이 만료된 경우
+                // request 바디에서 리프레시 토큰을 추출한다?
                 Map<String, String> body = extractRequestBody(request);
                 String refreshToken = body.get("refreshToken");
 
