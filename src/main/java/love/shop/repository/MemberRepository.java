@@ -27,13 +27,13 @@ public class MemberRepository {
                     .setParameter("memberName", memberName)
                     .getSingleResult();
         } catch (NoResultException e) {
+            log.info("결과 없음");
             return null;
         }
     }
 
     public Member findUserById(Long memberId) {
         return em.find(Member.class, memberId);
-
     }
 
     public Long save(Member member) {

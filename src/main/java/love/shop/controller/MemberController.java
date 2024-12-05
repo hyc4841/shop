@@ -35,6 +35,7 @@ public class MemberController {
     }
 
 
+    // 로그인 검사에 통과하면 토큰을 발급해준다.
     @PostMapping("/login")
     public ResponseEntity<JwtToken> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
         log.info("로그인 시도");
