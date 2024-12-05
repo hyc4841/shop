@@ -56,7 +56,7 @@ public class LoginService {
 
             return tokenInfo;
         } catch (BadCredentialsException e) {
-            throw new RuntimeException("비밀번호가 틀렸습니다");
+            throw new RuntimeException("아이디 혹은 비밀번호를 다시 확인하세요.");
         } catch (Exception e) {
             log.error("ex", e);
             throw new RuntimeException("로그인 시도중 에러 발생");

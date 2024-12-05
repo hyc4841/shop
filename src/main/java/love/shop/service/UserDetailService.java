@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class jwtUserDetailService implements UserDetailsService {
+public class UserDetailService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -30,31 +30,25 @@ public class jwtUserDetailService implements UserDetailsService {
     // 이 부분이 실제로 데이터베이스에 접근해서 해당 userId를 갖고 있는
     @Override
     public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
-        try {
-            log.info("유저 찾기");
+            log.info("유저 찾기 실행");
             Member member = memberRepository.findUser(memberId);
+        if (member != null) {
             return createUserDetails(member);
-        } catch (UsernameNotFoundException e) {
-            throw new UsernameNotFoundException("해당 유저가 없습니다.");
+        } else {
+            log.info("유저를 찾을 수 없음");
+            throw new UsernameNotFoundException("유저를 찾을 수 없습니다.");
         }
     }
 
     private UserDetails createUserDetails(Member member) {
-
-        log.info("비번확인={}", member.getPassword());
-
         List<GrantedAuthority> grantedAuthorities = member.getMemberRole().stream()
                 .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getRole()))
                 .collect(Collectors.toList());
 
-        User user = new User(
+        return new User(
                 member.getName(),
                 member.getPassword(),
                 grantedAuthorities
         );
-
-        log.info("userDetails={}", user);
-        return user;
     }
-
 }
