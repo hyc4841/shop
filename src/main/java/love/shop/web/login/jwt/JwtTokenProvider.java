@@ -36,6 +36,7 @@ public class JwtTokenProvider {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+        log.info("권한?={}", authorities);
         long now = (new Date()).getTime();
         Date issuedAt = new Date();
 
@@ -97,7 +98,6 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
-
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token); // 토큰 파싱해서 유효성 검사
             return true;
