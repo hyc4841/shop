@@ -2,6 +2,7 @@ package love.shop.domain.Member;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import love.shop.web.login.dto.MemberInfoResDto;
 
 import java.util.List;
 
@@ -36,12 +37,15 @@ public class Member {
     public Member() {
     }
 
-
     public Member(String name, Integer age, String memo, String password, Gender gender) {
         this.name = name;
         this.age = age;
         this.memo = memo;
         this.password = password;
         this.gender = gender;
+    }
+
+    public MemberInfoResDto toDto() {
+        return new MemberInfoResDto(name, age, memo, gender);
     }
 }
