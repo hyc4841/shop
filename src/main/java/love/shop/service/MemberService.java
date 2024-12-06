@@ -9,6 +9,7 @@ import love.shop.domain.Member.MemberRole;
 import love.shop.domain.Member.Role;
 import love.shop.repository.MemberRepository;
 import love.shop.repository.MemberRoleRepository;
+import love.shop.web.login.dto.MemberInfoResDto;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,11 @@ public class MemberService {
         memberRoleRepository.save(memberRole);
 
         return signupMemberId;
+    }
+
+    public MemberInfoResDto memberInfo(Long memberId) {
+        Member member = memberRepository.findUserById(memberId);
+        return member.toDto();
     }
 
     public List<Member> findAllUser() {

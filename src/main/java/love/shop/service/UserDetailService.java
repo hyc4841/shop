@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.Member.Member;
 import love.shop.repository.MemberRepository;
+import love.shop.web.login.dto.CustomUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -45,7 +46,8 @@ public class UserDetailService implements UserDetailsService {
                 .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getRole()))
                 .collect(Collectors.toList());
 
-        return new User(
+        return new CustomUser(
+                member.getId(),
                 member.getName(),
                 member.getPassword(),
                 grantedAuthorities

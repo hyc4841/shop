@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.jwt.exception.ApiException;
 import love.shop.web.login.jwt.exception.ExceptionCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -40,13 +40,17 @@ public class JwtTokenProvider {
         long now = (new Date()).getTime();
         Date issuedAt = new Date();
 
-        // Date accessTokenExpire = new Date(now + 1800000); // 30분
-        Date accessTokenExpire = new Date(System.currentTimeMillis() + 6000); // 1분
+         Date accessTokenExpire = new Date(now + 1800000); // 30분
+//        Date accessTokenExpire = new Date(System.currentTimeMillis() + 6000); // 1분
+
+        // 토큰 정보에 memberId를 넣기 위해서 가져온다.
+        Long memberId = ((CustomUser) authentication.getPrincipal()).getMemberId();
 
         // Access Token 생성
         String accessToken = Jwts.builder()
                 .setHeader(createHeaders())
                 .setSubject("accessToken")                // 헤더 설정
+                .claim("memberId", memberId)            // 토큰 정보에 memberId를 추가
                 .claim("iss", "off")                 // 토큰 발급자
                 .claim("aud", authentication.getName()) // 토큰 대상자
                 .claim("auth", authorities)             // 사용자 권한
@@ -82,9 +86,13 @@ public class JwtTokenProvider {
         // jwt 토큰 복호화
         Claims claims = parseClaims(token);
         log.info("claims={}", claims);
+        Object memberId = claims.get("memberId");
 
         if (claims.get("auth") == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다."); // exception 나중에 api 응답으로 교체하자
+        }
+        if (memberId == null) {
+            throw new RuntimeException("잘못된 토큰 입니다.");
         }
 
         Collection<? extends  GrantedAuthority> authorities = Arrays.stream(claims.get("auth").toString().split(","))
@@ -94,7 +102,8 @@ public class JwtTokenProvider {
         // UserDetails 객체를 만들어서 Authentication return
 //        User principal = new User((String) claims.get("aud"), "", authorities);
 
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        UserDetails principal = new CustomUser(Long.valueOf(memberId.toString()) , claims.getSubject(), "", authorities);
+
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
@@ -122,7 +131,7 @@ public class JwtTokenProvider {
         return claims.getExpiration().getTime() - System.currentTimeMillis();
     }
 
-    // 각종 토큰의 정보 추출
+    // 각종 토큰의 정보 추출3
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder()

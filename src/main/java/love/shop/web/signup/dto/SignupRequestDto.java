@@ -13,6 +13,14 @@ public class SignupRequestDto {
     private String password;
     private Gender gender;
 
+    public SignupRequestDto(String name, Integer age, String memo, String password, Gender gender) {
+        this.name = name;
+        this.age = age;
+        this.memo = memo;
+        this.password = password;
+        this.gender = gender;
+    }
+
     public Member toEntity(String name, Integer age, String memo, String password, Gender gender) {
         return new Member(name, age, memo, password, gender);
     }

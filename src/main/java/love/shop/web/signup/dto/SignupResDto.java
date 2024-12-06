@@ -1,4 +1,4 @@
-package love.shop.web.login.dto;
+package love.shop.web.signup.dto;
 
 import lombok.Data;
 import love.shop.domain.Member.Member;
