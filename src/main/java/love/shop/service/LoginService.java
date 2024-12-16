@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.UserIdOrPasswordNotMatchException;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.login.jwt.JwtTokenProvider;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -49,15 +50,14 @@ public class LoginService {
             // 리프레시 토큰은 httpOnly 쿠키에 저장한다. 자바스크립트로 접근할 수 없다.
             Cookie cookie = new Cookie("refreshToken", tokenInfo.getRefreshToken());
             cookie.setMaxAge(7 * 24 * 60 * 60); // 7일
-            cookie.setSecure(true); // 쿠키가 Https 연결에서만 전송되도록 설정
             cookie.setHttpOnly(true); // javascript로 쿠키에 접근할 수 없도록 설정
+            cookie.setSecure(true); // 쿠키가 Https 연결에서만 전송되도록 설정
             cookie.setPath("/"); // 쿠키 경로
-
             response.addCookie(cookie);
 
             return tokenInfo;
         } catch (BadCredentialsException e) {
-            throw new RuntimeException("아이디 혹은 비밀번호를 다시 확인하세요.");
+            throw new UserIdOrPasswordNotMatchException("아이디 혹은 비밀번호를 다시 확인하세요.");
         } catch (Exception e) {
             log.error("ex", e);
             throw new RuntimeException("로그인 시도중 에러 발생");
