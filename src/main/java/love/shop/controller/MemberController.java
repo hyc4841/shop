@@ -7,6 +7,7 @@ import love.shop.domain.Member.Member;
 import love.shop.service.LoginService;
 import love.shop.service.MemberService;
 import love.shop.web.login.dto.CustomUser;
+import love.shop.web.login.dto.IsLoginUserDto;
 import love.shop.web.login.dto.LoginDto;
 import love.shop.web.login.dto.MemberInfoResDto;
 import love.shop.web.signup.dto.SignupResDto;
@@ -58,8 +59,27 @@ public class MemberController {
         // 토큰 정보는 SecurityContextHolder에 있다. 이것 안에 memberId를 가져온다.
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
 
+        log.info("memberId={}", memberId);
+
         log.info("memberInfo 실행");
         MemberInfoResDto memberInfo = memberService.memberInfo(memberId);
         return ResponseEntity.ok(memberInfo);
+    }
+
+    // 현재 로그인 중인지. 그런데 여기서 문제는 페이지를 이동할 때마다 유저 정보를 계속해서 줘야한다는건데.. 이건 나중에 차차 생각하고 일단 구현에 집중하자.
+    @GetMapping("/member/islogin")
+    public ResponseEntity<IsLoginUserDto> memberIdLogin() {
+
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+
+        log.info("memberId값={}", memberId);
+
+        Member member = memberService.findUserById(memberId);
+        log.info("현재 로그인 중인 유저={}", member.getName());
+
+        IsLoginUserDto loginMember = new IsLoginUserDto();
+        loginMember.setUserName(member.getName());
+
+        return ResponseEntity.ok(loginMember);
     }
 }

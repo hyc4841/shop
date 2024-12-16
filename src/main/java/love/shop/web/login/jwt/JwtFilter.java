@@ -36,6 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = resolveToken(request); // 엑세스 토큰 추출
         log.info("추출한 엑세스 토큰={}", token);
 
+
         if (token != null) {
             try {
                 if (jwtTokenProvider.validateToken(token)) { // 토큰이 유효할 경우
