@@ -47,24 +47,24 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 if (jwtTokenProvider.validateToken(token)) { // 토큰이 유효할 경우
                     log.info("토큰이 유효할 경우");
-
                     // 토큰에서 Autentication 객체를 가져와서 SecurityContext에 저장
                     Authentication authentication = jwtTokenProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
+
             } catch (ExpiredJwtException e) { // 엑세스 토큰이 만료된 경우
                 log.info("토큰이 만료된 경우, 리프레시 토큰으로 엑세스 토큰 재발급 시도");
 
-                // request 바디에서 리프레시 토큰을 추출한다
-                Map<String, String> body = extractRequestBody(request);
-                String refreshToken = body.get("refreshToken");
+                String refreshToken = jwtTokenProvider.extractRefreshToken(request);
                 log.info("리프레시 토큰 추출={}", refreshToken);
 
                 if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
                     log.info("리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다");
 
                     // 리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다
+                    // 왜 응답 헤더에다가 토큰을 넣지?
                     JwtToken newToken = redisService.refreshAccessToken(refreshToken);
+
                     response.setHeader("AccessToken", newToken.getAccessToken());
                     response.setHeader("RefreshToken", newToken.getRefreshToken());
 
