@@ -40,7 +40,7 @@ public class JwtTokenProvider {
         long now = (new Date()).getTime();
         Date issuedAt = new Date();
 
-         Date accessTokenExpire = new Date(now + 1800000); // 30분
+         Date accessTokenExpire = new Date(now + 1); // 잠시 발급하자마자 만료되는걸로 바꿈
 //        Date accessTokenExpire = new Date(System.currentTimeMillis() + 6000); // 1분
 
         // 토큰 정보에 memberId를 넣기 위해서 가져온다.
@@ -59,6 +59,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)  // 서명 알고리즘
                 .compact();// 토큰 생성
 
+        // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setHeader(createHeaders()) // Header 부분 설정
                 .setSubject("refreshToken") // 토큰 주제 설정
@@ -107,6 +108,8 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
+    // 토큰 검증 함수
+    // 이 함수는 토큰이 유효하면 true를 반환하고 유효하지 않으면 오류를 뱉는다
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().
@@ -118,7 +121,7 @@ public class JwtTokenProvider {
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             throw new ApiException(ExceptionCode.INVALID_TOKEN_INFO.toString());
         } catch (ExpiredJwtException e) {
-            throw new ApiException(ExceptionCode.TIME_OUT_TOKEN.toString());
+            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), "토큰이 만료되었습니다.");
         } catch (UnsupportedJwtException | IllegalArgumentException exception) {
             throw new ApiException(ExceptionCode.INVALID_TOKEN_INFO.toString());
         } catch (Exception e) {
@@ -126,12 +129,13 @@ public class JwtTokenProvider {
         }
     }
 
+    // 토큰의 만료시간 가져오기
     public long getExpiration(String token) {
         Claims claims = parseClaims(token);
         return claims.getExpiration().getTime() - System.currentTimeMillis();
     }
 
-    // 각종 토큰의 정보 추출3
+    // 각종 토큰의 정보 추출
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder()
@@ -144,7 +148,7 @@ public class JwtTokenProvider {
         }
     }
 
-
+    // 토큰의 헤더 만들어주는 함수
     private static Map<String, Object> createHeaders() {
         HashMap<String, Object> headers = new HashMap<>();
         headers.put("alg", "HS256");

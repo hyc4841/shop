@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.FilterExApi;
 import love.shop.service.RedisService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -27,6 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
+    private final FilterExApi filterExApi;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -35,7 +37,6 @@ public class JwtFilter extends OncePerRequestFilter {
         // request Header에서 Jwt 토큰 추출
         String token = resolveToken(request); // 엑세스 토큰 추출
         log.info("추출한 엑세스 토큰={}", token);
-
 
         if (token != null) {
             try {
@@ -47,13 +48,15 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (ExpiredJwtException e) { // 엑세스 토큰이 만료된 경우
-                log.info("토큰이 만료된 경우");
-                // request 바디에서 리프레시 토큰을 추출한다?
+                log.info("토큰이 만료된 경우, 리프레시 토큰으로 엑세스 토큰 재발급 시도");
+
+                // request 바디에서 리프레시 토큰을 추출한다
                 Map<String, String> body = extractRequestBody(request);
                 String refreshToken = body.get("refreshToken");
+                log.info("리프레시 토큰 추출={}", refreshToken);
 
                 if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
-                    log.info(" 리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다");
+                    log.info("리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다");
 
                     // 리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다
                     JwtToken newToken = redisService.refreshAccessToken(refreshToken);
@@ -65,16 +68,15 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {
                     // 리프레시 토큰이 유효하지 않는 경우
-                    log.info("리프레시 토큰이 유효하지 않은 경우?");
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.getWriter().write("리프레시 토큰이 유효하지 않거나 유효기간이 지났습니다.");
-                    response.getWriter().flush();
+                    log.info("리프레시 토큰이 유효하지 않은 경우임");
+                    filterExApi.JwtTokenExHandler(response);
                     return;
                 }
             } catch (Exception e) {
                 // 다른 예외는 401 응답으로 반환한다.
                 log.info("error", e);
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다");
+                // 지금 여기로 응답이 나간다.
+                response.sendError(HttpServletResponse.SC_OK, "유효하지 않은 토큰입니다");
                 return;
             }
         }
