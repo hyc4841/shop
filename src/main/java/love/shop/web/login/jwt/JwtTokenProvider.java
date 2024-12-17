@@ -119,11 +119,11 @@ public class JwtTokenProvider {
             return true;
             // 위에 코드 분석해서 제대로된 토큰인지 검사하는 과정에서 오류가 발생하면 아래로 넘어간다.
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            throw new ApiException(ExceptionCode.INVALID_TOKEN_INFO.toString());
+            throw new ApiException(ExceptionCode.MALFORMED_TOKEN.getMessage());
         } catch (ExpiredJwtException e) {
-            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), "토큰이 만료되었습니다.");
+            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), ExceptionCode.TIME_OUT_TOKEN.getMessage());
         } catch (UnsupportedJwtException | IllegalArgumentException exception) {
-            throw new ApiException(ExceptionCode.INVALID_TOKEN_INFO.toString());
+            throw new ApiException(ExceptionCode.UNSUPPORTED_TOKEN.getMessage());
         } catch (Exception e) {
             throw new ApiException(ExceptionCode.INVALID_TOKEN_INFO.toString());
         }
