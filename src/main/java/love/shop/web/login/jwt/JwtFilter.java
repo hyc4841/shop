@@ -33,6 +33,11 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        // 이 필터는 엑세스 토큰과 리프레시 토큰을 검사하여 해당 유저가 접근 권한이 있는지 확인하는 부분임.
+        // 여기서 발생할 수 있는 예외
+        // 엑세스 토큰이 만료됨. 엑세스 토큰이 유효하지 않음
+        // 리프레시 토큰이 만료됨. 리프레시 토큰이 유효하지 않음
+
         log.info("JwtFilter 실행");
         // request Header에서 Jwt 토큰 추출
         String token = resolveToken(request); // 엑세스 토큰 추출
@@ -68,15 +73,15 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {
                     // 리프레시 토큰이 유효하지 않는 경우
-                    log.info("리프레시 토큰이 유효하지 않은 경우임");
-                    filterExApi.JwtTokenExHandler(response);
+                    log.info("리프레시 토큰이 유효하지 않은 경우");
+                    filterExApi.JwtTokenExHandler(response, "리프레시 토큰이 유효하지 않습니다");
                     return;
                 }
             } catch (Exception e) {
                 // 다른 예외는 401 응답으로 반환한다.
+                // 다른 예외는 토큰 유형, 토큰 보안?, 지원하지 않는 토큰, IllegalArgument 등이 있음
                 log.info("error", e);
-                // 지금 여기로 응답이 나간다.
-                response.sendError(HttpServletResponse.SC_OK, "유효하지 않은 토큰입니다");
+                filterExApi.JwtTokenExHandler(response, e.getMessage());
                 return;
             }
         }
