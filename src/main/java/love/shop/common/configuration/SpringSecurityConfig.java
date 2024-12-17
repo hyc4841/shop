@@ -1,6 +1,7 @@
 package love.shop.common.configuration;
 
 import lombok.RequiredArgsConstructor;
+import love.shop.common.exception.FilterExApi;
 import love.shop.service.RedisService;
 import love.shop.web.login.jwt.JwtFilter;
 import love.shop.web.login.jwt.JwtTokenProvider;
@@ -24,6 +25,7 @@ public class SpringSecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(SpringSecurityConfig.class);
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
+    private final FilterExApi filterExApi;
 
 
     @Bean
@@ -41,7 +43,7 @@ public class SpringSecurityConfig {
                                 .anyRequest().permitAll()
                 )
                 // 필터를 통해 토큰 기반 로그인
-                .addFilterBefore(new JwtFilter(jwtTokenProvider, redisService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtTokenProvider, redisService, filterExApi), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
