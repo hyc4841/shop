@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.FilterExApi;
 import love.shop.service.RedisService;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -98,31 +97,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
-    private Map<String, String> extractRequestBody(HttpServletRequest request) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        String line;
-        try (BufferedReader bufferedReader = request.getReader()) {
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-        }
-        if (stringBuilder.length() == 0) {
-            return Collections.emptyMap();
-        }
-
-        return new ObjectMapper().readValue(stringBuilder.toString(), new TypeReference<Map<String, String>>() {});
-    }
-
-
-
-
-
-
-
-
-
-
 
 
 
