@@ -48,7 +48,7 @@ public class MemberController {
         log.info("로그인 시도");
         log.info("loginDto={}", loginDto);
         JwtToken tokenInfo = loginService.login(loginDto.getLoginId(), loginDto.getPassword(), response);
-
+        log.info("로그인 성공");
         return ResponseEntity.ok(new JwtToken(tokenInfo.getGrantType(), tokenInfo.getAccessToken(), null));
     }
 

@@ -28,11 +28,15 @@ public class RedisService {
         stringRedisTemplate.opsForValue().set(userId, refreshToken); // userId가 key임
     }
 
-    public JwtToken refreshAccessToken(String accessToken) {
+    // redis에 저장된 리프레시 토큰과 요청 쿠키에 들어있는 리프레시 토큰을 비교해서
+    public JwtToken refreshAccessToken(String refreshToken) {
 
-        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
+
         String userName = authentication.getName();
+        log.info("username={}", userName);
         String redisRefreshToken = stringRedisTemplate.opsForValue().get(userName); // redis에서 리프레시 토큰 가져오기
+        log.info("redis에 저장된 리프레시 토큰={}", redisRefreshToken);
 
         if (redisRefreshToken != null) { // 리프레시 토큰이 있으면 새로운 토큰 발급
             JwtToken newToken = jwtTokenProvider.generateToken(authentication);
@@ -44,7 +48,7 @@ public class RedisService {
                     .accessToken(newToken.getAccessToken())
                     .refreshToken(null)
                     .build();
-        } else {
+        } else { // redisRefreshToken == null
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다.");
         }
     }

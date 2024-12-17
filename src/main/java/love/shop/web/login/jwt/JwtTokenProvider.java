@@ -3,6 +3,8 @@ package love.shop.web.login.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.jwt.exception.ApiException;
@@ -36,7 +38,8 @@ public class JwtTokenProvider {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-        log.info("권한?={}", authorities);
+
+        log.info("권한={}", authorities);
         long now = (new Date()).getTime();
         Date issuedAt = new Date();
 
@@ -45,6 +48,8 @@ public class JwtTokenProvider {
 
         // 토큰 정보에 memberId를 넣기 위해서 가져온다.
         Long memberId = ((CustomUser) authentication.getPrincipal()).getMemberId();
+
+        log.info("authentication.getName()={}", authentication.getName());
 
         // Access Token 생성
         String accessToken = Jwts.builder()
@@ -63,6 +68,7 @@ public class JwtTokenProvider {
         String refreshToken = Jwts.builder()
                 .setHeader(createHeaders()) // Header 부분 설정
                 .setSubject("refreshToken") // 토큰 주제 설정
+                .claim("memberId", memberId)
                 .claim("iss", "off") // 토큰 발급자 설정
                 .claim("aud", authentication.getName()) // 토큰 대상자 설정
                 .claim("auth", authorities) // 사용자 권한 설정
@@ -72,7 +78,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256) // 서명 알고리즘 설정
                 .compact();// 토큰 생성
 
-        log.info("리프레스 토큰={}", refreshToken);
+        log.info("토큰 생성 완료");
 
         // 토큰 객체 생성해서 돌려주기
         return JwtToken.builder()
@@ -93,19 +99,24 @@ public class JwtTokenProvider {
             throw new RuntimeException("권한 정보가 없는 토큰입니다."); // exception 나중에 api 응답으로 교체하자
         }
         if (memberId == null) {
-            throw new RuntimeException("잘못된 토큰 입니다.");
+            throw new RuntimeException("유저 정보가 없는 잘못된 토큰입니다.");
         }
 
+        // 여기 정확히 뭐하는 곳인지 알아야함.
         Collection<? extends  GrantedAuthority> authorities = Arrays.stream(claims.get("auth").toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+        log.info("리프레시 authorities={}", authorities);
 
-        // UserDetails 객체를 만들어서 Authentication return
-//        User principal = new User((String) claims.get("aud"), "", authorities);
+        // 지금까지 계속 username에 subject 이름 집어넣고 있었음.
 
-        UserDetails principal = new CustomUser(Long.valueOf(memberId.toString()) , claims.getSubject(), "", authorities);
+        UserDetails principal = new CustomUser( Long.valueOf(memberId.toString()), claims.getAudience(), "", authorities);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "", authorities);
 
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        log.info("authenticationToken={}", authenticationToken.getName());
+        log.info("authenticationToken={}", authenticationToken);
+
+        return authenticationToken;
     }
 
     // 토큰 검증 함수
@@ -133,6 +144,22 @@ public class JwtTokenProvider {
     public long getExpiration(String token) {
         Claims claims = parseClaims(token);
         return claims.getExpiration().getTime() - System.currentTimeMillis();
+    }
+
+    public String extractRefreshToken(HttpServletRequest request) {
+
+        Cookie[] cookies = request.getCookies();
+        String refreshToken = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        return refreshToken;
     }
 
     // 각종 토큰의 정보 추출
