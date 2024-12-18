@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.Member.Member;
 import love.shop.service.LoginService;
 import love.shop.service.MemberService;
-import love.shop.web.login.dto.CustomUser;
-import love.shop.web.login.dto.IsLoginUserDto;
-import love.shop.web.login.dto.LoginDto;
-import love.shop.web.login.dto.MemberInfoResDto;
+import love.shop.web.login.dto.*;
 import love.shop.web.signup.dto.SignupResDto;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.signup.dto.SignupRequestDto;
@@ -52,14 +49,11 @@ public class MemberController {
         return ResponseEntity.ok(new JwtToken(tokenInfo.getGrantType(), tokenInfo.getAccessToken(), null));
     }
 
-    /*
     @PostMapping("/logout")
-    public ResponseEntity<> logout() {
+    public ResponseEntity<LogoutResDto> logout() {
         log.info("로그아웃");
-        loginService.
+        return ResponseEntity.ok(new LogoutResDto("로그아웃 성공"));
     }
-
-     */
     // 멤버 정보 조회 정보 조회
     @GetMapping("/member/info")
     public ResponseEntity<MemberInfoResDto> memberInfo() {
@@ -73,9 +67,6 @@ public class MemberController {
         MemberInfoResDto memberInfo = memberService.memberInfo(memberId);
         return ResponseEntity.ok(memberInfo);
     }
-
-
-
 
     // 현재 로그인 중인지. 그런데 여기서 문제는 페이지를 이동할 때마다 유저 정보를 계속해서 줘야한다는건데.. 이건 나중에 차차 생각하고 일단 구현에 집중하자.
     @GetMapping("/member/islogin")
