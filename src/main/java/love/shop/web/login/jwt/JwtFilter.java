@@ -1,7 +1,5 @@
 package love.shop.web.login.jwt;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,13 +11,9 @@ import love.shop.common.exception.FilterExApi;
 import love.shop.service.RedisService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,10 +33,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
         log.info("JwtFilter 실행");
         // request Header에서 Jwt 토큰 추출
-        String token = resolveToken(request); // 엑세스 토큰 추출
+        String token = jwtTokenProvider.extractAccessToken(request); // 엑세스 토큰 추출
         log.info("추출한 엑세스 토큰={}", token);
 
         if (token != null) {
+            // 토큰 유효성 검사하기 전에 해당 토큰이 블랙리스트에 있는지 없는지 검사
+            if (redisService.isBlackList(token)) {
+                log.info("블랙 리스트에 있는 토큰임={}", token);
+                filterExApi.jwtTokenExHandler(response, "블랙 리스트 처리된 토큰입니다.", 401);
+                return;
+            }
+
             try {
                 if (jwtTokenProvider.validateToken(token)) { // 토큰이 유효할 경우
                     log.info("토큰이 유효할 경우");
@@ -73,34 +74,19 @@ public class JwtFilter extends OncePerRequestFilter {
                 } else {
                     // 리프레시 토큰이 유효하지 않는 경우
                     log.info("리프레시 토큰이 유효하지 않은 경우");
-                    filterExApi.JwtTokenExHandler(response, "리프레시 토큰이 유효하지 않습니다");
+                    filterExApi.jwtTokenExHandler(response, "리프레시 토큰이 유효하지 않습니다", 401);
                     return;
                 }
             } catch (Exception e) {
                 // 다른 예외는 401 응답으로 반환한다.
                 // 다른 예외는 토큰 유형, 토큰 보안?, 지원하지 않는 토큰, IllegalArgument 등이 있음
                 log.info("error", e);
-                filterExApi.JwtTokenExHandler(response, e.getMessage());
+                filterExApi.jwtTokenExHandler(response, e.getMessage(), 401);
                 return;
             }
         }
-
         filterChain.doFilter(request, response);
     }
-
-    // request Header에서 Jwt 토큰 추출
-    private String resolveToken(HttpServletRequest request) {
-        log.info("resolveToken 실행");
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
-
-
-
 
 
 }

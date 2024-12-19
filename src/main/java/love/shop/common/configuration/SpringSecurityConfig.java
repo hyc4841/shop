@@ -41,7 +41,7 @@ public class SpringSecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않겠다는 설정
                 .formLogin(form -> form.disable())
-                .logout(logout -> logout.permitAll())
+                .logout(logout -> logout.disable())
                 // 이 부분이 권한 관리 부분
                 .authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/signup", "/login").anonymous() // /signup과 /login은 인증이 되지 않은 사용자의 접근을 허용한다는 의미. 즉 인증 없이 경로에 접근할 수 있음

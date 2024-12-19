@@ -1,22 +1,23 @@
 package love.shop.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.Member.Member;
 import love.shop.service.LoginService;
 import love.shop.service.MemberService;
+import love.shop.service.RedisService;
 import love.shop.web.login.dto.*;
+import love.shop.web.login.jwt.JwtTokenProvider;
 import love.shop.web.signup.dto.SignupResDto;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,6 +28,8 @@ public class MemberController {
 
     private final MemberService memberService;
     private final LoginService loginService;
+    private final RedisService redisService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResDto> signup(@RequestBody SignupRequestDto signupDto) {
@@ -50,10 +53,30 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<LogoutResDto> logout() {
+    public ResponseEntity<LogoutResDto> logout(HttpServletRequest request, HttpServletResponse response) {
         log.info("로그아웃");
+
+        // http 헤더와 쿠키에서 각각 엑세스 토큰과 리프레시 토큰을 꺼내와야함.
+        // 컨트롤러에서 http 헤더와 쿠키 뽑는 방법은?
+
+        // 1. 서버에서 로그아웃은 엑세스 토큰과 리프레시 토큰을 블랙 리스트 처리하고,
+        // 2. 쿠키에 들어 있는 리프레시 토큰을 제거한다.
+
+        String accessToken = jwtTokenProvider.extractAccessToken(request);
+        String refreshToken = jwtTokenProvider.extractRefreshToken(request);
+
+        redisService.addTokenBlackList(accessToken);
+        redisService.addTokenBlackList(refreshToken);
+
+        // 쿠키를 만료 시킬때는 response에서 해야함
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         return ResponseEntity.ok(new LogoutResDto("로그아웃 성공"));
     }
+
     // 멤버 정보 조회 정보 조회
     @GetMapping("/member/info")
     public ResponseEntity<MemberInfoResDto> memberInfo() {

@@ -57,11 +57,16 @@ public class RedisService {
         stringRedisTemplate.delete(userId);
     }
 
-    public void blacklistAccessToken(String accessToken) {
-        long expiration = jwtTokenProvider.getExpiration(accessToken); // 엑세스 토큰 만료시간 추출
-        // Access Token을 키로 하고 "logout"을 값으로 하여 Redis에 저장
+    public void addTokenBlackList(String Token) {
+        long expiration = jwtTokenProvider.getExpiration(Token); // 엑세스 토큰 만료시간 추출
         // 만료 시간 동안만 유효
-        stringRedisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+        // expiration은 토큰이 블랙리스트에 남아 있을 시간임, TimeUnit.MILLISECONDS는 시간 단위임
+        stringRedisTemplate.opsForValue().set(Token, "blacklist", expiration, TimeUnit.MILLISECONDS);
+        // 토큰을 블랙리스트 시킬 때, 키값은 토큰이 되고, value는 BlackList라고 해야하지 않을까?
+    }
+
+    public Boolean isBlackList(String token) {
+        return stringRedisTemplate.hasKey(token);// redis에서 키값 검색할 때 사용하는 구문.
     }
 
 }
