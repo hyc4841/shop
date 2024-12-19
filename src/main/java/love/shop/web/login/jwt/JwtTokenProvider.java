@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.*;
 import java.util.*;
@@ -146,6 +147,7 @@ public class JwtTokenProvider {
         return claims.getExpiration().getTime() - System.currentTimeMillis();
     }
 
+    // request httponly 쿠키에 담겨있는 리프레시 토큰 추출
     public String extractRefreshToken(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
@@ -160,6 +162,16 @@ public class JwtTokenProvider {
             }
         }
         return refreshToken;
+    }
+
+    // request Header에서 엑세스 토큰 추출
+    public String extractAccessToken(HttpServletRequest request) {
+        log.info("extractAccessToken 실행");
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
     // 각종 토큰의 정보 추출
