@@ -65,6 +65,8 @@ public class MemberController {
         String accessToken = jwtTokenProvider.extractAccessToken(request);
         String refreshToken = jwtTokenProvider.extractRefreshToken(request);
 
+        log.info("request에 리프레시 토큰이 없다구요?={}", refreshToken);
+
         redisService.addTokenBlackList(accessToken);
         redisService.addTokenBlackList(refreshToken);
 
