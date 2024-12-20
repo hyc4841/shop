@@ -36,6 +36,9 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = jwtTokenProvider.extractAccessToken(request); // 엑세스 토큰 추출
         log.info("추출한 엑세스 토큰={}", token);
 
+        String extractRefreshToken = jwtTokenProvider.extractRefreshToken(request);
+        log.info("extractRefreshToken={}", extractRefreshToken);
+
         if (token != null) {
             // 토큰 유효성 검사하기 전에 해당 토큰이 블랙리스트에 있는지 없는지 검사
             if (redisService.isBlackList(token)) {

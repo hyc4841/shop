@@ -53,6 +53,8 @@ public class LoginService {
             cookie.setHttpOnly(true); // javascript로 쿠키에 접근할 수 없도록 설정
             cookie.setSecure(true); // 쿠키가 Https 연결에서만 전송되도록 설정
             cookie.setPath("/"); // 쿠키 경로
+            cookie.setAttribute("SameSite", "None");
+
             response.addCookie(cookie);
 
             return tokenInfo;
