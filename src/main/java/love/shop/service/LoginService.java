@@ -48,14 +48,8 @@ public class LoginService {
             }
 
             // 리프레시 토큰은 httpOnly 쿠키에 저장한다. 자바스크립트로 접근할 수 없다.
-            Cookie cookie = new Cookie("refreshToken", tokenInfo.getRefreshToken());
-            cookie.setMaxAge(7 * 24 * 60 * 60); // 7일
-            cookie.setHttpOnly(true); // javascript로 쿠키에 접근할 수 없도록 설정
-            cookie.setSecure(true); // 쿠키가 Https 연결에서만 전송되도록 설정
-            cookie.setPath("/"); // 쿠키 경로
-            cookie.setAttribute("SameSite", "None");
-
-            response.addCookie(cookie);
+            Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(tokenInfo.getRefreshToken());
+            response.addCookie(refreshTokenCookie);
 
             return tokenInfo;
         } catch (BadCredentialsException e) {

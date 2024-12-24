@@ -17,7 +17,7 @@ restful api 설계
 - 컨트롤러에서 http 만지는 방법은? HttpServletRequest를 매개변수로 받으면 된다.
 - 쿠키를 만료 시키거나 삭제하려면 HttpServletResponse에서 해야 한다.
 - 스프링 시큐리티에서 기본적으로 /logout 경로를 사용하니까. SecurityFilterChain에서 로그아웃 사용안한다고 설정해주거나 해야함.
-
+- 서버와 클라이언트 양쪽에서 withCredentials 옵션을 true로 만들어 주어야 한다. 이 설정은 서로 다른 도메인에 credential 정보를 담을지 말지 설정하는 것.
 
 
 
