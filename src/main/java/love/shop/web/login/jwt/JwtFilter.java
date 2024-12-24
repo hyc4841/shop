@@ -79,7 +79,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     // 리프레시 토큰도 재발급 해준다.
                     Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(newToken.getRefreshToken());
                     response.addCookie(refreshTokenCookie);
-                    
+
                     // 새로운 엑세스 토큰으로 SecurityContext 업데이트
                     Authentication authentication = jwtTokenProvider.getAuthentication(newToken.getAccessToken());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
