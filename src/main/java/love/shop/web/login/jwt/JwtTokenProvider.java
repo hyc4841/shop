@@ -45,7 +45,7 @@ public class JwtTokenProvider {
         Date issuedAt = new Date();
 
          Date accessTokenExpire = new Date(now + 1); // 잠시 발급하자마자 만료되는걸로 바꿈
-//        Date accessTokenExpire = new Date(System.currentTimeMillis() + 6000); // 1분
+//        Date accessTokenExpire = new Date(System.currentTimeMillis() + 60000); // 1분
 
         // 토큰 정보에 memberId를 넣기 위해서 가져온다.
         Long memberId = ((CustomUser) authentication.getPrincipal()).getMemberId();
@@ -60,7 +60,7 @@ public class JwtTokenProvider {
                 .claim("iss", "off")                 // 토큰 발급자
                 .claim("aud", authentication.getName()) // 토큰 대상자
                 .claim("auth", authorities)             // 사용자 권한
-                .setExpiration(accessTokenExpire)   // 토큰 만료 시간
+                .setExpiration(accessTokenExpire)          // 토큰 만료 시간
                 .setIssuedAt(issuedAt)                    // 토큰 발급 시각
                 .signWith(key, SignatureAlgorithm.HS256)  // 서명 알고리즘
                 .compact();// 토큰 생성
@@ -145,6 +145,8 @@ public class JwtTokenProvider {
     public long getExpiration(String token) {
         Claims claims = parseClaims(token);
         return claims.getExpiration().getTime() - System.currentTimeMillis();
+        // 만료된 코인이 들어오면 음수가 된다.
+        // 토큰에 저장해 놓은 시간은 보통 미래임. 그런데, 만약 만료되었다면? -> 만료 시간은 과거가 됨. 과거 - 현재 = 마이너스 시간이 된다는 거임.
     }
 
     // request httponly 쿠키에 담겨있는 리프레시 토큰 추출
@@ -172,6 +174,18 @@ public class JwtTokenProvider {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    // httponly 리프레시 토큰 쿠키
+    public Cookie createRefreshTokenCookie(String refreshToken) {
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일
+        cookie.setHttpOnly(true); // javascript로 쿠키에 접근할 수 없도록 설정
+        cookie.setSecure(true); // 쿠키가 Https 연결에서만 전송되도록 설정
+        cookie.setPath("/"); // 쿠키 경로
+        cookie.setAttribute("SameSite", "None"); // 일단 이 설정은 로컬 환경에선 영향이 없었다.
+
+        return cookie;
     }
 
     // 각종 토큰의 정보 추출

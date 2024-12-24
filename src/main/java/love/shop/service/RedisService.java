@@ -28,6 +28,10 @@ public class RedisService {
         stringRedisTemplate.opsForValue().set(userId, refreshToken); // userId가 key임
     }
 
+    public String getRefreshToken(String userId) {
+        return stringRedisTemplate.opsForValue().get(userId);
+    }
+
     // redis에 저장된 리프레시 토큰과 요청 쿠키에 들어있는 리프레시 토큰을 비교해서
     public JwtToken refreshAccessToken(String refreshToken) {
 
@@ -41,12 +45,14 @@ public class RedisService {
         if (redisRefreshToken != null) { // 리프레시 토큰이 있으면 새로운 토큰 발급
             JwtToken newToken = jwtTokenProvider.generateToken(authentication);
 
+            log.info("새로 만든 리프레시 토큰={}", newToken.getRefreshToken());
+
             saveRefreshToken(userName, newToken.getRefreshToken()); // 새로운 리프레시 토큰 저장
 
             return JwtToken.builder()
                     .grantType("Bearer")
                     .accessToken(newToken.getAccessToken())
-                    .refreshToken(null)
+                    .refreshToken(newToken.getRefreshToken())
                     .build();
         } else { // redisRefreshToken == null
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다.");
@@ -59,6 +65,8 @@ public class RedisService {
 
     public void addTokenBlackList(String Token) {
         long expiration = jwtTokenProvider.getExpiration(Token); // 엑세스 토큰 만료시간 추출
+
+        log.info("토큰 만료시간={}", expiration);
         // 만료 시간 동안만 유효
         // expiration은 토큰이 블랙리스트에 남아 있을 시간임, TimeUnit.MILLISECONDS는 시간 단위임
         stringRedisTemplate.opsForValue().set(Token, "blacklist", expiration, TimeUnit.MILLISECONDS);

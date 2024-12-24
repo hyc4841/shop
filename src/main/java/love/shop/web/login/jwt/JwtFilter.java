@@ -3,6 +3,7 @@ package love.shop.web.login.jwt;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,8 @@ public class JwtFilter extends OncePerRequestFilter {
         log.info("추출한 엑세스 토큰={}", token);
 
         String extractRefreshToken = jwtTokenProvider.extractRefreshToken(request);
-        log.info("extractRefreshToken={}", extractRefreshToken);
+        log.info("현재 클라이언트쪽에 저장된 리프레시 토큰={}", extractRefreshToken);
+        log.info("현재 redis에 저장된 리프레시 토큰={}", redisService.getRefreshToken(jwtTokenProvider.getAuthentication(extractRefreshToken).getName()));
 
         if (token != null) {
             // 토큰 유효성 검사하기 전에 해당 토큰이 블랙리스트에 있는지 없는지 검사
@@ -57,6 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             } catch (ExpiredJwtException e) { // 엑세스 토큰이 만료된 경우
                 log.info("토큰이 만료된 경우, 리프레시 토큰으로 엑세스 토큰 재발급 시도");
+                // 현재 리프레시를 통한 엑세스 토큰 재발급은 리프레시 토큰의 재발급도 같이 실시되고 있음.
 
                 String refreshToken = jwtTokenProvider.extractRefreshToken(request);
                 log.info("리프레시 토큰 추출={}", refreshToken);
@@ -66,11 +69,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     // 리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다
                     // 왜 응답 헤더에다가 토큰을 넣지?
-                    JwtToken newToken = redisService.refreshAccessToken(refreshToken);
+                    JwtToken newToken = redisService.refreshAccessToken(refreshToken); // 여기서 리프레시 토큰의 유효성도 검사된다.
 
+                    log.info("재발급된 리프레시 토큰={}", newToken.getRefreshToken());
+
+//                    response.setHeader("RefreshToken", newToken.getRefreshToken()); // 사실 여기서 리프레시 토큰
                     response.setHeader("AccessToken", newToken.getAccessToken());
-                    response.setHeader("RefreshToken", newToken.getRefreshToken());
 
+                    // 리프레시 토큰도 재발급 해준다.
+                    Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(newToken.getRefreshToken());
+                    response.addCookie(refreshTokenCookie);
+                    
                     // 새로운 엑세스 토큰으로 SecurityContext 업데이트
                     Authentication authentication = jwtTokenProvider.getAuthentication(newToken.getAccessToken());
                     SecurityContextHolder.getContext().setAuthentication(authentication);

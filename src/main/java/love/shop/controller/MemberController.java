@@ -109,4 +109,11 @@ public class MemberController {
 
         return ResponseEntity.ok(loginMember);
     }
+
+    // 리프레시 토큰으로 엑세스 토큰 재발급 받는 테스트
+    @GetMapping("/refresh")
+    public ResponseEntity<ReAccessToken> reGenerateAccessToken(HttpServletResponse response) {
+        ReAccessToken reAccessToken = new ReAccessToken("엑세스 토큰 재발급 성공?");
+        return ResponseEntity.ok(reAccessToken);
+    }
 }
