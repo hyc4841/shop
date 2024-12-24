@@ -17,6 +17,7 @@ import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -111,6 +112,7 @@ public class MemberController {
     }
 
     // 리프레시 토큰으로 엑세스 토큰 재발급 받는 테스트
+    @CrossOrigin(exposedHeaders = "Access-Token")
     @GetMapping("/refresh")
     public ResponseEntity<ReAccessToken> reGenerateAccessToken(HttpServletResponse response) {
         ReAccessToken reAccessToken = new ReAccessToken("엑세스 토큰 재발급 성공?");

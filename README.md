@@ -18,7 +18,7 @@ restful api 설계
 - 쿠키를 만료 시키거나 삭제하려면 HttpServletResponse에서 해야 한다.
 - 스프링 시큐리티에서 기본적으로 /logout 경로를 사용하니까. SecurityFilterChain에서 로그아웃 사용안한다고 설정해주거나 해야함.
 - 서버와 클라이언트 양쪽에서 withCredentials 옵션을 true로 만들어 주어야 한다. 이 설정은 서로 다른 도메인에 credential 정보를 담을지 말지 설정하는 것.
-
+- 기본 헤더값 말고 다른 특정 헤더값들을 클라이언트 쪽에 노출 시키고 싶다면 cors에서 ExposedHeader 설정을 해주어야 한다. 이거 안해주면 클라이언트 쪽에서 헤더가 보여도 자바스크립트로 읽어올 수가 없다.
 
 
 jwt 흐름
