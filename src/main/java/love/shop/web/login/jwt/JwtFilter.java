@@ -38,8 +38,6 @@ public class JwtFilter extends OncePerRequestFilter {
         log.info("추출한 엑세스 토큰={}", token);
 
         String extractRefreshToken = jwtTokenProvider.extractRefreshToken(request);
-        log.info("현재 클라이언트쪽에 저장된 리프레시 토큰={}", extractRefreshToken);
-        log.info("현재 redis에 저장된 리프레시 토큰={}", redisService.getRefreshToken(jwtTokenProvider.getAuthentication(extractRefreshToken).getName()));
 
         if (token != null) {
             // 토큰 유효성 검사하기 전에 해당 토큰이 블랙리스트에 있는지 없는지 검사
@@ -74,7 +72,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     log.info("재발급된 리프레시 토큰={}", newToken.getRefreshToken());
 
 //                    response.setHeader("RefreshToken", newToken.getRefreshToken()); // 사실 여기서 리프레시 토큰
-                    response.setHeader("AccessToken", newToken.getAccessToken());
+                    response.setHeader("Access-Token", newToken.getAccessToken());
 
                     // 리프레시 토큰도 재발급 해준다.
                     Cookie refreshTokenCookie = jwtTokenProvider.createRefreshTokenCookie(newToken.getRefreshToken());
