@@ -2,8 +2,9 @@ package love.shop.common.configuration;
 
 import lombok.RequiredArgsConstructor;
 import love.shop.common.exception.FilterExApi;
+import love.shop.filter.LogoutFilter;
 import love.shop.service.RedisService;
-import love.shop.web.login.jwt.JwtFilter;
+import love.shop.filter.JwtFilter;
 import love.shop.web.login.jwt.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,8 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("securityFilterChain 실행");
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않겠다는 설정
@@ -50,6 +52,7 @@ public class SpringSecurityConfig {
                 )
                 // 필터를 통해 토큰 기반 로그인
                 .addFilterBefore(new JwtFilter(jwtTokenProvider, redisService, filterExApi), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

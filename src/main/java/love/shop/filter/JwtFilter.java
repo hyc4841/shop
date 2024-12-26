@@ -1,4 +1,4 @@
-package love.shop.web.login.jwt;
+package love.shop.filter;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.FilterExApi;
 import love.shop.service.RedisService;
+import love.shop.web.login.jwt.JwtToken;
+import love.shop.web.login.jwt.JwtTokenProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -43,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter {
             // 토큰 유효성 검사하기 전에 해당 토큰이 블랙리스트에 있는지 없는지 검사
             if (redisService.isBlackList(token)) {
                 log.info("블랙 리스트에 있는 토큰임={}", token);
-                filterExApi.jwtTokenExHandler(response, "블랙 리스트 처리된 토큰입니다.", 401);
+                filterExApi.jwtTokenExHandler(response, "블랙 리스트 처리된 토큰입니다. 유효한 접근이 아님", 401);
                 return;
             }
 
