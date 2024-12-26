@@ -28,13 +28,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("JwtFilter 실행");
+        
+        log.info("request.getRequestURI()={}", request.getRequestURI());
+        log.info("request.getRequestURL()={}", request.getRequestURL());
+
+        if (request.getRequestURI().equals("/logout")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // 이 필터는 엑세스 토큰과 리프레시 토큰을 검사하여 해당 유저가 접근 권한이 있는지 확인하는 부분임.
         // 여기서 발생할 수 있는 예외
         // 엑세스 토큰이 만료됨. 엑세스 토큰이 유효하지 않음
         // 리프레시 토큰이 만료됨. 리프레시 토큰이 유효하지 않음
 
-        log.info("JwtFilter 실행");
         // request Header에서 Jwt 토큰 추출
         String token = jwtTokenProvider.extractAccessToken(request); // 엑세스 토큰 추출
         log.info("추출한 엑세스 토큰={}", token);
@@ -97,6 +105,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
         }
+
+
         filterChain.doFilter(request, response);
     }
 

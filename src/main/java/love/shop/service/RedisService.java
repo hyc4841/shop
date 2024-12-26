@@ -67,6 +67,12 @@ public class RedisService {
         long expiration = jwtTokenProvider.getExpiration(Token); // 엑세스 토큰 만료시간 추출
 
         log.info("토큰 만료시간={}", expiration);
+
+        if (expiration < 0) { // 만료 시간이 음수이면
+            log.info("토큰 만료시간이 음수 입니다. 블랙 리스트 처리할 필요 없음");
+            return;
+        }
+
         // 만료 시간 동안만 유효
         // expiration은 토큰이 블랙리스트에 남아 있을 시간임, TimeUnit.MILLISECONDS는 시간 단위임
         stringRedisTemplate.opsForValue().set(Token, "blacklist", expiration, TimeUnit.MILLISECONDS);
