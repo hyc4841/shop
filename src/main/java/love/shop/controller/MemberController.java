@@ -55,27 +55,20 @@ public class MemberController {
 
     @PostMapping("/logout")
     public ResponseEntity<LogoutResDto> logout(HttpServletRequest request, HttpServletResponse response) {
-        log.info("로그아웃");
-
         // http 헤더와 쿠키에서 각각 엑세스 토큰과 리프레시 토큰을 꺼내와야함.
         // 컨트롤러에서 http 헤더와 쿠키 뽑는 방법은?
 
         // 1. 서버에서 로그아웃은 엑세스 토큰과 리프레시 토큰을 블랙 리스트 처리하고,
         // 2. 쿠키에 들어 있는 리프레시 토큰을 제거한다.
 
-        String accessToken = jwtTokenProvider.extractAccessToken(request);
-        String refreshToken = jwtTokenProvider.extractRefreshToken(request);
-
-        log.info("request에 리프레시 토큰이 없다구요?={}", refreshToken);
-
-        redisService.addTokenBlackList(accessToken);
-        redisService.addTokenBlackList(refreshToken);
-
         // 쿠키를 만료 시킬때는 response에서 해야함
+        log.info("리프레시 토큰 없애주기 실행");
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
+
+        log.info("로그아웃 성공");
 
         return ResponseEntity.ok(new LogoutResDto("로그아웃 성공"));
     }
