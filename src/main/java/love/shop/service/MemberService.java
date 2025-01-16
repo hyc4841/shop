@@ -1,12 +1,11 @@
 package love.shop.service;
 
-import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.UserDuplicationException;
-import love.shop.domain.Member.Member;
-import love.shop.domain.Member.MemberRole;
-import love.shop.domain.Member.Role;
+import love.shop.domain.member.Member;
+import love.shop.domain.member.MemberRole;
+import love.shop.domain.member.Role;
 import love.shop.repository.MemberRepository;
 import love.shop.repository.MemberRoleRepository;
 import love.shop.web.login.dto.MemberInfoResDto;
@@ -31,27 +30,27 @@ public class MemberService {
     public Long signUp(SignupRequestDto signupDto) {
 
         // 중복 검사
-        Member member = memberRepository.findUser(signupDto.getName());
+        Member member = memberRepository.findUser(signupDto.getLoginId());
         if (member != null) {
             throw new UserDuplicationException("이미 등록한 ID가 있습니다");
         }
 
         String password = passwordEncoder.encode(signupDto.getPassword());
 
-        member = signupDto.toEntity(signupDto.getName(), signupDto.getAge(), signupDto.getMemo(),
-                password, signupDto.getGender());
-
-        Long signupMemberId = memberRepository.save(member);
+        member = signupDto.toMemberEntity(signupDto.getLoginId(), password, signupDto.getName(), signupDto.getBirthDate(),
+                signupDto.getGender(), signupDto.getCity(), signupDto.getStreet(), signupDto.getZipcode(),
+                signupDto.getDetailedAddress(),signupDto.getEmail());
 
         MemberRole memberRole = new MemberRole(Role.MEMBER, member);
         memberRoleRepository.save(memberRole);
 
-        return signupMemberId;
+        return memberRepository.save(member);
     }
 
     public MemberInfoResDto memberInfo(Long memberId) {
         Member member = memberRepository.findUserById(memberId);
-        return member.toDto();
+        return new MemberInfoResDto(member.getLoginId(), member.getName(), member.getBirthDate(), member.getGender(),
+                member.getAddress(), member.getEmail(), member.getJoinDate(), member.getMemberRole());
     }
 
     public List<Member> findAllUser() {
