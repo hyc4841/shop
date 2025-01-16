@@ -3,7 +3,7 @@ package love.shop.repository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.Member.MemberRole;
+import love.shop.domain.member.MemberRole;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
