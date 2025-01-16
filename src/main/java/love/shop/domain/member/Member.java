@@ -25,7 +25,7 @@ public class Member {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate birthDate;
 
     @Column(nullable = false)
@@ -45,6 +45,8 @@ public class Member {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberRole> memberRole;
 
+    public Member() {
+    }
 
     public Member(String loginId, String password, String name, LocalDate birthDate, Gender gender, Address address, String email, LocalDate joinDate) {
         this.loginId = loginId;
