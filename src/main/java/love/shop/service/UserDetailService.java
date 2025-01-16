@@ -3,12 +3,11 @@ package love.shop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.Member.Member;
+import love.shop.domain.member.Member;
 import love.shop.repository.MemberRepository;
 import love.shop.web.login.dto.CustomUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,6 +44,7 @@ public class UserDetailService implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = member.getMemberRole().stream()
                 .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getRole()))
                 .collect(Collectors.toList());
+
 
         return new CustomUser(
                 member.getId(),
