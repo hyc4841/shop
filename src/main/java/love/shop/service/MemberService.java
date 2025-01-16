@@ -28,9 +28,8 @@ public class MemberService {
 
     // 회원가입
     public Long signUp(SignupRequestDto signupDto) {
-
         // 중복 검사
-        Member member = memberRepository.findUser(signupDto.getLoginId());
+        Member member = memberRepository.findMemberByLoginId(signupDto.getLoginId());
         if (member != null) {
             throw new UserDuplicationException("이미 등록한 ID가 있습니다");
         }
@@ -61,6 +60,7 @@ public class MemberService {
         return memberRepository.findUser(userId);
     }
 
+    // 멤버 pk로 조회
     public Member findUserById(Long memberId) {
         return memberRepository.findUserById(memberId);
     }
