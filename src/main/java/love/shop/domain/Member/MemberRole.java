@@ -1,4 +1,4 @@
-package love.shop.domain.Member;
+package love.shop.domain.member;
 
 import jakarta.persistence.*;
 import lombok.Getter;
