@@ -1,4 +1,4 @@
-package love.shop.domain.Member;
+package love.shop.domain.member;
 
 public enum Gender {
     MAN("남자"), WOMEN("여자");
