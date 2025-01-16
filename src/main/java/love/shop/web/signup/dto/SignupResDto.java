@@ -1,7 +1,7 @@
 package love.shop.web.signup.dto;
 
 import lombok.Data;
-import love.shop.domain.Member.Member;
+import love.shop.domain.member.Member;
 
 @Data
 public class SignupResDto {
