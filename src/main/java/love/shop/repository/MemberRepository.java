@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.Member.Member;
+import love.shop.domain.member.Member;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
