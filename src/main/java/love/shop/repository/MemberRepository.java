@@ -21,13 +21,25 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public Member findUser(String memberName) {
+    // 이름으로 멤버 찾기
+    public Member findUser(String name) {
         try {
-            return em.createQuery("select m from Member m where m.name = :memberName", Member.class)
-                    .setParameter("memberName", memberName)
+            return em.createQuery("select m from Member m where m.name = :name", Member.class)
+                    .setParameter("name", name)
                     .getSingleResult();
         } catch (NoResultException e) {
             log.info("결과 없음");
+            return null;
+        }
+    }
+
+    public Member findMemberByLoginId(String loginId) {
+        try {
+            return em.createQuery("select m from Member m where m.loginId = :login_id", Member.class)
+                    .setParameter("login_id", loginId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            log.info("해당 유저 찾을 수 없음");
             return null;
         }
     }

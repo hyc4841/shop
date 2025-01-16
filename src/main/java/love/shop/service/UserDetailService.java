@@ -25,13 +25,12 @@ public class UserDetailService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     // 로그인시 실행되는 부분
     // 이 부분이 실제로 데이터베이스에 접근해서 해당 userId를 갖고 있는
     @Override
-    public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
             log.info("유저 찾기 실행");
-            Member member = memberRepository.findUser(memberId);
+            Member member = memberRepository.findMemberByLoginId(loginId);
         if (member != null) {
             return createUserDetails(member);
         } else {

@@ -3,6 +3,7 @@ package love.shop.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.member.Member;
@@ -33,12 +34,14 @@ public class MemberController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResDto> signup(@RequestBody SignupRequestDto signupDto) {
+    public ResponseEntity<SignupResDto> signup(@RequestBody @Valid SignupRequestDto signupDto) {
         log.info("회원가입 시작={}", signupDto);
         Long memberId = memberService.signUp(signupDto);
 
         // 회원가입 성공한 멤버 데이터베이스에서 다시 꺼내서 확인
         Member member = memberService.findUserById(memberId);
+
+        log.info("회원가입 성공={}", member);
 
         return ResponseEntity.ok(new SignupResDto(200, "회원가입 성공", member));
     }
