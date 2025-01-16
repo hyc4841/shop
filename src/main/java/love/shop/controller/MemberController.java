@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.Member.Member;
+import love.shop.domain.member.Member;
 import love.shop.service.LoginService;
 import love.shop.service.MemberService;
 import love.shop.service.RedisService;
