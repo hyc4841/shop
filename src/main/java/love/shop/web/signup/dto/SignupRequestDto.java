@@ -1,11 +1,12 @@
 package love.shop.web.signup.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import love.shop.domain.Address;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
+import love.shop.domain.member.ValidGender;
 
 import java.time.LocalDate;
 
@@ -20,7 +21,8 @@ public class SignupRequestDto {
     private String name;
 
     private LocalDate birthDate;
-    @NotNull
+
+    @ValidGender
     private Gender gender;
 
     private String city;
