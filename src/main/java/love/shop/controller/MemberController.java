@@ -38,6 +38,8 @@ public class MemberController {
         log.info("회원가입 시작={}", signupDto);
         Long memberId = memberService.signUp(signupDto);
 
+        log.info("생년월일 확인={}", signupDto.getBirthDate());
+
         // 회원가입 성공한 멤버 데이터베이스에서 다시 꺼내서 확인
         Member member = memberService.findUserById(memberId);
 
