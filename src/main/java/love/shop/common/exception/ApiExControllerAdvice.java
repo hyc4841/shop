@@ -37,10 +37,12 @@ public class ApiExControllerAdvice {
     public ResponseEntity<Map<String, String>> signupValidationExHandler(MethodArgumentNotValidException e, WebRequest request) {
         log.info("회원가입 데이터 검증 실패");
         HashMap<String, String> errors = new HashMap<>();
+        errors.put("message", "회원가입 정보를 정확히 입력해주세요.");
         e.getBindingResult().getFieldErrors().forEach(error -> {
+            log.info("에러 이름={}, 에러 내용={}", error.getField(), error.getDefaultMessage());
             errors.put(error.getField(), error.getDefaultMessage());
         });
-        return new ResponseEntity<>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
 }
