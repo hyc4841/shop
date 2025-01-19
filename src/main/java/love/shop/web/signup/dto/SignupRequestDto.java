@@ -7,34 +7,36 @@ import love.shop.domain.Address;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.ValidGender;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 
 @Data
 public class SignupRequestDto {
 
-    @NotEmpty
+    @NotBlank(message = "아이디는 꼭 필요합니다")
     private String loginId;
-    @NotEmpty
+    // 만약 검증에 개입하는 어노테이션이 두 개 이상이면 메시지 우선순위 어떻게 되는거지?. 지금은 시스템에 먼저 입력되는 애가 걸림.
+    // 두 어노테이션에 해당하는 필드 오류가 모두 잡히고. 마지막으로 잡힌 애가 응답 데이터에 실리게 됨.
+    @NotBlank(message = "비밀번호는 최소 8자 이상으로 입력해주세요.")
+    @Length(min = 8, message = "비밀번호는 최소 8자 이상으로 입력해주세요")
     private String password;
-    @NotEmpty
+    @NotBlank(message = "이름은 꼭 필요합니다")
     private String name;
-
+    @NotBlank(message = "생년월일을 입력해주세요")
     private LocalDate birthDate;
-
     @ValidGender
     private Gender gender;
 
     private String city;
-    @NotEmpty
+    @NotBlank(message = "주소는 꼭 필요합니다")
     private String street;
-    @NotEmpty
+    @NotBlank(message = "주소는 꼭 필요합니다")
     private String zipcode;
-    @NotEmpty
+    @NotBlank(message = "상세주소는 꼭 필요합니다")
     private String detailedAddress;
-    @NotEmpty
+    @NotBlank(message = "이메일은 꼭 필요합니다")
     private String email;
-
 
     public SignupRequestDto(String loginId, String password, String name, LocalDate birthDate, Gender gender, String city, String street, String zipcode, String detailedAddress, String email) {
         this.loginId = loginId;
