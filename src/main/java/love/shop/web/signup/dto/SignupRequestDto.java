@@ -2,6 +2,7 @@ package love.shop.web.signup.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import love.shop.domain.Address;
 import love.shop.domain.member.Gender;
@@ -23,11 +24,11 @@ public class SignupRequestDto {
     private String password;
     @NotBlank(message = "이름은 꼭 필요합니다")
     private String name;
-    @NotBlank(message = "생년월일을 입력해주세요")
+    @NotNull(message = "생년월일을 입력해주세요") // LocalDate 라는 객체 타입이기 때문에 NotNull을 사용해야 한다.
     private LocalDate birthDate;
     @ValidGender
     private Gender gender;
-
+    @NotBlank
     private String city;
     @NotBlank(message = "주소는 꼭 필요합니다")
     private String street;
