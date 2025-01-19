@@ -1,6 +1,5 @@
 package love.shop.domain.member;
 
-
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
