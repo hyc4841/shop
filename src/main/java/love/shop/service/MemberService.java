@@ -29,16 +29,16 @@ public class MemberService {
     // 회원가입
     public Long signUp(SignupRequestDto signupDto) {
         // 중복 검사
-        Member member = memberRepository.findMemberByLoginId(signupDto.getLoginId());
-        if (member != null) {
+        List<Member> findMember = memberRepository.findMemberByLoginId(signupDto.getLoginId());
+        if (!findMember.isEmpty()) {
             throw new UserDuplicationException("이미 등록한 ID가 있습니다");
         }
 
         String password = passwordEncoder.encode(signupDto.getPassword());
 
-        member = signupDto.toMemberEntity(signupDto.getLoginId(), password, signupDto.getName(), signupDto.getBirthDate(),
-                signupDto.getGender(), signupDto.getCity(), signupDto.getStreet(), signupDto.getZipcode(),
-                signupDto.getDetailedAddress(),signupDto.getEmail());
+        Member member = signupDto.toMemberEntity();
+
+        log.info("새로운 메서드={}", member);
 
         MemberRole memberRole = new MemberRole(Role.MEMBER, member);
         memberRoleRepository.save(memberRole);
@@ -47,22 +47,22 @@ public class MemberService {
     }
 
     public MemberInfoResDto memberInfo(Long memberId) {
-        Member member = memberRepository.findUserById(memberId);
+        Member member = memberRepository.findMemberById(memberId);
         return new MemberInfoResDto(member.getLoginId(), member.getName(), member.getBirthDate(), member.getGender(),
                 member.getAddress(), member.getEmail(), member.getJoinDate(), member.getMemberRole());
     }
 
-    public List<Member> findAllUser() {
-        return memberRepository.findAllUser();
+    public List<Member> findAllMember() {
+        return memberRepository.findAllMember();
     }
 
-    public Member findUser(String userId) {
-        return memberRepository.findUser(userId);
+    public List<Member> findMemberByName(String memberId) {
+        return memberRepository.findMemberByName(memberId);
     }
 
     // 멤버 pk로 조회
-    public Member findUserById(Long memberId) {
-        return memberRepository.findUserById(memberId);
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findMemberById(memberId);
     }
 
 }

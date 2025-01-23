@@ -38,10 +38,8 @@ public class MemberController {
         log.info("회원가입 시작={}", signupDto);
         Long memberId = memberService.signUp(signupDto);
 
-        log.info("city 확인={}", signupDto.getCity());
-
         // 회원가입 성공한 멤버 데이터베이스에서 다시 꺼내서 확인
-        Member member = memberService.findUserById(memberId);
+        Member member = memberService.findMemberById(memberId);
 
         log.info("회원가입 성공={}", member);
 
@@ -51,8 +49,7 @@ public class MemberController {
     // 로그인 검사에 통과하면 토큰을 발급해준다.
     @PostMapping("/login")
     public ResponseEntity<JwtToken> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
-        log.info("로그인 시도");
-        log.info("loginDto={}", loginDto);
+        log.info("로그인 시도={}", loginDto);
         JwtToken tokenInfo = loginService.login(loginDto.getLoginId(), loginDto.getPassword(), response);
         log.info("로그인 성공");
         return ResponseEntity.ok(new JwtToken(tokenInfo.getGrantType(), tokenInfo.getAccessToken(), null));
@@ -100,7 +97,7 @@ public class MemberController {
 
         log.info("memberId값={}", memberId);
 
-        Member member = memberService.findUserById(memberId);
+        Member member = memberService.findMemberById(memberId);
         log.info("현재 로그인 중인 유저={}", member.getName());
 
         IsLoginUserDto loginMember = new IsLoginUserDto();
