@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Table(name = "orders") // order는 sql에서 예약어이므로 테이블 이름을 orders로 바꿔준다.
 @Getter @Setter
@@ -21,16 +23,16 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member; // 주문 회원
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>(); // Item하고 ManyToMany로 연결할 수 없으니까 중간에 OrderItem 만들어서 1 : n 으로 연결함.
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = LAZY)
     @JoinColumn(name = "delivery_id")
-    private Delivery delivery;
+    private Delivery delivery; // 배송정보
 
     private LocalDateTime orderDate; // 주문 시간
 
