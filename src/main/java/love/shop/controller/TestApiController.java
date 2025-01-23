@@ -19,6 +19,6 @@ public class TestApiController {
     @GetMapping("/api/user")
     public List<Member> findAllUser() {
         log.info("실행");
-        return memberService.findAllUser();
+        return memberService.findAllMember();
     }
 }

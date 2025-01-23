@@ -16,36 +16,27 @@ public class MemberRepository {
 
     private final EntityManager em;
 
-    public List<Member> findAllUser() {
+    public List<Member> findAllMember() {
         return em.createQuery("select m from Member m", Member.class)
                 .getResultList();
     }
 
-    // 이름으로 멤버 찾기
-    public Member findUser(String name) {
-        try {
-            return em.createQuery("select m from Member m where m.name = :name", Member.class)
-                    .setParameter("name", name)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            log.info("결과 없음");
-            return null;
-        }
-    }
-
-    public Member findMemberByLoginId(String loginId) {
-        try {
-            return em.createQuery("select m from Member m where m.loginId = :login_id", Member.class)
-                    .setParameter("login_id", loginId)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            log.info("해당 유저 찾을 수 없음");
-            return null;
-        }
-    }
-
-    public Member findUserById(Long memberId) {
+    public Member findMemberById(Long memberId) {
         return em.find(Member.class, memberId);
+    }
+
+    // 이름으로 멤버 찾기
+    public List<Member> findMemberByName(String name) {
+        return em.createQuery("select m from Member m where m.name = :name", Member.class)
+                .setParameter("name", name)
+                .getResultList();
+    }
+
+    // 굳이 이렇게 try catch 문으로 안해도 될거같음 고쳐보자
+    public List<Member> findMemberByLoginId(String loginId) {
+        return em.createQuery("select m from Member m where m.loginId = :login_id", Member.class)
+                .setParameter("login_id", loginId)
+                .getResultList();
     }
 
     public Long save(Member member) {
