@@ -52,10 +52,10 @@ public class SignupRequestDto {
         this.email = email;
     }
 
-    public Member toMemberEntity() {
+    public Member toMemberEntity(String password) {
         Address address = new Address(this.getCity(), this.getStreet(), this.getZipcode(),
                 this.getDetailedAddress());
-        return new Member(this.getLoginId(), this.getPassword(), this.getName(),
+        return new Member(this.getLoginId(), password, this.getName(),
                 this.getBirthDate(), this.getGender(), address, this.getEmail(), LocalDate.now());
     }
 
