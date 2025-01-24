@@ -1,10 +1,10 @@
-package love.shop.service;
+package love.shop.service.login;
 
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.member.Member;
-import love.shop.repository.MemberRepository;
+import love.shop.repository.member.MemberRepository;
 import love.shop.web.login.dto.CustomUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,7 +33,6 @@ public class UserDetailService implements UserDetailsService {
             List<Member> findMember = memberRepository.findMemberByLoginId(loginId);
 
         if (findMember != null) {
-            log.info("findMember.get(0) 써도 되는가?={}", findMember.get(0));
             return createUserDetails(findMember.get(0));
         } else {
             log.info("유저를 찾을 수 없음");
@@ -45,8 +44,6 @@ public class UserDetailService implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = member.getMemberRole().stream()
                 .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getRole()))
                 .collect(Collectors.toList());
-
-
         return new CustomUser(
                 member.getId(),
                 member.getName(),

@@ -3,7 +3,7 @@ package love.shop.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.member.Member;
-import love.shop.service.MemberService;
+import love.shop.service.member.MemberService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

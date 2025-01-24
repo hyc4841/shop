@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import love.shop.domain.member.Gender;
-import love.shop.service.MemberService;
+import love.shop.service.member.MemberService;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

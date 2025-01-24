@@ -1,4 +1,4 @@
-package love.shop.service;
+package love.shop.service.login;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

@@ -2,6 +2,7 @@ package love.shop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.service.member.MemberService;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.login.jwt.JwtTokenProvider;
 import love.shop.web.login.jwt.repository.TokenRepository;
