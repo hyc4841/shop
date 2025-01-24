@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import love.shop.common.exception.UserDuplicationException;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
+import love.shop.service.member.MemberService;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;

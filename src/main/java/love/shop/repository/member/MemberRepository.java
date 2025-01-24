@@ -1,7 +1,6 @@
-package love.shop.repository;
+package love.shop.repository.member;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.member.Member;

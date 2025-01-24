@@ -1,4 +1,4 @@
-package love.shop.repository;
+package love.shop.repository.member;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
