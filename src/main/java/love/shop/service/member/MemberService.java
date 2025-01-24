@@ -1,4 +1,4 @@
-package love.shop.service;
+package love.shop.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,8 +6,8 @@ import love.shop.common.exception.UserDuplicationException;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
 import love.shop.domain.member.Role;
-import love.shop.repository.MemberRepository;
-import love.shop.repository.MemberRoleRepository;
+import love.shop.repository.member.MemberRepository;
+import love.shop.repository.member.MemberRoleRepository;
 import love.shop.web.login.dto.MemberInfoResDto;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class MemberService {
 
@@ -27,23 +27,29 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     // 회원가입
+    @Transactional
     public Long signUp(SignupRequestDto signupDto) {
         // 중복 검사
-        List<Member> findMember = memberRepository.findMemberByLoginId(signupDto.getLoginId());
-        if (!findMember.isEmpty()) {
-            throw new UserDuplicationException("이미 등록한 ID가 있습니다");
-        }
+        duplicationValidation(signupDto);
 
+        // 회원가입 시작
+        // 비밀번호 암호화
         String password = passwordEncoder.encode(signupDto.getPassword());
 
-        Member member = signupDto.toMemberEntity();
-
-        log.info("새로운 메서드={}", member);
+        // dto 엔티티로 변환
+        Member member = signupDto.toMemberEntity(password);
 
         MemberRole memberRole = new MemberRole(Role.MEMBER, member);
         memberRoleRepository.save(memberRole);
 
         return memberRepository.save(member);
+    }
+
+    private void duplicationValidation(SignupRequestDto signupDto) {
+        List<Member> findMember = memberRepository.findMemberByLoginId(signupDto.getLoginId());
+        if (!findMember.isEmpty()) {
+            throw new UserDuplicationException("이미 등록한 ID가 있습니다");
+        }
     }
 
     public MemberInfoResDto memberInfo(Long memberId) {
