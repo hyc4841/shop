@@ -14,6 +14,8 @@ import love.shop.repository.order.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,11 @@ public class OrderService {
         Order order = orderRepository.findOne(orderId);
         // 주문 취소
         order.cancel();
+    }
+
+    // 모든 주문 조회
+    public List<Order> findAllOrder() {
+        return orderRepository.findAllWithMemberDelivery();
     }
 
 
