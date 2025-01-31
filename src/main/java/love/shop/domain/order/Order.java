@@ -28,6 +28,7 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member; // 주문 회원
 
+    // 양방향 연관관계? 연관관계 주인은 OrderItem인가?
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>(); // Item하고 ManyToMany로 연결할 수 없으니까 중간에 OrderItem 만들어서 1 : n 으로 연결함.
 
