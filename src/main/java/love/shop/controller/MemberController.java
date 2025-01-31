@@ -12,19 +12,16 @@ import love.shop.service.member.MemberService;
 import love.shop.service.RedisService;
 import love.shop.web.login.dto.*;
 import love.shop.web.login.jwt.JwtTokenProvider;
-import love.shop.web.signup.dto.SignupResDto;
+import love.shop.web.signup.dto.SignupResponseDto;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -34,7 +31,7 @@ public class MemberController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResDto> signup(@RequestBody @Valid SignupRequestDto signupDto) {
+    public ResponseEntity<SignupResponseDto> signup(@RequestBody @Valid SignupRequestDto signupDto) {
         log.info("회원가입 시작={}", signupDto);
         Long memberId = memberService.signUp(signupDto);
 
@@ -43,7 +40,7 @@ public class MemberController {
 
         log.info("회원가입 성공={}", member);
 
-        return ResponseEntity.ok(new SignupResDto(200, "회원가입 성공", member));
+        return ResponseEntity.ok(new SignupResponseDto(200, "회원가입 성공", member));
     }
 
     // 로그인 검사에 통과하면 토큰을 발급해준다.
