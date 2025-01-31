@@ -21,7 +21,6 @@ public class RedisService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private MemberService memberService;
-    private final TokenRepository tokenRepository;
     private final StringRedisTemplate stringRedisTemplate;
 
     // 리프레시 토큰 저장
