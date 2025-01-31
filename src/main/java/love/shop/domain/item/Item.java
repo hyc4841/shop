@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.CategoryItem;
-import love.shop.domain.category.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +25,23 @@ public abstract class Item {
     private int price;
     private int stockQuantity;
 
-    @OneToMany(mappedBy = "category_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<CategoryItem> categoryItems = new ArrayList<>();
 
-    // 비즈니스 로직
+    protected void setName(String name) {
+        this.name = name;
+    }
 
+    protected void setPrice(int price) {
+        this.price = price;
+    }
+
+    protected void setStockQuantity(int quantity) {
+        this.stockQuantity = quantity;
+    }
+
+
+    // 비즈니스 로직
     // 수량 추가. 기존 수량에 추가하기
     public void addStock(int quantity) {
         this.stockQuantity += quantity;
@@ -44,5 +55,4 @@ public abstract class Item {
         }
         this.stockQuantity = restStock;
     }
-
 }
