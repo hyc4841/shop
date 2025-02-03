@@ -18,4 +18,7 @@ public class Book extends Item{
         super.setPrice(price);
         super.setStockQuantity(quantity);
     }
+
+    public Book() {
+    }
 }
