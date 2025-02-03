@@ -29,7 +29,7 @@ public class Order {
     private Member member; // 주문 회원
 
     // 양방향 연관관계? 연관관계 주인은 OrderItem인가?
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) // oneToMany 때문에 생기는 문제가 있다. 즉 다중 컬렉션 조회 때문에 생기는 문제가 있다.
     private List<OrderItem> orderItems = new ArrayList<>(); // Item하고 ManyToMany로 연결할 수 없으니까 중간에 OrderItem 만들어서 1 : n 으로 연결함.
 
     @OneToOne(cascade = CascadeType.ALL, fetch = LAZY)
