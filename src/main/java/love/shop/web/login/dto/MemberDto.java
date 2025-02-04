@@ -3,13 +3,14 @@ package love.shop.web.login.dto;
 import lombok.Data;
 import love.shop.domain.Address;
 import love.shop.domain.member.Gender;
+import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
-public class MemberInfoResDto {
+public class MemberDto {
     private String loginId;
     private String name;
     private LocalDate birthDate;
@@ -20,14 +21,14 @@ public class MemberInfoResDto {
     private List<MemberRole> memberRole;
 
 
-    public MemberInfoResDto(String loginId, String name, LocalDate birthDate, Gender gender, Address address, String email, LocalDate joinDate, List<MemberRole> memberRole) {
-        this.loginId = loginId;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.gender = gender;
-        this.address = address;
-        this.email = email;
-        this.joinDate = joinDate;
-        this.memberRole = memberRole;
+    public MemberDto(Member member) {
+        this.loginId = member.getLoginId();
+        this.name = member.getName();
+        this.birthDate = member.getBirthDate();
+        this.gender = member.getGender();
+        this.address = member.getAddress();
+        this.email = member.getEmail();
+        this.joinDate = member.getJoinDate();
+        this.memberRole = member.getMemberRole();
     }
 }

@@ -4,8 +4,11 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
 import love.shop.service.login.LoginService;
 import love.shop.service.member.MemberService;
@@ -17,8 +20,9 @@ import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -45,11 +49,26 @@ public class MemberController {
 
     // 로그인 검사에 통과하면 토큰을 발급해준다.
     @PostMapping("/login")
-    public ResponseEntity<JwtToken> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public ResponseEntity<LoginResult<JwtToken>> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
         log.info("로그인 시도={}", loginDto);
+
         JwtToken tokenInfo = loginService.login(loginDto.getLoginId(), loginDto.getPassword(), response);
+        List<Member> loginMember = memberService.findMemberByLoginId(loginDto.getLoginId());
+        if (loginMember.isEmpty()) {
+            throw new UserNotExistException("존재하지 않은 유저 입니다.");
+        }
+
+        Member member = loginMember.get(0);
+
         log.info("로그인 성공");
-        return ResponseEntity.ok(new JwtToken(tokenInfo.getGrantType(), tokenInfo.getAccessToken(), null));
+        return ResponseEntity.ok(new LoginResult<JwtToken>(tokenInfo, member.getName()));
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class LoginResult<T> {
+        private T token;
+        private String userName;
     }
 
     @PostMapping("/logout")
@@ -74,7 +93,7 @@ public class MemberController {
 
     // 멤버 정보 조회 정보 조회
     @GetMapping("/member/info")
-    public ResponseEntity<MemberInfoResDto> memberInfo() {
+    public ResponseEntity<MemberDto> memberInfo() {
         // 토큰 안에 있는 memberId로 멤버 조회. 엑세스 토큰에 아예 memberId가 박혀 있다
         // 토큰 정보는 SecurityContextHolder에 있다. 이것 안에 memberId를 가져온다.
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
@@ -82,7 +101,7 @@ public class MemberController {
         log.info("memberId={}", memberId);
 
         log.info("memberInfo 실행");
-        MemberInfoResDto memberInfo = memberService.memberInfo(memberId);
+        MemberDto memberInfo = memberService.memberInfo(memberId);
         return ResponseEntity.ok(memberInfo);
     }
 
