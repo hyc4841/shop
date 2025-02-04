@@ -8,7 +8,7 @@ import love.shop.domain.member.MemberRole;
 import love.shop.domain.member.Role;
 import love.shop.repository.member.MemberRepository;
 import love.shop.repository.member.MemberRoleRepository;
-import love.shop.web.login.dto.MemberInfoResDto;
+import love.shop.web.login.dto.MemberDto;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,10 +52,9 @@ public class MemberService {
         }
     }
 
-    public MemberInfoResDto memberInfo(Long memberId) {
+    public MemberDto memberInfo(Long memberId) {
         Member member = memberRepository.findMemberById(memberId);
-        return new MemberInfoResDto(member.getLoginId(), member.getName(), member.getBirthDate(), member.getGender(),
-                member.getAddress(), member.getEmail(), member.getJoinDate(), member.getMemberRole());
+        return new MemberDto(member);
     }
 
     public List<Member> findAllMember() {
@@ -64,6 +63,10 @@ public class MemberService {
 
     public List<Member> findMemberByName(String memberId) {
         return memberRepository.findMemberByName(memberId);
+    }
+
+    public List<Member> findMemberByLoginId(String loginId) {
+        return memberRepository.findMemberByLoginId(loginId);
     }
 
     // 멤버 pk로 조회
