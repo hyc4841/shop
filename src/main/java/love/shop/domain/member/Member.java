@@ -45,7 +45,7 @@ public class Member {
 
     // 멤버 한명이 가질 수 있는 권한이 여러개일 수 있다면 이것은 말이 됨.
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
-    private List<MemberRole> memberRole;
+    private List<MemberRole> memberRole = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
