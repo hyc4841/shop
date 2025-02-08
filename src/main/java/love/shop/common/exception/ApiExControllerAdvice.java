@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,5 +45,14 @@ public class ApiExControllerAdvice {
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(RefreshTokenNotExistException.class)
+    public ErrorApi refreshTokenNotExistExHandler(RefreshTokenNotExistException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorApi(401, "redis에 리프레시 토큰이 없음.");
+    }
+
 
 }

@@ -1,7 +1,10 @@
 package love.shop.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.FilterExApi;
+import love.shop.common.exception.RefreshTokenNotExistException;
 import love.shop.service.member.MemberService;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.login.jwt.JwtTokenProvider;
@@ -12,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -22,6 +26,7 @@ public class RedisService {
     private final JwtTokenProvider jwtTokenProvider;
     private MemberService memberService;
     private final StringRedisTemplate stringRedisTemplate;
+    private final FilterExApi filterExApi;
 
     // 리프레시 토큰 저장
     public void saveRefreshToken(String userId, String refreshToken) {
@@ -33,7 +38,7 @@ public class RedisService {
     }
 
     // redis에 저장된 리프레시 토큰과 요청 쿠키에 들어있는 리프레시 토큰을 비교해서
-    public JwtToken refreshAccessToken(String refreshToken) {
+    public JwtToken refreshAccessToken(String refreshToken, HttpServletResponse response) throws IOException {
 
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
 
@@ -54,8 +59,11 @@ public class RedisService {
                     .accessToken(newToken.getAccessToken())
                     .refreshToken(newToken.getRefreshToken())
                     .build();
-        } else { // redisRefreshToken == null
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다.");
+        } else { // redisRefreshToken == null.
+            // 엑세스 코인은 있는데 리프레시 코인이 redis에 저장이 안되어 있음. 문제가 있음.
+            log.info("redis에 저장되지 않은 리프레시 토큰 발견");
+            filterExApi.jwtTokenExHandler(response, "redis에 존재하지 않은 리프레시 토큰입니다.", 401);
+            throw new RefreshTokenNotExistException("redis에 존재하지 않은 리프레시 토큰입니다.");
         }
     }
 

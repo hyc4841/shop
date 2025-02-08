@@ -77,7 +77,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     // 리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다
                     // 왜 응답 헤더에다가 토큰을 넣지?
-                    JwtToken newToken = redisService.refreshAccessToken(refreshToken); // 여기서 리프레시 토큰의 유효성도 검사된다.
+                    JwtToken newToken = redisService.refreshAccessToken(refreshToken, response); // 여기서 리프레시 토큰의 유효성도 검사된다.
 
                     log.info("재발급된 리프레시 토큰={}", newToken.getRefreshToken());
 
