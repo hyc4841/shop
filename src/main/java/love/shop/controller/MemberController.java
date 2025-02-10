@@ -102,6 +102,8 @@ public class MemberController {
 
         log.info("memberInfo 실행");
         MemberDto memberInfo = memberService.memberInfo(memberId);
+
+        log.info(String.valueOf(memberInfo));
         return ResponseEntity.ok(memberInfo);
     }
 
