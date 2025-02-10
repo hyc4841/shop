@@ -1,5 +1,6 @@
 package love.shop.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.ErrorApi;
 import love.shop.common.exception.FilterExApi;
 import love.shop.service.RedisService;
 import love.shop.web.login.jwt.JwtToken;
@@ -101,11 +103,14 @@ public class JwtFilter extends OncePerRequestFilter {
                 // 다른 예외는 401 응답으로 반환한다.
                 // 다른 예외는 토큰 유형, 토큰 보안?, 지원하지 않는 토큰, IllegalArgument 등이 있음
                 log.info("error", e);
+
+                jwtTokenProvider.removeRefreshToken(response);
+
                 filterExApi.jwtTokenExHandler(response, e.getMessage(), 401);
+
                 return;
             }
         }
-
 
         filterChain.doFilter(request, response);
     }
