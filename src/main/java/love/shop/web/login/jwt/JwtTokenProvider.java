@@ -5,6 +5,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.jwt.exception.ApiException;
@@ -176,7 +177,7 @@ public class JwtTokenProvider {
         return null;
     }
 
-    // httponly 리프레시 토큰 쿠키
+    // httpOnly 쿠키 리프레시 토큰 생성
     public Cookie createRefreshTokenCookie(String refreshToken) {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setMaxAge(7 * 24 * 60 * 60); // 7일
@@ -186,6 +187,15 @@ public class JwtTokenProvider {
         cookie.setAttribute("SameSite", "None"); // 일단 이 설정은 로컬 환경에선 영향이 없었다.
 
         return cookie;
+    }
+
+    // 리프레시 토큰 httpOnly 쿠키에서 삭제
+    public void removeRefreshToken(HttpServletResponse response) {
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
     }
 
     // 각종 토큰의 정보 추출
