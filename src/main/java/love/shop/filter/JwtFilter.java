@@ -106,6 +106,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 jwtTokenProvider.removeRefreshToken(response);
 
+                // 예외 api 응답으로 보내기
                 filterExApi.jwtTokenExHandler(response, e.getMessage(), 401);
 
                 return;
