@@ -8,6 +8,7 @@ import love.shop.domain.member.MemberRole;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class MemberDto {
@@ -18,7 +19,7 @@ public class MemberDto {
     private Address address;
     private String email;
     private LocalDate joinDate;
-    private List<MemberRole> memberRole;
+    private List<MemberRoleDto> memberRole;
 
 
     public MemberDto(Member member) {
@@ -29,6 +30,8 @@ public class MemberDto {
         this.address = member.getAddress();
         this.email = member.getEmail();
         this.joinDate = member.getJoinDate();
-        this.memberRole = member.getMemberRole();
+        this.memberRole = member.getMemberRole().stream()
+                .map(memberRole -> new MemberRoleDto(memberRole))
+                .collect(Collectors.toList());
     }
 }
