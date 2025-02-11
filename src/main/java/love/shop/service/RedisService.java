@@ -63,6 +63,7 @@ public class RedisService {
             // 엑세스 코인은 있는데 리프레시 코인이 redis에 저장이 안되어 있음. 문제가 있음.
             log.info("redis에 저장되지 않은 리프레시 토큰 발견");
             filterExApi.jwtTokenExHandler(response, "redis에 존재하지 않은 리프레시 토큰입니다.", 401);
+            jwtTokenProvider.removeRefreshToken(response);
             throw new RefreshTokenNotExistException("redis에 존재하지 않은 리프레시 토큰입니다.");
         }
     }
