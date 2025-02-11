@@ -8,10 +8,10 @@ import love.shop.domain.member.Role;
 public class MemberRoleDto {
 
     private Role role;
-    private Long memberId;
+//    private Long memberId;
 
     public MemberRoleDto(MemberRole memberRole) {
         this.role = memberRole.getRole();
-        this.memberId = memberRole.getMember().getId();
+//        this.memberId = memberRole.getMember().getId();
     }
 }
