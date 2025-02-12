@@ -2,6 +2,7 @@ package love.shop.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.PasswordNotMatchException;
 import love.shop.common.exception.UserDuplicationException;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
@@ -72,6 +73,18 @@ public class MemberService {
     // 멤버 pk로 조회
     public Member findMemberById(Long memberId) {
         return memberRepository.findMemberById(memberId);
+    }
+
+    public boolean curPasswordCheck(String curPwd, Long memberId) {
+        Member member = memberRepository.findMemberById(memberId);
+        return passwordEncoder.matches(curPwd, member.getPassword());
+    }
+
+    @Transactional
+    public void updatePassword(String newPassword, Long memberId) {
+        Member member = findMemberById(memberId);
+        String password = passwordEncoder.encode(newPassword);
+        member.setPassword(password);
     }
 
 }
