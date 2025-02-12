@@ -77,8 +77,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
                     log.info("리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다");
 
-                    // 리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다
-                    // 왜 응답 헤더에다가 토큰을 넣지?
+                    // 리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다.
                     JwtToken newToken = redisService.refreshAccessToken(refreshToken, response); // 여기서 리프레시 토큰의 유효성도 검사된다.
 
                     log.info("재발급된 리프레시 토큰={}", newToken.getRefreshToken());
@@ -104,6 +103,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 // 다른 예외는 토큰 유형, 토큰 보안?, 지원하지 않는 토큰, IllegalArgument 등이 있음
                 log.info("error", e);
 
+                // jwtTokenProvider에게 리프레시 토큰을 제거하도록 한다. 이 부분은 작동함. 즉 필터에서 직접 삭제 안하고 다른 객체에 전달해서 삭제할 수 있음.
                 jwtTokenProvider.removeRefreshToken(response);
 
                 // 예외 api 응답으로 보내기
