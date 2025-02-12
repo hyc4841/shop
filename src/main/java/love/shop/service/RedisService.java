@@ -52,7 +52,15 @@ public class RedisService {
 
             log.info("새로 만든 리프레시 토큰={}", newToken.getRefreshToken());
 
-            saveRefreshToken(userName, newToken.getRefreshToken()); // 새로운 리프레시 토큰 저장
+            // redis가 내려가서 리프레시 토큰을 저장할 수 없을 때, org.springframework.data.redis.RedisSystemException 이 발생하는데 일단 임시 방편으로
+            // try-catch문으로 매꾼다.
+            try {
+                saveRefreshToken(userName, newToken.getRefreshToken()); // 새로운 리프레시 토큰 저장
+            } catch (Exception e) {
+                log.error("리프레시 토큰을 저장할 수 없음", e);
+                jwtTokenProvider.removeRefreshToken(response);
+                filterExApi.jwtTokenExHandler(response, "리프레시 토큰을 저장할 수 없습니다.", 500);
+            }
 
             return JwtToken.builder()
                     .grantType("Bearer")
