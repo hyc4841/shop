@@ -32,7 +32,8 @@ public class UserDetailService implements UserDetailsService {
             log.info("유저 찾기 실행");
             List<Member> findMember = memberRepository.findMemberByLoginId(loginId);
 
-        if (findMember != null) {
+            log.info("findMember={}", findMember);
+        if (!findMember.isEmpty()) { // findMember != null. 이런식으로 하면 안된다.
             return createUserDetails(findMember.get(0));
         } else {
             log.info("유저를 찾을 수 없음");
