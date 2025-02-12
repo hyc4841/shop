@@ -1,5 +1,7 @@
 package love.shop.common.exception;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +29,14 @@ public class ApiExControllerAdvice {
         return new ErrorApi(400, "이미 등록한 ID가 있습니다.");
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public ErrorApi userIdOrPasswordNotMatchExHandler(UserIdOrPasswordNotMatchException e) {
+    public ErrorWrapper<ErrorApi> userIdOrPasswordNotMatchExHandler(UserIdOrPasswordNotMatchException e) {
         log.error("[exceptionHandle] ex", e); // 지금 이건 일부러 로그에 오류가 뜨도록 만든것
-        return new ErrorApi(500, "아이디 혹은 비밀번호가 맞지 않습니다.");
+
+        ErrorWrapper<ErrorApi> errorApiErrorWrapper = new ErrorWrapper<>(new ErrorApi(500, "아이디 혹은 비밀번호가 맞지 않습니다."));
+
+        return errorApiErrorWrapper;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -39,6 +44,7 @@ public class ApiExControllerAdvice {
         log.info("회원가입 데이터 검증 실패");
         HashMap<String, String> errors = new HashMap<>();
         errors.put("message", "회원가입 정보를 정확히 입력해주세요.");
+        // 아래와 같이 필요에 따라 필드 오류를 담아서 보낼 수 있음.
         e.getBindingResult().getFieldErrors().forEach(error -> {
             log.info("에러 이름={}, 에러 내용={}", error.getField(), error.getDefaultMessage());
             errors.put(error.getField(), error.getDefaultMessage());
@@ -54,5 +60,16 @@ public class ApiExControllerAdvice {
         return new ErrorApi(401, "redis에 리프레시 토큰이 없음.");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PasswordNotMatchException.class)
+    public ErrorApi passwordNotMatchExHandler(PasswordNotMatchException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorApi(400, "비밀번호가 일치하지 않습니다.");
+    }
 
+    @Data
+    @AllArgsConstructor
+    static class ErrorWrapper<T> {
+        private T error;
+    }
 }
