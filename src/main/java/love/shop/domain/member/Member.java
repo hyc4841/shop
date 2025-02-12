@@ -64,5 +64,10 @@ public class Member {
         this.joinDate = joinDate;
     }
 
+    // 비밀번호 set 열어놔도 괜찮을까?
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 
 }
