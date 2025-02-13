@@ -45,7 +45,7 @@ public class JwtTokenProvider {
         long now = (new Date()).getTime();
         Date issuedAt = new Date();
 
-         Date accessTokenExpire = new Date(now + 1); // 잠시 발급하자마자 만료되는걸로 바꿈
+         Date accessTokenExpire = new Date(now + 600000); // 잠시 발급하자마자 만료되는걸로 바꿈
 //        Date accessTokenExpire = new Date(System.currentTimeMillis() + 60000); // 1분
 
         // 토큰 정보에 memberId를 넣기 위해서 가져온다.
