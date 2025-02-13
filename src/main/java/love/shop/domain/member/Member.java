@@ -27,6 +27,9 @@ public class Member {
     @Column(nullable = false, length = 50)
     private String name;
 
+    @Column(nullable = false)
+    private String phoneNum;
+
     @Column
     private LocalDate birthDate;
 
@@ -53,10 +56,11 @@ public class Member {
     public Member() {
     }
 
-    public Member(String loginId, String password, String name, LocalDate birthDate, Gender gender, Address address, String email, LocalDate joinDate) {
+    public Member(String loginId, String password, String name, String phoneNum, LocalDate birthDate, Gender gender, Address address, String email, LocalDate joinDate) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
+        this.phoneNum = phoneNum;
         this.birthDate = birthDate;
         this.gender = gender;
         this.address = address;

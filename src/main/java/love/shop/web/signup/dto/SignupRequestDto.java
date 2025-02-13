@@ -1,7 +1,6 @@
 package love.shop.web.signup.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import love.shop.domain.Address;
@@ -24,6 +23,8 @@ public class SignupRequestDto {
     private String password;
     @NotBlank(message = "이름은 꼭 필요합니다")
     private String name;
+    @NotBlank(message = "휴대폰 번호는 꼭 필요합니다")
+    private String phoneNum;
     @NotNull(message = "생년월일을 입력해주세요") // LocalDate 라는 객체 타입이기 때문에 NotNull을 사용해야 한다.
     private LocalDate birthDate;
     @ValidGender
@@ -39,10 +40,11 @@ public class SignupRequestDto {
     @NotBlank(message = "이메일은 꼭 필요합니다")
     private String email;
 
-    public SignupRequestDto(String loginId, String password, String name, LocalDate birthDate, Gender gender, String city, String street, String zipcode, String detailedAddress, String email) {
+    public SignupRequestDto(String loginId, String password, String name, String phoneNum, LocalDate birthDate, Gender gender, String city, String street, String zipcode, String detailedAddress, String email) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
+        this.phoneNum = phoneNum;
         this.birthDate = birthDate;
         this.gender = gender;
         this.city = city;
@@ -55,7 +57,7 @@ public class SignupRequestDto {
     public Member toMemberEntity(String password) {
         Address address = new Address(this.getCity(), this.getStreet(), this.getZipcode(),
                 this.getDetailedAddress());
-        return new Member(this.getLoginId(), password, this.getName(),
+        return new Member(this.getLoginId(), password, this.getName(), this.getPhoneNum(),
                 this.getBirthDate(), this.getGender(), address, this.getEmail(), LocalDate.now());
     }
 
