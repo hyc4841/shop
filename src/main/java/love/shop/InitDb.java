@@ -42,7 +42,7 @@ public class InitDb {
 
         public void dbInit1() {
             // 회원가입
-            SignupRequestDto signupRequest = new SignupRequestDto("Hell4", "1234", "황윤철",
+            SignupRequestDto signupRequest = new SignupRequestDto("Hell4", "1234", "황윤철", "01099694841",
                     LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
             Long signUpMemberId = memberService.signUp(signupRequest);
 
@@ -66,7 +66,7 @@ public class InitDb {
 
         public void dbInit2() {
             // 회원가입
-            SignupRequestDto signupRequest = new SignupRequestDto("Hell5", "1234", "황윤철",
+            SignupRequestDto signupRequest = new SignupRequestDto("Hell5", "1234", "황윤철", "01099694841",
                     LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
             Long signUpMemberId = memberService.signUp(signupRequest);
 

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class MemberDto {
     private String loginId;
     private String name;
+    private String phoneNum;
     private LocalDate birthDate;
     private Gender gender;
     private Address address;
@@ -25,6 +26,7 @@ public class MemberDto {
     public MemberDto(Member member) {
         this.loginId = member.getLoginId();
         this.name = member.getName();
+        this.phoneNum = member.getPhoneNum();
         this.birthDate = member.getBirthDate();
         this.gender = member.getGender();
         this.address = member.getAddress();

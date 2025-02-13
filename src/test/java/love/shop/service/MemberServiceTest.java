@@ -35,7 +35,7 @@ public class MemberServiceTest {
     @Test
     public void 회원가입() {
         // given
-        SignupRequestDto signupRequest = new SignupRequestDto("Hell5", "1234", "황윤철",
+        SignupRequestDto signupRequest = new SignupRequestDto("Hell5", "1234", "황윤철", "01099694841",
                 LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
         // when
         Long signUpMemberId = memberService.signUp(signupRequest);
@@ -49,11 +49,11 @@ public class MemberServiceTest {
     @Test(expected = UserDuplicationException.class)
     public void 회원가입_loginId_중복() {
         // given
-        SignupRequestDto signupRequest1 = new SignupRequestDto("Hell6", "1234", "황윤철",
+        SignupRequestDto signupRequest1 = new SignupRequestDto("Hell6", "1234", "황윤철", "01099694841",
                 LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
         Long signUpMemberId1 = memberService.signUp(signupRequest1);
         // when
-        SignupRequestDto signupRequest2 = new SignupRequestDto("Hell6", "1234", "황윤철",
+        SignupRequestDto signupRequest2 = new SignupRequestDto("Hell6", "1234", "황윤철", "01099694841",
                 LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
         Long signUpMemberId2 = memberService.signUp(signupRequest2);
 
