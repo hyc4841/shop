@@ -87,4 +87,10 @@ public class MemberService {
         member.setPassword(password);
     }
 
+    @Transactional
+    public void updateLoginId(String newLoginId, Long memberId) {
+        Member member = findMemberById(memberId);
+        member.setLoginId(newLoginId);
+    }
+
 }

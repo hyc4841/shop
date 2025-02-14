@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.PasswordNotMatchException;
+import love.shop.common.exception.UserDuplicationException;
 import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
 import love.shop.service.login.LoginService;
@@ -16,6 +17,7 @@ import love.shop.service.member.MemberService;
 import love.shop.service.RedisService;
 import love.shop.web.login.dto.*;
 import love.shop.web.login.jwt.JwtTokenProvider;
+import love.shop.web.member.dto.LoginIdUpdateReqDto;
 import love.shop.web.member.dto.PasswordUpdateReqDto;
 import love.shop.web.signup.dto.SignupResponseDto;
 import love.shop.web.login.jwt.JwtToken;
@@ -111,6 +113,7 @@ public class MemberController {
         return ResponseEntity.ok(memberInfo);
     }
 
+    // 비밀번호 변경
     @PostMapping("/member/password")
     public ResponseEntity passwordUpdate(@Validated @RequestBody PasswordUpdateReqDto passwordDto) {
         log.info("비밀번호 변경 시작");
@@ -118,7 +121,7 @@ public class MemberController {
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
         // 클라이언트 쪽에서 한번 확인하고, 서버에서도 한번더 확인
         // 1. 현재 비밀번호를 꺼내와서 맞는지 확인
-        // 1번은 필드 오류 검증으로 위임
+        // 1번은 필드 검증으로 위임
         // 2. 변경할 비밀번호와 확인 비밀번호가 맞는지 확인.
 
         if (!passwordDto.getNewPwd().equals(passwordDto.getNewPwdCon())) {
@@ -127,7 +130,18 @@ public class MemberController {
 
         // 3. 최종적으로 변경할 비밀번호를 데이터이스에 저장
         memberService.updatePassword(passwordDto.getNewPwd(), memberId);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/member/id")
+    public ResponseEntity loginIdUpdate(@Validated @RequestBody LoginIdUpdateReqDto loginIdDto) {
+        // 1. 유저가 입력한 아이디가 기존 유저 아이디 중에 중복되는 것이 있는지 확인.
+        // 1번은 필드 검증으로 위임
+        // 2. 중복 확인이 되면 변경
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        memberService.updateLoginId(loginIdDto.getNewLoginId(), memberId);
+        // 만약 어떤 두 유저가 같은 아이디로 동시에 바꿀려고 하면 최종적으로는 데이터베이스에서 유니크 제약조건으로 막아줘야 한다.
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 현재 로그인 중인지. 그런데 여기서 문제는 페이지를 이동할 때마다 유저 정보를 계속해서 줘야한다는건데.. 이건 나중에 차차 생각하고 일단 구현에 집중하자.
