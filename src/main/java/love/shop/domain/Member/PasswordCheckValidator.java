@@ -18,11 +18,9 @@ public class PasswordCheckValidator implements ConstraintValidator<ValidPassword
 
     @Override
     public boolean isValid(String curPwd, ConstraintValidatorContext context) {
+        // 현재 비밀번호 확인
         log.info("curPwd={}", curPwd);
-
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
-        boolean b = memberService.curPasswordCheck(curPwd, memberId);
-        log.info(String.valueOf(b));
-        return b;
+        return memberService.curPasswordCheck(curPwd, memberId);
     }
 }
