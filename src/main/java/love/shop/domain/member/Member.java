@@ -18,7 +18,7 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "login_id", nullable = false, length = 50)
+    @Column(name = "login_id", nullable = false, length = 50, unique = true)
     private String loginId;
 
     @Column(nullable = false)
@@ -71,6 +71,10 @@ public class Member {
     // 비밀번호 set 열어놔도 괜찮을까?
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
 
