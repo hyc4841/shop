@@ -39,14 +39,15 @@ public class ApiExControllerAdvice {
         return errorApiErrorWrapper;
     }
 
+    // 이게 지금 회원가입 필드 검증할때 뿐만 아니라 다른 곳에서 필드 검증할때도 사용되기 때문에 약간의 수정이 필요함.
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> signupValidationExHandler(MethodArgumentNotValidException e, WebRequest request) {
-        log.info("회원가입 데이터 검증 실패");
+    public ResponseEntity<Map<String, String>> fieldValidationExHandler(MethodArgumentNotValidException e, WebRequest request) {
+        log.info("데이터 검증 실패");
         HashMap<String, String> errors = new HashMap<>();
-        errors.put("message", "회원가입 정보를 정확히 입력해주세요.");
+        errors.put("message", "필드에 값을 정확히 입력해주세요.");
         // 아래와 같이 필요에 따라 필드 오류를 담아서 보낼 수 있음.
         e.getBindingResult().getFieldErrors().forEach(error -> {
-            log.info("에러 이름={}, 에러 내용={}", error.getField(), error.getDefaultMessage());
+            log.info("필드 이름={}, 에러 내용={}", error.getField(), error.getDefaultMessage());
             errors.put(error.getField(), error.getDefaultMessage());
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
