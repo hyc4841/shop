@@ -15,6 +15,12 @@ public class MemberRepository {
 
     private final EntityManager em;
 
+    public Long save(Member member) {
+        em.persist(member);
+        Member saveMember = em.find(Member.class, member.getId());
+        return saveMember.getId();
+    }
+
     public List<Member> findAllMember() {
         return em.createQuery("select m from Member m", Member.class)
                 .getResultList();
@@ -38,10 +44,14 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public Long save(Member member) {
-        em.persist(member);
-        Member saveMember = em.find(Member.class, member.getId());
-        return saveMember.getId();
+    public List<Member> findMemberByEmail(String email) {
+        return em.createQuery("select m from Member m where m.email = :email", Member.class)
+                .setParameter("email", email)
+                .getResultList();
     }
+
+
+
+
 
 }
