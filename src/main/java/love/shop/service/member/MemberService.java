@@ -75,22 +75,38 @@ public class MemberService {
         return memberRepository.findMemberById(memberId);
     }
 
+    public List<Member> findMemberByEmail(String email) {
+        return memberRepository.findMemberByEmail(email);
+    }
+
     public boolean curPasswordCheck(String curPwd, Long memberId) {
         Member member = memberRepository.findMemberById(memberId);
         return passwordEncoder.matches(curPwd, member.getPassword());
     }
 
     @Transactional
-    public void updatePassword(String newPassword, Long memberId) {
+    public Member updatePassword(String newPassword, Long memberId) {
         Member member = findMemberById(memberId);
         String password = passwordEncoder.encode(newPassword);
         member.setPassword(password);
+
+        return member;
     }
 
     @Transactional
-    public void updateLoginId(String newLoginId, Long memberId) {
+    public Member updateLoginId(String newLoginId, Long memberId) {
         Member member = findMemberById(memberId);
         member.setLoginId(newLoginId);
+
+        return member;
+    }
+
+    @Transactional
+    public Member updateEmail(String email, Long memberId) {
+        Member member = memberRepository.findMemberById(memberId);
+        member.setEmail(email);
+
+        return member;
     }
 
 }
