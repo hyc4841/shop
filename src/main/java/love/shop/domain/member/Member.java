@@ -77,5 +77,9 @@ public class Member {
         this.loginId = loginId;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 
 }
