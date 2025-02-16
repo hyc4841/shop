@@ -1,12 +1,12 @@
 package love.shop.web.member.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import love.shop.domain.member.ValidPasswordCheck;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PasswordUpdateReqDto {
 
     @NotBlank
