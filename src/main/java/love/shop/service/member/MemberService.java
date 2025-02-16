@@ -109,4 +109,22 @@ public class MemberService {
         return member;
     }
 
+    @Transactional
+    public Member updateName(String name, Long memberId) {
+
+        Member member = memberRepository.findMemberById(memberId);
+        member.setName(name);
+
+        return member;
+    }
+
+    @Transactional
+    public Member updatePhoneNum(String phoneNum, Long memberId) {
+
+        Member member = memberRepository.findMemberById(memberId);
+        member.setPhoneNum(phoneNum);
+
+        return member;
+    }
+
 }
