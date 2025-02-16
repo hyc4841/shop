@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.PasswordNotMatchException;
-import love.shop.common.exception.UserDuplicationException;
 import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
 import love.shop.service.login.LoginService;
@@ -17,13 +16,10 @@ import love.shop.service.member.MemberService;
 import love.shop.service.RedisService;
 import love.shop.web.login.dto.*;
 import love.shop.web.login.jwt.JwtTokenProvider;
-import love.shop.web.member.dto.EmailUpdateReqDto;
-import love.shop.web.member.dto.LoginIdUpdateReqDto;
-import love.shop.web.member.dto.PasswordUpdateReqDto;
+import love.shop.web.member.dto.*;
 import love.shop.web.signup.dto.SignupResponseDto;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.signup.dto.SignupRequestDto;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -41,6 +37,7 @@ public class MemberController {
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
 
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(@RequestBody @Valid SignupRequestDto signupDto) {
         log.info("회원가입 시작={}", signupDto);
@@ -78,6 +75,7 @@ public class MemberController {
         private String userName;
     }
 
+    // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<LogoutResDto> logout(HttpServletRequest request, HttpServletResponse response) {
         // http 헤더와 쿠키에서 각각 엑세스 토큰과 리프레시 토큰을 꺼내와야함.
@@ -137,6 +135,7 @@ public class MemberController {
         return ResponseEntity.ok(result);
     }
 
+    // 아이디 변경
     @PostMapping("/member/id")
     public ResponseEntity<MemberInfoResult<MemberDto>> loginIdUpdate(@Validated @RequestBody LoginIdUpdateReqDto loginIdDto) {
         // 1. 유저가 입력한 아이디가 기존 유저 아이디 중에 중복되는 것이 있는지 확인.
@@ -150,8 +149,10 @@ public class MemberController {
         return ResponseEntity.ok(result);
     }
 
+    // 이메일 변경
     @PostMapping("/member/email")
     public ResponseEntity<MemberInfoResult<MemberDto>> emailUpdate(@Validated @RequestBody EmailUpdateReqDto emailDto) {
+        // 0. 이메일 인증. 이메일 인증은 클라이언트 쪽에서 진행해야 할듯? 아니면 서버쪽에서 인증 이메일 보내는거 해줘도 되고?
         // 1. 이메일 형식 검사 (필드 검증으로 위임)
         // 2. 이메일 중복 검사 (필드 검증으로 위임)
         // 3. 이메일 변경
@@ -162,6 +163,36 @@ public class MemberController {
 
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/member/name")
+    public ResponseEntity<MemberInfoResult<MemberDto>> nameUpdate(@Validated @RequestBody NameUpdateReqDto nameDto) {
+
+        // 1. 본인인증??
+        // 2. 별도의 검증 과정 없이 일단 이름은 변경시키는 걸로
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+
+        Member member = memberService.updateName(nameDto.getNewName(), memberId);
+        MemberDto memberDto = new MemberDto(member);
+        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/member/phone-num")
+    public ResponseEntity<MemberInfoResult<MemberDto>> phoneNumUpdate(@Validated @RequestBody PhoneNumUpdateReqDto phoneNumDto) {
+
+        // 전화번호는 인증과정을 거쳐야한다.
+        // 1. 본인인증??
+        // 2. 별도의 검증 과정 없이 일단 이름은 변경시키는 걸로
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+
+        Member member = memberService.updatePhoneNum(phoneNumDto.getNewPhoneNum(), memberId);
+        MemberDto memberDto = new MemberDto(member);
+        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
+
+        return ResponseEntity.ok(result);
+    }
+
 
     @Data
     @AllArgsConstructor
