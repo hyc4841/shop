@@ -20,6 +20,7 @@ import love.shop.web.member.dto.*;
 import love.shop.web.signup.dto.SignupResponseDto;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.signup.dto.SignupRequestDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -53,7 +54,7 @@ public class MemberController {
 
     // 로그인 검사에 통과하면 토큰을 발급해준다.
     @PostMapping("/login")
-    public ResponseEntity<LoginResult<JwtToken>> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public ResponseEntity<LoginResult<JwtToken>> login(@Validated @RequestBody LoginReqDto loginDto, HttpServletResponse response) {
         log.info("로그인 시도={}", loginDto);
 
         JwtToken tokenInfo = loginService.login(loginDto.getLoginId(), loginDto.getPassword(), response);
@@ -95,6 +96,16 @@ public class MemberController {
 
         return ResponseEntity.ok(new LogoutResDto("로그아웃 성공"));
     }
+
+    @PostMapping("/member/info/login")
+    public ResponseEntity<Void> memberInfoLogin(@Validated @RequestBody MemberInfoLoginReqDto loginDto) {
+        // 멤버 정보 수정 화면 전 유저 확인용 로그인 창
+        // 비밀번호만 확인하고 들어가는 느낌
+        // 비밀번호 확인은 필드 검증으로 위임
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     // 멤버 정보 조회 정보 조회
     @GetMapping("/member/info")
