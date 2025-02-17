@@ -171,10 +171,11 @@ public class JwtTokenProvider {
     public String extractAccessToken(HttpServletRequest request) {
         log.info("extractAccessToken 실행");
         String bearerToken = request.getHeader("Authorization");
+        log.info("bearerToken={}", bearerToken);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
-        return null;
+        return "null";
     }
 
     // httpOnly 쿠키 리프레시 토큰 생성
