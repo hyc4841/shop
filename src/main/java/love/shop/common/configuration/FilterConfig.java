@@ -1,6 +1,5 @@
 package love.shop.common.configuration;
 
-import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.FilterExApi;
