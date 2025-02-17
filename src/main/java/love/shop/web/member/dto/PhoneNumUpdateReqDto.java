@@ -10,6 +10,6 @@ import org.hibernate.validator.constraints.Length;
 public class PhoneNumUpdateReqDto {
 
     @NotBlank
-    @Length(min = 11, max = 11)
+    @Length(min = 11, max = 11, message = "11자리 휴대전화 번호를 입력해주세요.")
     private String newPhoneNum;
 }
