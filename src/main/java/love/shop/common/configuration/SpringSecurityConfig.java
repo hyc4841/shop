@@ -1,5 +1,6 @@
 package love.shop.common.configuration;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import love.shop.common.exception.FilterExApi;
 import love.shop.filter.LogoutFilter;
@@ -50,8 +51,13 @@ public class SpringSecurityConfig {
                                 .requestMatchers("/member/**").hasRole("MEMBER") // /member/**로 들어오는 모든 요청은 MEMBER 권한이 있어야함
                                 .anyRequest().permitAll()
                 )
+
+                .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) ->
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "접근 권한이 없습니다.")))
+
                 // 필터를 통해 토큰 기반 로그인
                 .addFilterBefore(new JwtFilter(jwtTokenProvider, redisService, filterExApi), UsernamePasswordAuthenticationFilter.class);
+                                    // UsernamePasswordAuthenticationFilter는 기본적으로 /login 경로로 들어온 post 요청을 가로챈다
 
         return http.build();
     }
