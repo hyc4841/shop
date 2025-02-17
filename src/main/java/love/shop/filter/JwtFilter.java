@@ -49,9 +49,13 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = jwtTokenProvider.extractAccessToken(request); // 엑세스 토큰 추출
         log.info("추출한 엑세스 토큰={}", token);
 
-        String extractRefreshToken = jwtTokenProvider.extractRefreshToken(request);
+        if (token.equals("null")) {
+            log.info("token은 null임={}", token);
+        } else {
+            log.info("token은 null이 아님={}", token);
+        }
 
-        if (token != null) {
+        if (!token.equals("null")) {
             // 토큰 유효성 검사하기 전에 해당 토큰이 블랙리스트에 있는지 없는지 검사
             if (redisService.isBlackList(token)) {
                 log.info("블랙 리스트에 있는 토큰임={}", token);
@@ -60,16 +64,20 @@ public class JwtFilter extends OncePerRequestFilter {
             }
 
             try {
+
+
                 if (jwtTokenProvider.validateToken(token)) { // 토큰이 유효할 경우
                     log.info("토큰이 유효할 경우");
                     // 토큰에서 Autentication 객체를 가져와서 SecurityContext에 저장
                     Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                    // SecurityContextHolder에 유저 권한 정보를 입력하는 부분. 이 부분이 나중에
+                    // UsernamePasswordAuthenticationFilter에서 권한정보 읽을때 사용되나 봄.
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
 
             } catch (ExpiredJwtException e) { // 엑세스 토큰이 만료된 경우
                 log.info("토큰이 만료된 경우, 리프레시 토큰으로 엑세스 토큰 재발급 시도");
-                // 현재 리프레시를 통한 엑세스 토큰 재발급은 리프레시 토큰의 재발급도 같이 실시되고 있음.
+                // 현재 리프레시 토큰을 통한 엑세스 토큰 재발급은 리프레시 토큰의 재발급도 같이 실시되고 있음.
 
                 String refreshToken = jwtTokenProvider.extractRefreshToken(request);
                 log.info("리프레시 토큰 추출={}", refreshToken);
@@ -80,9 +88,8 @@ public class JwtFilter extends OncePerRequestFilter {
                     // 리프레시 토큰이 유효하면 새로운 엑세스 토큰을 발급 받는다.
                     JwtToken newToken = redisService.refreshAccessToken(refreshToken, response); // 여기서 리프레시 토큰의 유효성도 검사된다.
 
-                    log.info("재발급된 리프레시 토큰={}", newToken.getRefreshToken());
-
 //                    response.setHeader("RefreshToken", newToken.getRefreshToken()); // 사실 여기서 리프레시 토큰
+                    // 새로운 엑세스 토큰
                     response.setHeader("Access-Token", newToken.getAccessToken());
 
                     // 리프레시 토큰도 재발급 해준다.
@@ -111,6 +118,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 return;
             }
+        } else {
+            log.info("비 로그인 유저");
         }
 
         filterChain.doFilter(request, response);
