@@ -20,13 +20,17 @@ import love.shop.web.member.dto.*;
 import love.shop.web.signup.dto.SignupResponseDto;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.signup.dto.SignupRequestDto;
+import love.shop.web.test.TestResV1;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -234,5 +238,72 @@ public class MemberController {
     public ResponseEntity<ReAccessToken> reGenerateAccessToken(HttpServletResponse response) {
         ReAccessToken reAccessToken = new ReAccessToken("엑세스 토큰 재발급 성공?");
         return ResponseEntity.ok(reAccessToken);
+    }
+
+    @GetMapping("/test-v1")
+    public TestResV1 testV1() {
+        log.info("테스트");
+        TestResV1 test = new TestResV1("이것은 테스트입니다.");
+        return test;
+    }
+
+    @GetMapping("/test-v2")
+    public ResponseEntity<TestResV1> testV2() {
+        log.info("테스트");
+        TestResV1 test = new TestResV1("이것은 테스트입니다.");
+        return ResponseEntity.ok(test);
+    }
+
+    @GetMapping("/test-v3")
+    public ResponseEntity<Map<String, String>> testV3() {
+        Map<String, String> map = new HashMap<>();
+        map.put("1번", "1번 응답");
+        map.put("2번", "2번 응답");
+
+        return ResponseEntity.ok(map);
+    }
+
+    @GetMapping("/test-v4")
+    public ResponseEntity<List<TestResV1>> testV4() {
+        List<TestResV1> list = new ArrayList<>();
+        TestResV1 data1 = new TestResV1("1번");
+        TestResV1 data2 = new TestResV1("2번");
+        list.add(data1);
+        list.add(data2);
+
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/test-v5")
+    public ResponseEntity<ApiWrapper> testV5() {
+        List<TestResV1> list = new ArrayList<>();
+        TestResV1 data1 = new TestResV1("1번");
+        TestResV1 data2 = new TestResV1("2번");
+        list.add(data1);
+        list.add(data2);
+
+        ApiWrapper<List<TestResV1>> result = new ApiWrapper<>(list, list.size(), "이것은 테스트입니다");
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/test-v6")
+    public ResponseEntity<ApiWrapper> testV6() {
+        Map<String, String> map = new HashMap<>();
+        map.put("1번", "1번 응답");
+        map.put("2번", "2번 응답");
+
+        ApiWrapper<Map<String, String>> result = new ApiWrapper<>(map, map.size(), "이것은 테스트입니다.");
+
+        return ResponseEntity.ok(result);
+    }
+
+
+    @Data
+    @AllArgsConstructor
+    private static class ApiWrapper<T> {
+        private T data;
+        private int count;
+        private String message;
     }
 }
