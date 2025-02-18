@@ -208,6 +208,19 @@ public class MemberController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/member/address")
+    public ResponseEntity<MemberInfoResult<MemberDto>> addressUpdate(@Validated @RequestBody AddressUpdateReqDto addressDto) {
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        log.info("addressDto={}", addressDto);
+
+        Member member = memberService.updateAddress(addressDto, memberId);
+
+        MemberDto memberDto = new MemberDto(member);
+        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
+
+        return ResponseEntity.ok(result);
+    }
+
 
     @Data
     @AllArgsConstructor
