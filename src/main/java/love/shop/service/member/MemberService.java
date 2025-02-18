@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.PasswordNotMatchException;
 import love.shop.common.exception.UserDuplicationException;
+import love.shop.domain.Address;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
 import love.shop.domain.member.Role;
 import love.shop.repository.member.MemberRepository;
 import love.shop.repository.member.MemberRoleRepository;
 import love.shop.web.login.dto.MemberDto;
+import love.shop.web.member.dto.AddressUpdateReqDto;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -111,7 +113,6 @@ public class MemberService {
 
     @Transactional
     public Member updateName(String name, Long memberId) {
-
         Member member = memberRepository.findMemberById(memberId);
         member.setName(name);
 
@@ -120,9 +121,17 @@ public class MemberService {
 
     @Transactional
     public Member updatePhoneNum(String phoneNum, Long memberId) {
-
         Member member = memberRepository.findMemberById(memberId);
         member.setPhoneNum(phoneNum);
+
+        return member;
+    }
+
+    @Transactional
+    public Member updateAddress(AddressUpdateReqDto addressDto, Long memberId) {
+        Member member = memberRepository.findMemberById(memberId);
+        Address address = new Address(addressDto.getNewCity(), addressDto.getNewStreet(), addressDto.getNewZipcode(), addressDto.getNewDetailedAddress());
+        member.setAddress(address);
 
         return member;
     }
