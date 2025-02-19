@@ -8,13 +8,13 @@ import lombok.Data;
 @AllArgsConstructor
 public class AddressUpdateReqDto {
 
-    @NotBlank
+    @NotBlank(message = "우편주소를 입력해주세요")
     private String newZipcode;
-    @NotBlank
+    @NotBlank(message = "주소를 입력해주세요")
     private String newStreet;
     @NotBlank
     private String newCity;
-    @NotBlank
+    @NotBlank(message = "상세 주소를 입력해주세요.")
     private String newDetailedAddress;
 
 }
