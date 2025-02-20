@@ -9,7 +9,7 @@ public class MemberRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Role_id")
+    @Column(name = "role_id")
     private Long id;
 
     @Column(nullable = false)
