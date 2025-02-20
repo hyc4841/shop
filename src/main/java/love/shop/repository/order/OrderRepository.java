@@ -1,13 +1,17 @@
 package love.shop.repository.order;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.order.Order;
+import love.shop.domain.order.QOrder;
 import love.shop.web.order.dto.OrdersResponseDto;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static love.shop.domain.member.QMember.member;
 
 @Slf4j
 @Repository
@@ -15,6 +19,9 @@ import java.util.List;
 public class OrderRepository {
 
     private final EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    QOrder order = QOrder.order;
 
     public void save(Order order) {
         em.persist(order);
@@ -68,5 +75,49 @@ public class OrderRepository {
                 .setMaxResults(limit)
                 .getResultList();
     }
+
+    public List<Order> findAllOrders(int offset, int limit) {
+        List<Order> orders = queryFactory.selectFrom(order)
+                .fetch();
+
+        return orders;
+    }
+
+    // 이렇게하면 jpa에서 성능 최적화한거 똑같이 할 수 있음. 대박임 개쉬움 굿
+    public List<Order> findAllOrdersV2(int offset, int limit) {
+        List<Order> orders = queryFactory.selectFrom(order)
+                .leftJoin(order.member).fetchJoin()
+                .leftJoin(order.delivery).fetchJoin()
+                .offset(offset)
+                .limit(limit)
+                .fetch();
+
+        return orders;
+    }
+
+    public List<Order> findOrdersByMemberId(Long memberId) {
+        List<Order> orders = queryFactory.select(order)
+                .from(order)
+                .join(order.member)
+                .where(order.member.id.eq(memberId))
+                .fetch();
+
+        return orders;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
