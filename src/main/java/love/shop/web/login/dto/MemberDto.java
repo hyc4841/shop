@@ -5,6 +5,7 @@ import love.shop.domain.Address;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
+import love.shop.web.address.dto.AddressDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,11 +18,10 @@ public class MemberDto {
     private String phoneNum;
     private LocalDate birthDate;
     private Gender gender;
-    private Address address;
+    private List<AddressDto> address;
     private String email;
     private LocalDate joinDate;
     private List<MemberRoleDto> memberRole;
-
 
     public MemberDto(Member member) {
         this.loginId = member.getLoginId();
@@ -29,7 +29,10 @@ public class MemberDto {
         this.phoneNum = member.getPhoneNum();
         this.birthDate = member.getBirthDate();
         this.gender = member.getGender();
-        this.address = member.getAddress();
+        this.address = member.getAddress().stream()
+                .map(address -> new AddressDto(address))
+                .collect(Collectors.toList());
+
         this.email = member.getEmail();
         this.joinDate = member.getJoinDate();
         this.memberRole = member.getMemberRole().stream()
