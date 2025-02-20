@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.PasswordNotMatchException;
 import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
+import love.shop.repository.member.MemberRepository;
 import love.shop.service.login.LoginService;
 import love.shop.service.member.MemberService;
 import love.shop.service.RedisService;
@@ -41,6 +42,7 @@ public class MemberController {
     private final LoginService loginService;
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
 
     // 회원가입
     @PostMapping("/signup")
@@ -244,6 +246,22 @@ public class MemberController {
 
         return ResponseEntity.ok(loginMember);
     }
+
+    @GetMapping("/members/test")
+    public ResponseEntity<List<MemberDto>> querydslTest() {
+        String name = "황윤철";
+        List<Member> members = memberRepository.findMembersBySearch(name); // Querydsl로 찾아온 데이터임
+
+        List<MemberDto> memberDtos = new ArrayList<>();
+
+        for (Member member : members) {
+            MemberDto memberDto = new MemberDto(member);
+            memberDtos.add(memberDto);
+        }
+
+        return ResponseEntity.ok(memberDtos);
+    }
+
 
     // 리프레시 토큰으로 엑세스 토큰 재발급 받는 테스트
     @CrossOrigin(exposedHeaders = "Access-Token")

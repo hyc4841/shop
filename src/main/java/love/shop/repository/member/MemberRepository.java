@@ -1,9 +1,11 @@
 package love.shop.repository.member;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.member.Member;
+import love.shop.domain.member.QMember;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +16,11 @@ import java.util.List;
 public class MemberRepository {
 
     private final EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    QMember member = QMember.member;
+
+
 
     public Long save(Member member) {
         em.persist(member);
@@ -49,6 +56,24 @@ public class MemberRepository {
                 .setParameter("email", email)
                 .getResultList();
     }
+
+    public List<Member> findMembersBySearch(String keyword) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        List<Member> members = queryFactory.selectFrom(member)
+                .where(member.name.eq(keyword))
+                .fetch();
+
+        return members;
+    }
+/*
+    public Address findAddressById(Long addressId) {
+        queryFactory.select(member)
+                .from(member)
+                .join(member.address)
+                .where(member.address.id)
+    }
+
+ */
 
 
 
