@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.Address;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.item.Book;
 import love.shop.domain.member.Gender;
@@ -55,8 +56,9 @@ public class InitDb {
             em.persist(book2);
             OrderItem orderItem1 = OrderItem.createOrderItem(book1, 10000, 1);
             OrderItem orderItem2 = OrderItem.createOrderItem(book2, 20000, 2);
+            Address address = new Address("서울", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
 
-            Delivery delivery = createDelivery(member);
+            Delivery delivery = createDelivery(member, address);
 
             Order order = Order.createOrder(member, delivery, orderItem1, orderItem2);
 
@@ -80,22 +82,26 @@ public class InitDb {
             OrderItem orderItem1 = OrderItem.createOrderItem(book1, 10000, 1);
             OrderItem orderItem2 = OrderItem.createOrderItem(book2, 20000, 2);
 
-            Delivery delivery = createDelivery(member);
+            Address address = new Address("서울", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
+
+            Delivery delivery = createDelivery(member, address);
 
             Order order = Order.createOrder(member, delivery, orderItem1, orderItem2);
 
             em.persist(order);
         }
 
-
-
         private Book createBook(String bookName, int price, int quantity) {
             return new Book(bookName, price, quantity);
         }
 
-        private Delivery createDelivery(Member member) {
+        private Delivery createDelivery(Member member, Address address) {
             Delivery delivery = new Delivery();
-            delivery.setAddress(member.getAddress());
+            delivery.setCity("서울");
+            delivery.setStreet("대주아파트");
+            delivery.setZipcode("123123");
+            delivery.setDetailedAddress("블라블라");
+
             return delivery;
         }
 

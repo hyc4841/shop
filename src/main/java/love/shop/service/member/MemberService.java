@@ -2,12 +2,12 @@ package love.shop.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.common.exception.PasswordNotMatchException;
 import love.shop.common.exception.UserDuplicationException;
 import love.shop.domain.Address;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
 import love.shop.domain.member.Role;
+import love.shop.repository.Address.AddressRepository;
 import love.shop.repository.member.MemberRepository;
 import love.shop.repository.member.MemberRoleRepository;
 import love.shop.web.login.dto.MemberDto;
@@ -29,6 +29,8 @@ public class MemberService {
     private final MemberRoleRepository memberRoleRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final AddressRepository addressRepository;
+
     // 회원가입
     @Transactional
     public Long signUp(SignupRequestDto signupDto) {
@@ -41,6 +43,9 @@ public class MemberService {
 
         // dto 엔티티로 변환
         Member member = signupDto.toMemberEntity(password);
+
+        Address address = new Address("서울", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
+        addressRepository.save(address);
 
         MemberRole memberRole = new MemberRole(Role.MEMBER, member);
         memberRoleRepository.save(memberRole);
@@ -130,8 +135,7 @@ public class MemberService {
     @Transactional
     public Member updateAddress(AddressUpdateReqDto addressDto, Long memberId) {
         Member member = memberRepository.findMemberById(memberId);
-        Address address = new Address(addressDto.getNewCity(), addressDto.getNewStreet(), addressDto.getNewZipcode(), addressDto.getNewDetailedAddress());
-        member.setAddress(address);
+        Address address = new Address(addressDto.getNewCity(), addressDto.getNewStreet(), addressDto.getNewZipcode(), addressDto.getNewDetailedAddress(), member);
 
         return member;
     }

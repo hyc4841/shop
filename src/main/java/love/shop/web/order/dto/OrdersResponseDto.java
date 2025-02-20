@@ -14,21 +14,20 @@ public class OrdersResponseDto {
     private String memberName;
     private LocalDateTime orderDate;
     private OrderStatus orderStatus;
-    private Address address;
+    private String city;
+    private String street;
+    private String detailedAddress;
+    private String zipcode;
 
     public OrdersResponseDto(Order order) {
         this.orderId = order.getId();
         this.memberName = order.getMember().getName();
         this.orderDate = order.getOrderDate();
         this.orderStatus = order.getStatus();
-        this.address = order.getDelivery().getAddress();
+        this.city = order.getDelivery().getCity();
+        this.street = order.getDelivery().getStreet();
+        this.detailedAddress = order.getDelivery().getDetailedAddress();
+        this.zipcode = order.getDelivery().getZipcode();
     }
 
-    public OrdersResponseDto(Long orderId, String memberName, LocalDateTime orderDate, OrderStatus orderStatus, Address address) {
-        this.orderId = orderId;
-        this.memberName = memberName;
-        this.orderDate = orderDate;
-        this.orderStatus = orderStatus;
-        this.address = address;
-    }
 }
