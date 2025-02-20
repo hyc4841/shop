@@ -2,6 +2,7 @@ package love.shop.domain.delivery;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import love.shop.domain.Address;
 import love.shop.domain.order.Order;
 
@@ -9,6 +10,7 @@ import static jakarta.persistence.FetchType.*;
 
 @Entity
 @Getter
+@Setter
 public class Delivery {
 
     @Id
@@ -19,18 +21,26 @@ public class Delivery {
     @OneToOne(mappedBy = "delivery", fetch = LAZY)
     private Order order;
 
-    @Embedded
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "address_id")
     private Address address;
+
+    @Column
+    private String city;
+    @Column
+    private String street;
+    @Column
+    private String zipcode;
+    @Column
+    private String detailedAddress;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status; // READY : 준비, COMP : 배송
 
+
+
     public void setOrder(Order order) {
         this.order = order;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public void setStatus(DeliveryStatus status) {

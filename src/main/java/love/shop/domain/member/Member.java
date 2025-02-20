@@ -37,8 +37,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Embedded // 값 타입을 사용하는 곳에 사용
-    private Address address;
+    @Column
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Address> address = new ArrayList<>();
 
     @Column(nullable = false)
     private String email;
@@ -47,7 +48,7 @@ public class Member {
     private LocalDate joinDate;
 
     // 멤버 한명이 가질 수 있는 권한이 여러개일 수 있다면 이것은 말이 됨.
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberRole> memberRole = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
@@ -56,14 +57,13 @@ public class Member {
     public Member() {
     }
 
-    public Member(String loginId, String password, String name, String phoneNum, LocalDate birthDate, Gender gender, Address address, String email, LocalDate joinDate) {
+    public Member(String loginId, String password, String name, String phoneNum, LocalDate birthDate, Gender gender, String email, LocalDate joinDate) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
         this.phoneNum = phoneNum;
         this.birthDate = birthDate;
         this.gender = gender;
-        this.address = address;
         this.email = email;
         this.joinDate = joinDate;
     }
@@ -89,9 +89,7 @@ public class Member {
         this.phoneNum = phoneNum;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
+
 
 
 }

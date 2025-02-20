@@ -2,6 +2,7 @@ package love.shop.service.order;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.Address;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.delivery.DeliveryStatus;
 import love.shop.domain.item.Item;
@@ -33,9 +34,14 @@ public class OrderService {
         Member member = memberRepository.findMemberById(memberId);
         Item item = itemRepository.findOne(itemId);
 
+        Address address = new Address("서울", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
+
         // 배송정보 생성
         Delivery delivery = new Delivery();
-        delivery.setAddress(member.getAddress()); // 여기서는 지금 편의상 그냥 멤버의 주소를 배달 주소로 사용하고 있음. 이 로직은 추후에 주문 당시 사용자가 설정한 주소지로 하는걸로 하자.
+        delivery.setCity("서울"); // 여기서는 지금 편의상 그냥 멤버의 주소를 배달 주소로 사용하고 있음. 이 로직은 추후에 주문 당시 사용자가 설정한 주소지로 하는걸로 하자.
+        delivery.setStreet("dff");
+        delivery.setZipcode("1234");
+        delivery.setDetailedAddress("sdfdsf");
         delivery.setStatus(DeliveryStatus.READY);
 
         // 주문 상품 생성

@@ -55,10 +55,8 @@ public class SignupRequestDto {
     }
 
     public Member toMemberEntity(String password) {
-        Address address = new Address(this.getCity(), this.getStreet(), this.getZipcode(),
-                this.getDetailedAddress());
         return new Member(this.getLoginId(), password, this.getName(), this.getPhoneNum(),
-                this.getBirthDate(), this.getGender(), address, this.getEmail(), LocalDate.now());
+                this.getBirthDate(), this.getGender(), this.getEmail(), LocalDate.now());
     }
 
 }
