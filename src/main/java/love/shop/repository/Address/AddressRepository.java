@@ -3,7 +3,7 @@ package love.shop.repository.Address;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.Address;
+import love.shop.domain.address.Address;
 import org.springframework.stereotype.Controller;
 
 @Slf4j
