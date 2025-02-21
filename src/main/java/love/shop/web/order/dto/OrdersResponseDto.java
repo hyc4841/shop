@@ -1,7 +1,6 @@
 package love.shop.web.order.dto;
 
 import lombok.Data;
-import love.shop.domain.Address;
 import love.shop.domain.order.Order;
 import love.shop.domain.order.OrderStatus;
 

@@ -3,7 +3,6 @@ package love.shop.web.signup.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import love.shop.domain.Address;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.ValidGender;
