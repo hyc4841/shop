@@ -1,8 +1,7 @@
 package love.shop.web.address.dto;
 
-import jakarta.persistence.Column;
 import lombok.Data;
-import love.shop.domain.Address;
+import love.shop.domain.address.Address;
 
 @Data
 public class AddressDto {
