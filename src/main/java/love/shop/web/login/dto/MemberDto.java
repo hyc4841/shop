@@ -1,10 +1,8 @@
 package love.shop.web.login.dto;
 
 import lombok.Data;
-import love.shop.domain.Address;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
-import love.shop.domain.member.MemberRole;
 import love.shop.web.address.dto.AddressDto;
 
 import java.time.LocalDate;
