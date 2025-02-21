@@ -3,7 +3,7 @@ package love.shop.domain.delivery;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import love.shop.domain.Address;
+import love.shop.domain.address.Address;
 import love.shop.domain.order.Order;
 
 import static jakarta.persistence.FetchType.*;
@@ -21,8 +21,9 @@ public class Delivery {
     @OneToOne(mappedBy = "delivery", fetch = LAZY)
     private Order order;
 
+
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id") // 연관관계 주인
     private Address address;
 
     @Column
