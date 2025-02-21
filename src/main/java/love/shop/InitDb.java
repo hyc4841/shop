@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.Address;
+import love.shop.domain.address.Address;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.item.Book;
 import love.shop.domain.member.Gender;

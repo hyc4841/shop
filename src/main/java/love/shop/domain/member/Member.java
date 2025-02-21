@@ -2,7 +2,7 @@ package love.shop.domain.member;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import love.shop.domain.Address;
+import love.shop.domain.address.Address;
 import love.shop.domain.order.Order;
 
 import java.time.LocalDate;
