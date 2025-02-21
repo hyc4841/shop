@@ -1,8 +1,12 @@
-package love.shop.domain;
+package love.shop.domain.address;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import love.shop.domain.delivery.Delivery;
 import love.shop.domain.member.Member;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,6 +22,10 @@ public class Address {
 
     @Column
     private String addressName;
+
+    // 주소 하나에 여러 개의 배송이 생길 수 있다.
+    @OneToMany(mappedBy = "address")
+    private List<Delivery> delivery = new ArrayList<>();
 
     @Column
     private String city;
