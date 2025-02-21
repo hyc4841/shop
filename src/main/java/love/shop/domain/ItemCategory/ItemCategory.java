@@ -1,4 +1,4 @@
-package love.shop.domain;
+package love.shop.domain.ItemCategory;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,20 +9,20 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@Table(name = "category_item")
-public class CategoryItem {
+@Table(name = "item_category")
+public class ItemCategory {
 
     @Id
     @GeneratedValue
-    @Column(name = "category_item_id")
+    @Column(name = "item_category_id")
     private String id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id") // 외래키 설정
     private Category category;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id") // 외래키 설정
     private Item item;
 
 }

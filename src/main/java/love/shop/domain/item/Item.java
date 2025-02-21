@@ -3,7 +3,7 @@ package love.shop.domain.item;
 import jakarta.persistence.*;
 import lombok.Getter;
 import love.shop.common.exception.NotEnoughStockException;
-import love.shop.domain.CategoryItem;
+import love.shop.domain.ItemCategory.ItemCategory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public abstract class Item {
     private int stockQuantity;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    private List<CategoryItem> categoryItems = new ArrayList<>();
+    private List<ItemCategory> itemCategories = new ArrayList<>();
 
     protected void setName(String name) {
         this.name = name;
