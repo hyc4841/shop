@@ -3,7 +3,7 @@ package love.shop.service.member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.UserDuplicationException;
-import love.shop.domain.Address;
+import love.shop.domain.address.Address;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
 import love.shop.domain.member.Role;

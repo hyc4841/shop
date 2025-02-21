@@ -2,7 +2,7 @@ package love.shop.service.order;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.Address;
+import love.shop.domain.address.Address;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.delivery.DeliveryStatus;
 import love.shop.domain.item.Item;
