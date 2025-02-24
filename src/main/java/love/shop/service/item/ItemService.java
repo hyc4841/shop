@@ -2,6 +2,7 @@ package love.shop.service.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.category.Category;
 import love.shop.domain.item.Item;
 import love.shop.repository.item.ItemRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     @Transactional
-    public void saveItem(Item item) {
+    public void save(Item item) {
         itemRepository.save(item);
     }
 
