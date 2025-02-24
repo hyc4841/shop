@@ -5,10 +5,12 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.address.Address;
+import love.shop.domain.category.Category;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.item.Book;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
+import love.shop.domain.member.PasswordAndCheck;
 import love.shop.domain.order.Order;
 import love.shop.domain.orderItem.OrderItem;
 import love.shop.service.member.MemberService;
@@ -30,6 +32,7 @@ public class InitDb {
     public void init() {
         service.dbInit1();
         service.dbInit2();
+
     }
 
     @Component
@@ -41,18 +44,22 @@ public class InitDb {
         private final MemberService memberService;
 
 
+
         public void dbInit1() {
+
+            PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
+
             // 회원가입
-            SignupRequestDto signupRequest = new SignupRequestDto("Hell4", "1234", "황윤철", "01099694841",
-                    LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
+            SignupRequestDto signupRequest = new SignupRequestDto("Hell4", passwordAndCheck,"황윤철", "01099694841",
+                    "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
             Long signUpMemberId = memberService.signUp(signupRequest);
 
             // 아이템, 주문, 배달, 주문아이템
             Member member = memberService.findMemberById(signUpMemberId);
 
-            Book book1 = createBook("JPA1 BOOK", 10000, 100);
+            Book book1 = createBook("저자1", "41541", "JPA1 BOOK", 10000, 100);
             em.persist(book1);
-            Book book2 = createBook("JPA2 BOOK", 20000, 100);
+            Book book2 = createBook("저자2", "5461654", "JPA4 BOOK", 20000, 200);
             em.persist(book2);
             OrderItem orderItem1 = OrderItem.createOrderItem(book1, 10000, 1);
             OrderItem orderItem2 = OrderItem.createOrderItem(book2, 20000, 2);
@@ -68,17 +75,22 @@ public class InitDb {
 
         public void dbInit2() {
             // 회원가입
-            SignupRequestDto signupRequest = new SignupRequestDto("Hell5", "1234", "황윤철", "01099694841",
-                    LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
+            PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
+            SignupRequestDto signupRequest = new SignupRequestDto("Hell5", passwordAndCheck,"가나다", "01099694841",
+                    "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
             Long signUpMemberId = memberService.signUp(signupRequest);
 
             // 아이템, 주문, 배달, 주문아이템
             Member member = memberService.findMemberById(signUpMemberId);
 
-            Book book1 = createBook("JPA2 BOOK", 10000, 100);
+            Book book1 = createBook("저자1", "41541", "JPA2 BOOK", 10000, 100);
             em.persist(book1);
-            Book book2 = createBook("JPA3 BOOK", 20000, 100);
+            Book book2 = createBook("저자2", "5461654", "JPA3 BOOK", 20000, 200);
             em.persist(book2);
+
+            // 아이템에 카테고리 설정해주는건 저장할 때 해주면 제일 베스트인듯?
+
+
             OrderItem orderItem1 = OrderItem.createOrderItem(book1, 10000, 1);
             OrderItem orderItem2 = OrderItem.createOrderItem(book2, 20000, 2);
 
@@ -91,8 +103,35 @@ public class InitDb {
             em.persist(order);
         }
 
-        private Book createBook(String bookName, int price, int quantity) {
-            return new Book(bookName, price, quantity);
+
+        public void initCategories() {
+            Category book = new Category("책");
+            Category toy = new Category("장난감");
+            Category necessaries = new Category("생필품");
+            Category electronics = new Category("전자제품");
+            Category kitchen = new Category("주방");
+            Category stationery = new Category("문구");
+            Category appliances = new Category("가전");
+            Category computer = new Category("컴퓨터");
+            Category earphone = new Category("이어폰");
+            Category monitor = new Category("모니터");
+            Category fruit = new Category("과일");
+
+            em.persist(book);
+            em.persist(toy);
+            em.persist(necessaries);
+            em.persist(electronics);
+            em.persist(kitchen);
+            em.persist(stationery);
+            em.persist(appliances);
+            em.persist(computer);
+            em.persist(earphone);
+            em.persist(monitor);
+            em.persist(fruit);
+        }
+
+        private Book createBook(String author, String isbn, String name, int price, int stockQuantity) {
+            return new Book(author, isbn, name, price, stockQuantity);
         }
 
         private Delivery createDelivery(Member member, Address address) {
