@@ -41,10 +41,12 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    // 연관관계 메서드.
+    // 연관관계 메서드. 양방향 연관관계의 경우 이런 식으로 양쪽에 한번에 값을 넣어주는 메서드를 작성해주면 편리하다.
+    // 연관관계 메서드는 값을 많이 컨트롤? 하는 쪽이 좋다고 함.
     public void setMember(Member member) {
         this.member = member;
         member.getOrders().add(this);
+        // 자기한테 멤버 설정하고, 멤버에 자기를 설정한다.
     }
 
     public void addOrderItem(OrderItem orderItem) {
