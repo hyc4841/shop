@@ -39,12 +39,12 @@ public class MemberService {
 
         // 회원가입 시작
         // 비밀번호 암호화
-        String password = passwordEncoder.encode(signupDto.getPassword());
+        String password = passwordEncoder.encode(signupDto.getPasswordAndCheck().getPassword());
 
         // dto 엔티티로 변환
-        Member member = signupDto.toMemberEntity(password);
+        Member member = signupDto.toMemberEntity(password); //
 
-        Address address = new Address("서울", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
+        Address address = new Address(signupDto.getCity(), signupDto.getStreet(), signupDto.getZipcode(), signupDto.getDetailedAddress(), member);
         addressRepository.save(address);
 
         MemberRole memberRole = new MemberRole(Role.MEMBER, member);
