@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Table(name = "item_review")
 public class ItemReview {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,7 +32,7 @@ public class ItemReview {
     @Column(name = "created_at")
     private LocalDateTime createdAt; // 작성 날짜와 시간
     @Column
-    private Long like; // 리뷰 좋아요?
+    private Integer likes; // 리뷰 좋아요?
     @Column(name = "is_repurchased")
     private Boolean isRepurchased; // 재구매 여부. 재구매 리뷰인지 아닌지
     @Column(name = "one_month")
