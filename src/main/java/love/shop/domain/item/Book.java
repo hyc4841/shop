@@ -1,24 +1,21 @@
 package love.shop.domain.item;
 
-import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Getter;
-import lombok.Setter;
+import love.shop.domain.ItemCategory.ItemCategory;
 
 @Entity
-@DiscriminatorValue("B")
-@Getter @Setter
+@Getter
 public class Book extends Item{
 
     private String author;
-    private String isbn;
+    private String isbn; // 도서번호
 
-    public Book(String bookName, int price, int quantity) {
-        super.setName(bookName);
-        super.setPrice(price);
-        super.setStockQuantity(quantity);
+    public Book(String author, String isbn, String name, int price, int stockQuantity, ItemCategory... itemCategories) {
+        super(name, price, stockQuantity, itemCategories);
+        this.author = author;
+        this.isbn = isbn;
     }
 
-    public Book() {
-    }
+
 }
