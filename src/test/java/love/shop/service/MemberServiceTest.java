@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import love.shop.common.exception.UserDuplicationException;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
+import love.shop.domain.member.PasswordAndCheck;
 import love.shop.service.member.MemberService;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.junit.Test;
@@ -35,8 +36,9 @@ public class MemberServiceTest {
     @Test
     public void 회원가입() {
         // given
-        SignupRequestDto signupRequest = new SignupRequestDto("Hell5", "1234", "황윤철", "01099694841",
-                LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
+        PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
+        SignupRequestDto signupRequest = new SignupRequestDto("Hell5", passwordAndCheck, "황윤철", "01099694841",
+                "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
         // when
         Long signUpMemberId = memberService.signUp(signupRequest);
 
@@ -49,16 +51,16 @@ public class MemberServiceTest {
     @Test(expected = UserDuplicationException.class)
     public void 회원가입_loginId_중복() {
         // given
-        SignupRequestDto signupRequest1 = new SignupRequestDto("Hell6", "1234", "황윤철", "01099694841",
-                LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
-        Long signUpMemberId1 = memberService.signUp(signupRequest1);
+        PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
+        SignupRequestDto signupRequest1 = new SignupRequestDto("Hell6", passwordAndCheck, "황윤철", "01099694841",
+                "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
+        SignupRequestDto signupRequest2 = new SignupRequestDto("Hell6", passwordAndCheck, "황윤철", "01099694841",
+                "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
         // when
-        SignupRequestDto signupRequest2 = new SignupRequestDto("Hell6", "1234", "황윤철", "01099694841",
-                LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호","dbscjf4841@naver.com");
-        Long signUpMemberId2 = memberService.signUp(signupRequest2);
-
+        Long member2 = memberService.signUp(signupRequest2);
+        Long member1 = memberService.signUp(signupRequest1);
+        // then
         fail("회원 중복 예외가 발생해야 한다.");
-
     }
 
 
