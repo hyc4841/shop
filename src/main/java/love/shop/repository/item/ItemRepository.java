@@ -1,8 +1,12 @@
 package love.shop.repository.item;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.category.Category;
+import love.shop.domain.category.QCategory;
+import love.shop.domain.item.Book;
 import love.shop.domain.item.Item;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +18,9 @@ import java.util.List;
 public class ItemRepository {
 
     private final EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    QCategory category = QCategory.category;
 
     // 아이템 저장
     public void save(Item item) {
@@ -26,6 +33,11 @@ public class ItemRepository {
         }
     }
 
+    public void saveItem(Item item) {
+        em.persist(item);
+
+    }
+
     // id로 단건 조회
     public Item findOne(Long id) {
         return em.find(Item.class, id);
@@ -35,6 +47,13 @@ public class ItemRepository {
     public List<Item> findAll() {
         return em.createQuery("select i from Item i", Item.class)
                 .getResultList();
+    }
+
+    public Category findCategoryByName(String name) {
+        return em.createQuery("select c from Category c" +
+                        " where c.name = :name", Category.class)
+                .setParameter("name", name)
+                .getSingleResult();
     }
 
 }
