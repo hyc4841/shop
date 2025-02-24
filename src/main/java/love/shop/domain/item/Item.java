@@ -6,15 +6,14 @@ import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype")
 @Getter
 public abstract class Item {
-
-    // 아이템은 일단 싱글 테이블로 만들고 추후 수정하는 방향으로 가자
 
     @Id
     @GeneratedValue
@@ -40,6 +39,12 @@ public abstract class Item {
         this.stockQuantity = quantity;
     }
 
+    public Item(String name, int price, int stockQuantity, ItemCategory... itemCategories) {
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.itemCategories.addAll(Arrays.asList(itemCategories));
+    }
 
     // 비즈니스 로직
     // 수량 추가. 기존 수량에 추가하기
