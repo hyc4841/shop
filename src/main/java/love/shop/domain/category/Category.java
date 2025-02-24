@@ -17,10 +17,14 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
+    @Column
+    private String name; // 카테고리 이름
+
     // mappedBy = "category"는 주인쪽 category 필드를 참조하고 있다는 뜻
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<ItemCategory> itemCategories = new ArrayList<>();
 
-    private String name;
-
+    public Category(String name) {
+        this.name = name;
+    }
 }
