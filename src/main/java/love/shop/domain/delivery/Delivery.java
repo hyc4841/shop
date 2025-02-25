@@ -21,9 +21,8 @@ public class Delivery {
     @OneToOne(mappedBy = "delivery", fetch = LAZY)
     private Order order;
 
-
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "address_id") // 연관관계 주인
+    @JoinColumn(name = "address_id") // 연관관계 주인. 외래키 설정
     private Address address;
 
     @Column
@@ -39,7 +38,6 @@ public class Delivery {
     private DeliveryStatus status; // READY : 준비, COMP : 배송
 
 
-
     public void setOrder(Order order) {
         this.order = order;
     }
@@ -47,4 +45,5 @@ public class Delivery {
     public void setStatus(DeliveryStatus status) {
         this.status = status;
     }
+
 }

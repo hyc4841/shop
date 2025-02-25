@@ -33,7 +33,7 @@ public class OrderDto {
         this.street = order.getDelivery().getStreet();
         this.detailedAddress = order.getDelivery().getDetailedAddress();
         this.zipcode = order.getDelivery().getZipcode();
-        log.info("OrderItem 지연로딩 하나?");
+        // 이 부분이 지연로딩
         this.orderItems = order.getOrderItems().stream()
                 .map(orderItem -> new OrderItemDto(orderItem))
                 .collect(Collectors.toList());
