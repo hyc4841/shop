@@ -11,11 +11,28 @@ public class Book extends Item{
     private String author;
     private String isbn; // 도서번호
 
-    public Book(String author, String isbn, String name, int price, int stockQuantity, ItemCategory... itemCategories) {
-        super(name, price, stockQuantity, itemCategories);
+    private String dtyep = "Book";
+
+    public static Book createBook(String author, String isbn, String name, int price, int stockQuantity, ItemCategory... itemCategories) {
+        Book book = new Book(author, isbn, name, price, stockQuantity);
+        for (ItemCategory itemCategory : itemCategories) {
+            book.addItemCategory(itemCategory); // 연관관계 메서드로 item에 itemCategory를 설정해준다 마찬가지로 item-category쪽에 item을 설정해준다.
+        }
+        return book;
+    }
+
+    public Book(String author, String isbn, String name, int price, int stockQuantity) {
+        super(name, price, stockQuantity);
         this.author = author;
         this.isbn = isbn;
     }
 
+    protected Book() {
+    }
 
+
+    @Override
+    public String getType() {
+        return dtyep;
+    }
 }
