@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.address.Address;
 import love.shop.domain.category.Category;
 import love.shop.domain.delivery.Delivery;
@@ -13,12 +14,15 @@ import love.shop.domain.member.Member;
 import love.shop.domain.member.PasswordAndCheck;
 import love.shop.domain.order.Order;
 import love.shop.domain.orderItem.OrderItem;
+import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -30,6 +34,7 @@ public class InitDb {
 
     @PostConstruct
     public void init() {
+        service.initCategories();
         service.dbInit1();
         service.dbInit2();
 
@@ -42,7 +47,7 @@ public class InitDb {
 
         private final EntityManager em;
         private final MemberService memberService;
-
+        private final ItemService itemService;
 
 
         public void dbInit1() {
@@ -57,6 +62,19 @@ public class InitDb {
             // 아이템, 주문, 배달, 주문아이템
             Member member = memberService.findMemberById(signUpMemberId);
 
+            // 1. 카테고리 생성
+            Category categoryToy = itemService.findCategoryByName("장난감");
+            Category categoryBook = itemService.findCategoryByName("책");
+
+            // 2. 아이템 카테고리 생성(카테고리만 넣은 아이템-카테고리)
+            ItemCategory itemCategoryBook = ItemCategory.createItemCategory(categoryBook);
+            ItemCategory itemCategoryToy = ItemCategory.createItemCategory(categoryToy);
+
+            // 3. 아이템 생성(아이템-카테고리를 넣어서 완성 시킨다.)
+            Book book = Book.createBook("저자1", "41541", "JPA1 BOOK", 10000, 100, itemCategoryBook, itemCategoryToy);
+            em.persist(book);
+
+            // 어떻게 만들든 연관관계 이어주고 저장만 제대로 하면 되는듯.
             Book book1 = createBook("저자1", "41541", "JPA1 BOOK", 10000, 100);
             em.persist(book1);
             Book book2 = createBook("저자2", "5461654", "JPA4 BOOK", 20000, 200);
@@ -143,8 +161,6 @@ public class InitDb {
 
             return delivery;
         }
-
-
 
     }
 }
