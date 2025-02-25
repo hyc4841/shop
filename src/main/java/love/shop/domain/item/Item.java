@@ -27,23 +27,27 @@ public abstract class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<ItemCategory> itemCategories = new ArrayList<>();
 
-    protected void setName(String name) {
-        this.name = name;
+
+
+
+
+
+
+    public abstract String getType();
+
+    protected Item() {
     }
 
-    protected void setPrice(int price) {
-        this.price = price;
+    // 연관관계 메서드
+    public void addItemCategory(ItemCategory itemCategory) {
+        itemCategories.add(itemCategory);
+        itemCategory.setItem(this);
     }
 
-    protected void setStockQuantity(int quantity) {
-        this.stockQuantity = quantity;
-    }
-
-    public Item(String name, int price, int stockQuantity, ItemCategory... itemCategories) {
+    public Item(String name, int price, int stockQuantity) {
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;
-        this.itemCategories.addAll(Arrays.asList(itemCategories));
     }
 
     // 비즈니스 로직
@@ -59,5 +63,17 @@ public abstract class Item {
             throw new NotEnoughStockException("수량이 부족합니다.");
         }
         this.stockQuantity = restStock;
+    }
+
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+    protected void setPrice(int price) {
+        this.price = price;
+    }
+
+    protected void setStockQuantity(int quantity) {
+        this.stockQuantity = quantity;
     }
 }
