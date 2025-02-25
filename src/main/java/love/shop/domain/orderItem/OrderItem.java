@@ -50,7 +50,7 @@ public class OrderItem {
         orderItem.setItem(item);
         orderItem.setOrderPrice(orderPrice);
         orderItem.setCount(count);
-        item.removeStock(count);
+        item.removeStock(count); // 상품을 count 만큼 주문했으니까 아이템에서는 count 만큼 빼줘야한다.
         return orderItem;
     }
 

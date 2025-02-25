@@ -95,6 +95,7 @@ public class OrderRepository {
         return orders;
     }
 
+    // 멤버 id로 주문 조회
     public List<Order> findOrdersByMemberId(Long memberId) {
         List<Order> orders = queryFactory.select(order)
                 .from(order)

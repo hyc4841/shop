@@ -70,9 +70,9 @@ public class Order {
     // 주문 생성 메서드
     public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
         Order order = new Order();
-        order.setMember(member);
-        order.setDelivery(delivery);
-        for (OrderItem orderItem : orderItems) {
+        order.setMember(member);                 // 멤버 설정(ManyToTone 관계)
+        order.setDelivery(delivery);             // 배송 설정(OneToOne 관계)
+        for (OrderItem orderItem : orderItems) { //
             order.addOrderItem(orderItem);
         }
         order.setStatus(OrderStatus.ORDER);
