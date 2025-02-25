@@ -15,7 +15,7 @@ public class ItemCategory {
     @Id
     @GeneratedValue
     @Column(name = "item_category_id")
-    private String id;
+    private Long id;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id") // 외래키 설정
@@ -24,5 +24,20 @@ public class ItemCategory {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "item_id") // 외래키 설정
     private Item item;
+
+    protected ItemCategory() {
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public ItemCategory(Category category) {
+        this.category = category;
+    }
+
+    public static ItemCategory createItemCategory(Category category) {
+        return new ItemCategory(category);
+    }
 
 }
