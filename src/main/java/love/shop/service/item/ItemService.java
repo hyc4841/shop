@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.Item;
 import love.shop.repository.item.ItemRepository;
+import love.shop.web.item.dto.SearchCond;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,5 +30,13 @@ public class ItemService {
 
     public List<Item> findItems() {
         return itemRepository.findAll();
+    }
+
+    public Category findCategoryByName(String categoryName) {
+        return itemRepository.findCategoryByName(categoryName);
+    }
+
+    public List<Item> findItemsBySearchCond(SearchCond searchCond) {
+        return itemRepository.findItemsBySearchCond(searchCond);
     }
 }
