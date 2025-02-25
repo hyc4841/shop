@@ -1,13 +1,17 @@
 package love.shop.repository.item;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.ItemCategory.QItemCategory;
 import love.shop.domain.category.Category;
 import love.shop.domain.category.QCategory;
 import love.shop.domain.item.Book;
 import love.shop.domain.item.Item;
+import love.shop.domain.item.QItem;
+import love.shop.web.item.dto.SearchCond;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,6 +25,8 @@ public class ItemRepository {
     private final JPAQueryFactory queryFactory;
 
     QCategory category = QCategory.category;
+    QItem item = QItem.item;
+    QItemCategory itemCategory = QItemCategory.itemCategory;
 
     // 아이템 저장
     public void save(Item item) {
@@ -49,11 +55,43 @@ public class ItemRepository {
                 .getResultList();
     }
 
-    public Category findCategoryByName(String name) {
+    public Category findCategoryByName(String categoryName) {
         return em.createQuery("select c from Category c" +
                         " where c.name = :name", Category.class)
-                .setParameter("name", name)
+                .setParameter("name", categoryName)
                 .getSingleResult();
     }
 
+    public List<Item> findItemsBySearchCond(SearchCond searchCond) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // 아이템 이름 조건
+        if (searchCond.getItemName() != null && !searchCond.getItemName().isBlank()) { // isEmpty? isBlank?
+            builder.and(item.name.like("%" + searchCond.getItemName() + "%"));
+        }
+
+        // 카테고리 조건
+        if (searchCond.getCategories() != null && !searchCond.getCategories().isEmpty()) {
+            for (String categoryName : searchCond.getCategories()) {
+                builder.or(category.name.eq(categoryName));
+            }
+        }
+
+        // 가격 조건
+        if (searchCond.getMorePrice() != null) {
+            builder.and(item.price.goe(searchCond.getMorePrice()));
+        }
+
+        if (searchCond.getLessPrice() != null) {
+            builder.and(item.price.loe(searchCond.getLessPrice()));
+        }
+
+        return queryFactory.select(item)
+                .from(itemCategory)
+                .join(itemCategory.item, item)
+                .join(itemCategory.category, category)
+                .where(builder)
+                .fetch();
+    }
 }
