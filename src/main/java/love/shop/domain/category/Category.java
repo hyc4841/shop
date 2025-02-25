@@ -24,6 +24,9 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<ItemCategory> itemCategories = new ArrayList<>();
 
+    public Category() {
+    }
+
     public Category(String name) {
         this.name = name;
     }
