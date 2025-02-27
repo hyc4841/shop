@@ -25,25 +25,21 @@ public class Delivery {
     @JoinColumn(name = "address_id") // 연관관계 주인. 외래키 설정
     private Address address;
 
-    @Column
-    private String city;
-    @Column
-    private String street;
-    @Column
-    private String zipcode;
-    @Column
-    private String detailedAddress;
-
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status; // READY : 준비, COMP : 배송
+
+    public Delivery(Address address, DeliveryStatus status) {
+        this.address = address;
+        this.status = status;
+    }
+
+    public static Delivery createDelivery(Address address) {
+        return new Delivery(address, DeliveryStatus.READY);
+    }
 
 
     public void setOrder(Order order) {
         this.order = order;
-    }
-
-    public void setStatus(DeliveryStatus status) {
-        this.status = status;
     }
 
 }
