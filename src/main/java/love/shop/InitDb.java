@@ -8,6 +8,7 @@ import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.address.Address;
 import love.shop.domain.category.Category;
 import love.shop.domain.delivery.Delivery;
+import love.shop.domain.delivery.DeliveryStatus;
 import love.shop.domain.item.Book;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
@@ -153,7 +154,7 @@ public class InitDb {
         }
 
         private Delivery createDelivery(Member member, Address address) {
-            Delivery delivery = new Delivery();
+            Delivery delivery = new Delivery(address, DeliveryStatus.READY);
             delivery.setCity("서울");
             delivery.setStreet("대주아파트");
             delivery.setZipcode("123123");
