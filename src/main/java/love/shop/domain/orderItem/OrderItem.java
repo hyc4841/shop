@@ -36,20 +36,15 @@ public class OrderItem {
         this.item = item;
     }
 
-    public void setOrderPrice(int orderPrice) {
-        this.orderPrice = orderPrice;
-    }
-
-    public void setCount(int count) {
+    public OrderItem(int count, int orderPrice, Item item) {
         this.count = count;
+        this.orderPrice = orderPrice;
+        this.item = item;
     }
 
     // 주문 아이템 생성 메서드
     public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
-        OrderItem orderItem = new OrderItem();
-        orderItem.setItem(item);
-        orderItem.setOrderPrice(orderPrice);
-        orderItem.setCount(count);
+        OrderItem orderItem = new OrderItem(count, orderPrice, item);
         item.removeStock(count); // 상품을 count 만큼 주문했으니까 아이템에서는 count 만큼 빼줘야한다.
         return orderItem;
     }
