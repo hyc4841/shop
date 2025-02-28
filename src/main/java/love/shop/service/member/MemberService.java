@@ -7,7 +7,7 @@ import love.shop.domain.address.Address;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
 import love.shop.domain.member.Role;
-import love.shop.repository.Address.AddressRepository;
+import love.shop.repository.address.AddressRepository;
 import love.shop.repository.member.MemberRepository;
 import love.shop.repository.member.MemberRoleRepository;
 import love.shop.web.login.dto.MemberDto;

@@ -39,7 +39,7 @@ public class Order {
     private LocalDateTime orderDate; // 주문 시간
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status; // 주문 상태
 
     // 연관관계 메서드. 양방향 연관관계의 경우 이런 식으로 양쪽에 한번에 값을 넣어주는 메서드를 작성해주면 편리하다.
     // 연관관계 메서드는 값을 많이 컨트롤? 하는 쪽이 좋다고 함.
@@ -65,6 +65,9 @@ public class Order {
 
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    protected Order() {
     }
 
     // 주문 생성 메서드
