@@ -10,7 +10,10 @@ import love.shop.domain.category.Category;
 import love.shop.domain.category.QCategory;
 import love.shop.domain.item.Book;
 import love.shop.domain.item.Item;
+import love.shop.domain.item.QBook;
 import love.shop.domain.item.QItem;
+import love.shop.web.item.dto.BookUpdateReqDto;
+import love.shop.web.item.dto.ItemUpdateReqDto;
 import love.shop.web.item.dto.SearchCond;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +30,8 @@ public class ItemRepository {
     QCategory category = QCategory.category;
     QItem item = QItem.item;
     QItemCategory itemCategory = QItemCategory.itemCategory;
+    QBook book = QBook.book;
+
 
     // 아이템 저장
     public void save(Item item) {
@@ -35,13 +40,13 @@ public class ItemRepository {
         if (item.getId() == null) {
             em.persist(item);
         } else {
-            em.merge(item);
+            em.merge(item); // merge는 준영속 엔티티를 영속 상태로 바꿀때 사용됨. 객체의 id(식별자)를 가지고 있을때 가능함.
+            // merge를 사용할 땐, 모든 필드의 값을 다 넣어줘야한다. 값이 안들어간 곳은 null로 채워진다.
         }
     }
-
+    // 아이템 저장
     public void saveItem(Item item) {
         em.persist(item);
-
     }
 
     // id로 단건 조회
@@ -49,12 +54,13 @@ public class ItemRepository {
         return em.find(Item.class, id);
     }
 
-    // 아이템 모두 조회
+    // 모든 아이템 조회
     public List<Item> findAll() {
         return em.createQuery("select i from Item i", Item.class)
                 .getResultList();
     }
 
+    // 카테고리명으로 카테고리 조회
     public Category findCategoryByName(String categoryName) {
         return em.createQuery("select c from Category c" +
                         " where c.name = :name", Category.class)
@@ -62,7 +68,8 @@ public class ItemRepository {
                 .getSingleResult();
     }
 
-    public List<Item> findItemsBySearchCond(SearchCond searchCond) {
+    // 아이템 조건 검색
+    public List<Item> findItemsBySearchCond(SearchCond searchCond, int offset, int limit) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -92,6 +99,30 @@ public class ItemRepository {
                 .join(itemCategory.item, item)
                 .join(itemCategory.category, category)
                 .where(builder)
+                .offset(offset)
+                .limit(limit)
                 .fetch();
     }
+
+    // 책 수정
+    public void updateBook(BookUpdateReqDto bookDto) {
+        queryFactory.update(book)
+                .set(book.name, bookDto.getName())
+                .set(book.price, bookDto.getPrice())
+                .set(book.stockQuantity, bookDto.getStockQuantity())
+                .set(book.author, bookDto.getAuthor())
+                .set(book.isbn, bookDto.getIsbn())
+                .where(book.id.eq(bookDto.getItemId()))
+                .execute();
+    }
+    // 그냥 욕심내지 말고 약식으로 하자..
+
+    // 아이템 삭제
+    public void deleteItem(Long itemId) {
+        queryFactory.delete(item)
+                .where(item.id.eq(itemId))
+                .execute();
+    }
+
+
 }
