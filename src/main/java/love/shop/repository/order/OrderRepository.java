@@ -76,15 +76,9 @@ public class OrderRepository {
                 .getResultList();
     }
 
-    public List<Order> findAllOrders(int offset, int limit) {
-        List<Order> orders = queryFactory.selectFrom(order)
-                .fetch();
-
-        return orders;
-    }
 
     // 이렇게하면 jpa에서 성능 최적화한거 똑같이 할 수 있음. 대박임 개쉬움 굿
-    public List<Order> findAllOrdersV2(int offset, int limit) {
+    public List<Order> findAllOrders(int offset, int limit) {
         List<Order> orders = queryFactory.selectFrom(order)
                 .leftJoin(order.member).fetchJoin()
                 .leftJoin(order.delivery).fetchJoin()
@@ -96,27 +90,17 @@ public class OrderRepository {
     }
 
     // 멤버 id로 주문 조회
-    public List<Order> findOrdersByMemberId(Long memberId) {
-        List<Order> orders = queryFactory.select(order)
-                .from(order)
-                .join(order.member)
+    public List<Order> findOrdersByMemberId(Long memberId, int offset, int limit) {
+        List<Order> orders = queryFactory.selectFrom(order)
+                .leftJoin(order.member).fetchJoin()
+                .leftJoin(order.delivery).fetchJoin()
                 .where(order.member.id.eq(memberId))
+                .offset(offset)
+                .limit(limit)
                 .fetch();
 
         return orders;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
