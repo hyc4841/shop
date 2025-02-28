@@ -5,14 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.item.Book;
 import love.shop.domain.item.Item;
 import love.shop.service.item.ItemService;
-import love.shop.web.item.dto.BookDto;
-import love.shop.web.item.dto.BookSaveReqDto;
-import love.shop.web.item.dto.ItemDto;
-import love.shop.web.item.dto.SearchCond;
+import love.shop.web.item.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,31 +37,41 @@ public class ItemController {
 
     // 아이템 조건 검색
     @GetMapping("/items")
-    public ResponseEntity<List<ItemDto>> items(@RequestBody SearchCond searchCond) {
+    public ResponseEntity<List<ItemDto>> items(@RequestBody SearchCond searchCond,
+                                               @RequestParam(value = "offset", defaultValue = "0") int offset,
+                                               @RequestParam(value = "limit", defaultValue = "50") int limit) {
         log.info("searchCond={}", searchCond);
 
-        List<Item> items = itemService.findItemsBySearchCond(searchCond);
+        List<Item> items = itemService.findItemsBySearchCond(searchCond, offset, limit);
         log.info("조건으로 찾은 items={}", items);
 
         List<ItemDto> result = new ArrayList<>();
 
         for (Item item : items) {
-
             switch (item.getType()) {
                 case "Book":
                     ItemDto bookDto = new BookDto((Book) item);
                     result.add(bookDto);
                     break;
-                case ""
-            }
-
-            log.info("item={}", item.getType());
-            if (Objects.equals(item.getType(), "Book")) {
-                log.info("여기오나?");
-
             }
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @PatchMapping("/item/book")
+    public ResponseEntity<BookDto> updateBook(@RequestBody BookUpdateReqDto bookDto) {
+        Book updatedBook = itemService.updateBook(bookDto);
+
+        BookDto updatedBookDto = new BookDto(updatedBook);
+        return ResponseEntity.ok(updatedBookDto);
+    }
+
+    // 생성, 조회, 수정, 삭제
+    @DeleteMapping("/item/{itemId}")
+    public ResponseEntity<String> deleteItem(@RequestParam Long itemId) {
+        itemService.deleteItem(itemId);
+
+        return ResponseEntity.ok("삭제 완료");
     }
 }
