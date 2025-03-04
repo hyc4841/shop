@@ -91,4 +91,11 @@ public class ApiExControllerAdvice {
     static class ErrorWrapper<T> {
         private T error;
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ErrorApi unauthorizedAccessException(UnauthorizedAccessException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorApi(403, "접근 권한이 없는 사용자입니다.");
+    }
 }
