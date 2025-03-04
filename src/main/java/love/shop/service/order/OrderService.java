@@ -32,18 +32,16 @@ public class OrderService {
     // 주문
     @Transactional
     public Long order(Long memberId, Long itemId, int count, Long addressId) {
-        // 엔티티 조회
+        // 주문한 멤버 조회
         Member member = memberRepository.findMemberById(memberId);
+        // 주문한 아이템 조회
         Item item = itemRepository.findOne(itemId);
-
+        // 회원이 등록해놓은 주소 조회
         Address address = addressRepository.findAddressById(addressId);
-
         // 배송정보 생성
-        Delivery delivery = new Delivery(address, DeliveryStatus.READY);
-
+        Delivery delivery = new Delivery(address, DeliveryStatus.PENDING);
         // 주문 상품 생성
         OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
-
         // 주문 생성
         Order order = Order.createOrder(member, delivery, orderItem); // 현재 로직은 주문 아이템이 하나만 들어간다.
 
@@ -51,6 +49,7 @@ public class OrderService {
         return order.getId();
     }
 
+    // 주문 취소
     @Transactional
     public void cancelOrder(Long orderId) {
         // 주문 조회
@@ -70,6 +69,10 @@ public class OrderService {
 
     public List<Order> findOrdersByMemberId(Long memberId, int offset, int limit) {
         return orderRepository.findOrdersByMemberId(memberId, offset, limit);
+    }
+
+    public Order findOrderById(Long orderId) {
+        return orderRepository.findOne(orderId);
     }
 
 }
