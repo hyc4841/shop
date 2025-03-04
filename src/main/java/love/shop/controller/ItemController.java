@@ -59,6 +59,20 @@ public class ItemController {
         return ResponseEntity.ok(result);
     }
 
+    // 아이템 상세 조회
+    @GetMapping("/item/{itemId}")
+    public ResponseEntity findItemById(@PathVariable Long itemId) {
+        Item item = itemService.findOne(itemId);
+
+        String type = item.getType();
+        // 아이템 타입에 따라서 아이템 dto를 내줘야한다?
+
+
+
+        new ItemDto()
+    }
+    //
+
     @PatchMapping("/item/book")
     public ResponseEntity<BookDto> updateBook(@RequestBody BookUpdateReqDto bookDto) {
         Book updatedBook = itemService.updateBook(bookDto);
@@ -67,7 +81,7 @@ public class ItemController {
         return ResponseEntity.ok(updatedBookDto);
     }
 
-    // 생성, 조회, 수정, 삭제
+    // 삭제
     @DeleteMapping("/item/{itemId}")
     public ResponseEntity<String> deleteItem(@RequestParam Long itemId) {
         itemService.deleteItem(itemId);
