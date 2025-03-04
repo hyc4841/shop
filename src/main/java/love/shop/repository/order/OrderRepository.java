@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.order.Order;
 import love.shop.domain.order.QOrder;
-import love.shop.web.order.dto.OrdersResponseDto;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,8 +27,14 @@ public class OrderRepository {
     }
 
     public Order findOne(Long id) {
-        return em.find(Order.class, id);
+        return queryFactory.select(order)
+                .from(order)
+                .leftJoin(order.member).fetchJoin()
+                .leftJoin(order.delivery).fetchJoin()
+                .where(order.id.eq(id))
+                .fetchOne();
     }
+
 
     // 컬렉션 조회 X. 지연 로딩 최적회를 위한 fetch join
     // 엔티티 -> DTO, fetch join 사용하여 최적화. 최적화는 대부분 이것으로 해결된다고 함.
@@ -42,6 +47,7 @@ public class OrderRepository {
     }
 
     // DTO로 바로 조회.
+    /*
     public List<OrdersResponseDto> findOrdersDtos() {
         return em.createQuery(
                 "select new love.shop.web.order.dto.OrdersResponseDto(" +
@@ -51,6 +57,7 @@ public class OrderRepository {
                         " join o.delivery d", OrdersResponseDto.class)
                 .getResultList();
     }
+     */
 
     // 컬렉션 페치 조인. 페이징 불가, 컬렉션 하나만 있을 때 사용. 사실상 실무에선 사용 불가
     public List<Order> findAllWithItem() {
