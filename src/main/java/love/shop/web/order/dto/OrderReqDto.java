@@ -15,6 +15,7 @@ public class OrderReqDto {
     // 주문 아이템 정보
     private Long itemId;
 
+    // 주문자가 주문 단계에서 새로 입력한 배송지
     private Long addressId;
 
     private Integer count; // 주문 개수
