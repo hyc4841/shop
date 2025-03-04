@@ -1,5 +1,5 @@
 package love.shop.domain.delivery;
 
 public enum DeliveryStatus {
-    READY, COMP
+    PENDING, PROCESSING, OUTFORDELIVERY , SHIPPED, DELIVERED, CANCELLED, RETURNED,
 }
