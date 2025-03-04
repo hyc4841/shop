@@ -58,6 +58,7 @@ public class InitDb {
             // 회원가입
             SignupRequestDto signupRequest = new SignupRequestDto("Hell4", passwordAndCheck,"황윤철", "01099694841",
                     "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
+
             Long signUpMemberId = memberService.signUp(signupRequest);
 
             // 아이템, 주문, 배달, 주문아이템
@@ -154,13 +155,8 @@ public class InitDb {
         }
 
         private Delivery createDelivery(Member member, Address address) {
-            Delivery delivery = new Delivery(address, DeliveryStatus.READY);
-            delivery.setCity("서울");
-            delivery.setStreet("대주아파트");
-            delivery.setZipcode("123123");
-            delivery.setDetailedAddress("블라블라");
 
-            return delivery;
+            return new Delivery(address, DeliveryStatus.PENDING);
         }
 
     }
