@@ -78,7 +78,7 @@ public class Order {
         for (OrderItem orderItem : orderItems) { //
             order.addOrderItem(orderItem);
         }
-        order.setStatus(OrderStatus.ORDER);
+        order.setStatus(OrderStatus.PENDING);
         order.setOrderDate(LocalDateTime.now());
         return order;
     }
@@ -86,11 +86,12 @@ public class Order {
     // 비즈니스 로직
     // 주문 취소
     public void cancel() {
-        if (this.delivery.getStatus() == DeliveryStatus.COMP) {
-            throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
+        if (this.delivery.getStatus() == DeliveryStatus.SHIPPED) {
+            throw new IllegalStateException("이미 배송중인 상품은 취소가 불가합니다.");
         }
 
-        this.setStatus(OrderStatus.CANCEL);
+        this.delivery.cancelDelivery();
+        this.setStatus(OrderStatus.CANCELLED);
         for (OrderItem orderItem : orderItems) {
             orderItem.cancel();
         }
