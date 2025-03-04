@@ -1,5 +1,5 @@
 package love.shop.domain.order;
 
 public enum OrderStatus {
-    ORDER, CANCEL
+    PENDING, PROCESSING, OUTFORDELIVERY , SHIPPED, DELIVERED, CANCELLED, RETURNED,
 }
