@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.item.Item;
-import love.shop.domain.member.Member;
+
+import love.shop.common.exception.UnauthorizedAccessException;
 import love.shop.domain.order.Order;
-import love.shop.domain.orderItem.OrderItem;
 import love.shop.repository.item.ItemRepository;
 import love.shop.repository.order.OrderRepository;
 import love.shop.service.member.MemberService;
@@ -15,13 +14,13 @@ import love.shop.service.order.OrderService;
 import love.shop.web.login.dto.CustomUser;
 import love.shop.web.order.dto.OrderDto;
 import love.shop.web.order.dto.OrderReqDto;
-import love.shop.web.order.dto.OrdersResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,17 +32,6 @@ public class OrderController {
     private final OrderRepository orderRepository;
     private final MemberService memberService;
     private final ItemRepository itemRepository;
-
-    //    @GetMapping("/orders")
-    public ResponseEntity<AllOrdersResult<List<OrdersResponseDto>>> findAllOrders() {
-        List<Order> allOrder = orderService.findAllOrder();
-
-        List<OrdersResponseDto> result = allOrder.stream()
-                .map(o -> new OrdersResponseDto(o))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(new AllOrdersResult<List<OrdersResponseDto>>(result, result.size()));
-    }
 
     // 멤버 주문 조회
     @GetMapping("/orders")
@@ -58,31 +46,49 @@ public class OrderController {
         return ResponseEntity.ok(new AllOrders<List<OrderDto>>(result, result.size()));
     }
 
+    // 주문 저장
     @PostMapping("/order")
-    public ResponseEntity saveOrder(@RequestBody OrderReqDto orderReqDto) {
+    public ResponseEntity<OrderDto> saveOrder(@RequestBody OrderReqDto orderReqDto) {
 
         // 주문을 만들기 위해서 뭐가 필요하지? 멤버, 아이템, 배송정보가 필요함
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
 
-        orderService.order(memberId, orderReqDto.getItemId(), orderReqDto.getCount(), orderReqDto.getAddressId(),
-                );
+        Long orderId = orderService.order(memberId, orderReqDto.getItemId(), orderReqDto.getCount(), orderReqDto.getAddressId());
 
+        Order order = orderService.findOrderById(orderId);
+        OrderDto orderDto = new OrderDto(order);
 
+        return ResponseEntity.ok(orderDto);
     }
 
+    // 주문 취소
+    @DeleteMapping("/order/{orderId}")
+    public ResponseEntity<String> cancelOrder(@PathVariable Long orderId) {
+        orderService.cancelOrder(orderId);
 
+        // 주문을 찾은 다음에
+        // 주문의 상태를 취소 상태로 바꾼다
 
+        // 취소된 주문 정보 반환하는 걸로 바꿔야함.
+        return ResponseEntity.ok("취소 완료");
+    }
 
+    // 주문 상세 조회 : 이건 추후에 PathVariable로 하지말고 그냥 body에 넣어서 처리하는 것도 방법일듯.
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<OrderDto> findOrderByOrderId(@PathVariable Long orderId) {
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
+        log.info("주문 단건 조회");
+        Order order = orderService.findOrderById(orderId);
 
+        // 1차로 멤버 권한이 없느 사용자는 스프링 필터에서 걸러지고
+        // 2차로 컨트롤러에 들어와서 해당 주문의 주문 멤버인지 확인
+        if (!Objects.equals(order.getMember().getId(), memberId)) {
+            throw new UnauthorizedAccessException("접근 권한이 없습니다.");
+        }
+        OrderDto orderDto = new OrderDto(order);
 
-
-
-
-
-
-
-
-
+        return ResponseEntity.ok(orderDto);
+    }
 
 
 
@@ -150,11 +156,5 @@ public class OrderController {
         private T orders;
         private int count;
     }
-
-
-
-
-
-
 
 }
