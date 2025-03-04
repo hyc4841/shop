@@ -36,6 +36,9 @@ public class OrderItem {
         this.item = item;
     }
 
+    protected OrderItem() {
+    }
+
     public OrderItem(int count, int orderPrice, Item item) {
         this.count = count;
         this.orderPrice = orderPrice;
