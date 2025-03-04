@@ -2,6 +2,7 @@ package love.shop.web.order.dto;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.delivery.Delivery;
 import love.shop.domain.order.Order;
 import love.shop.domain.order.OrderStatus;
 
@@ -16,23 +17,19 @@ public class OrderDto {
     private Long orderId;
     private String name;
     private LocalDateTime orderDate;
-    private OrderStatus orderStatus;
+    private OrderStatus status;
+
+    private DeliveryDto delivery;
 
     private List<OrderItemDto> orderItems;
-    private String city;
-    private String street;
-    private String detailedAddress;
-    private String zipcode;
+
 
     public OrderDto(Order order) {
         this.orderId = order.getId();
         this.name = order.getMember().getName();
         this.orderDate = order.getOrderDate();
-        this.orderStatus = order.getStatus();
-        this.city = order.getDelivery().getCity();
-        this.street = order.getDelivery().getStreet();
-        this.detailedAddress = order.getDelivery().getDetailedAddress();
-        this.zipcode = order.getDelivery().getZipcode();
+        this.status = order.getStatus();
+        this.delivery = new DeliveryDto(order.getDelivery());
         // 이 부분이 지연로딩
         this.orderItems = order.getOrderItems().stream()
                 .map(orderItem -> new OrderItemDto(orderItem))
