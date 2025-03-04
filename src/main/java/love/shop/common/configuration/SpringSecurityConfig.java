@@ -22,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 @Configuration
@@ -48,12 +49,18 @@ public class SpringSecurityConfig {
                 // 이 부분이 권한 관리 부분
                 .authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/signup", "/login").anonymous() // /signup과 /login은 인증이 되지 않은 사용자의 접근을 허용한다는 의미. 즉 인증 없이 경로에 접근할 수 있음
-                                .requestMatchers("/member/**").hasRole("MEMBER") // /member/**로 들어오는 모든 요청은 MEMBER 권한이 있어야함
+                                .requestMatchers("/member/**", "/order/**", "/orders").hasRole("MEMBER") // /member/**로 들어오는 모든 요청은 MEMBER 권한이 있어야함
                                 .anyRequest().permitAll()
                 )
 
-                .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) ->
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "접근 권한이 없습니다.")))
+                // 위에 요청 패턴에 대한 예외처리
+                .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json; charset=UTF-8");
+                            PrintWriter out = response.getWriter();
+                            out.println("{\"status\": \"401\", \"message\": \"인증되지 않은 유저의 접근입니다.\"}");
+                        }))
+//                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "접근 권한이 없습니다.")))
 
                 // 필터를 통해 토큰 기반 로그인
                 .addFilterBefore(new JwtFilter(jwtTokenProvider, redisService, filterExApi), UsernamePasswordAuthenticationFilter.class);
