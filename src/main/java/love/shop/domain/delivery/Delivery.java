@@ -21,12 +21,15 @@ public class Delivery {
     @OneToOne(mappedBy = "delivery", fetch = LAZY)
     private Order order;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = LAZY)
     @JoinColumn(name = "address_id") // 연관관계 주인. 외래키 설정
     private Address address;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status; // READY : 준비, COMP : 배송
+
+    protected Delivery() {
+    }
 
     public Delivery(Address address, DeliveryStatus status) {
         this.address = address;
@@ -34,9 +37,13 @@ public class Delivery {
     }
 
     public static Delivery createDelivery(Address address) {
-        return new Delivery(address, DeliveryStatus.READY);
+        return new Delivery(address, DeliveryStatus.PENDING);
     }
 
+    // 배송 취소 메서드
+    public void cancelDelivery() {
+        status = DeliveryStatus.CANCELLED;
+    }
 
     public void setOrder(Order order) {
         this.order = order;
