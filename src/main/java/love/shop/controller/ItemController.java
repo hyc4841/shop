@@ -47,15 +47,6 @@ public class ItemController {
 
         List<ItemDto> result = new ArrayList<>();
 
-        for (Item item : items) {
-            switch (item.getType()) {
-                case "Book":
-                    ItemDto bookDto = new BookDto((Book) item);
-                    result.add(bookDto);
-                    break;
-            }
-        }
-
         return ResponseEntity.ok(result);
     }
 
@@ -64,8 +55,7 @@ public class ItemController {
     public ResponseEntity<String> findItemById(@PathVariable Long itemId) {
         Item item = itemService.findOne(itemId);
 
-        String type = item.getType();
-        // 아이템 타입에 따라서 아이템 dto를 내줘야한다?
+        // 아이템 조회부터 다시 만들자
 
         return ResponseEntity.ok("ok");
     }
@@ -86,4 +76,8 @@ public class ItemController {
 
         return ResponseEntity.ok("삭제 완료");
     }
+
+
+    // 카테고리 테스트
+
 }
