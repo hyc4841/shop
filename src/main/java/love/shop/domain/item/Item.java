@@ -32,7 +32,6 @@ public abstract class Item {
 
 
 
-    public abstract String getType();
 
     // 연관관계 메서드
     public void addItemCategory(ItemCategory itemCategory) {
@@ -61,15 +60,5 @@ public abstract class Item {
         this.stockQuantity = restStock;
     }
 
-    protected void setName(String name) {
-        this.name = name;
-    }
 
-    protected void setPrice(int price) {
-        this.price = price;
-    }
-
-    protected void setStockQuantity(int quantity) {
-        this.stockQuantity = quantity;
-    }
 }

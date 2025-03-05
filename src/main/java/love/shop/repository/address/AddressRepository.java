@@ -7,8 +7,8 @@ import love.shop.domain.address.Address;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
-@RequiredArgsConstructor
 @Repository
+@RequiredArgsConstructor
 public class AddressRepository {
 
     private final EntityManager em;
