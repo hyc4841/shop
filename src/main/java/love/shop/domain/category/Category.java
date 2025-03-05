@@ -31,13 +31,22 @@ public class Category {
     @Column(name = "category_name")
     private String categoryName; // 카테고리 이름
 
+    @Column(name = "sub_category_name")
+    private String subCategoryName; // 해당 계층에서 분류되는 카테고리 이름
+
     // mappedBy = "category"는 주인쪽 category 필드를 참조하고 있다는 뜻
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<ItemCategory> itemCategories = new ArrayList<>();
 
+    public Category(String categoryName, String subCategoryName) {
+        this.categoryName = categoryName;
+        this.subCategoryName = subCategoryName;
+    }
+
     public Category(String categoryName) {
         this.categoryName = categoryName;
     }
+
 
     public void addChild(Category child) {
         // 자식 카테고리 추가할 때 이미 들어가 있는 카테고리면 넣지 않는다.
