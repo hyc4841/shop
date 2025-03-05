@@ -8,12 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.ItemCategory.QItemCategory;
 import love.shop.domain.category.Category;
 import love.shop.domain.category.QCategory;
-import love.shop.domain.item.Book;
 import love.shop.domain.item.Item;
 import love.shop.domain.item.QBook;
 import love.shop.domain.item.QItem;
 import love.shop.web.item.dto.BookUpdateReqDto;
-import love.shop.web.item.dto.ItemUpdateReqDto;
 import love.shop.web.item.dto.SearchCond;
 import org.springframework.stereotype.Repository;
 
@@ -63,8 +61,8 @@ public class ItemRepository {
     // 카테고리명으로 카테고리 조회
     public Category findCategoryByName(String categoryName) {
         return em.createQuery("select c from Category c" +
-                        " where c.name = :name", Category.class)
-                .setParameter("name", categoryName)
+                        " where c.categoryName = :category_name", Category.class)
+                .setParameter("category_name", categoryName)
                 .getSingleResult();
     }
 
@@ -81,7 +79,7 @@ public class ItemRepository {
         // 카테고리 조건
         if (searchCond.getCategories() != null && !searchCond.getCategories().isEmpty()) {
             for (String categoryName : searchCond.getCategories()) {
-                builder.or(category.name.eq(categoryName));
+                builder.or(category.categoryName.eq(categoryName));
             }
         }
 

@@ -1,7 +1,9 @@
 package love.shop.domain.member;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import love.shop.domain.address.Address;
 import love.shop.domain.order.Order;
 
@@ -11,6 +13,7 @@ import java.util.List;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id
@@ -53,9 +56,6 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
-
-    public Member() {
-    }
 
     public Member(String loginId, String password, String name, String phoneNum, LocalDate birthDate, Gender gender, String email, LocalDate joinDate) {
         this.loginId = loginId;

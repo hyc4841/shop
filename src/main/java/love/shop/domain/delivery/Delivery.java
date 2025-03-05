@@ -1,7 +1,9 @@
 package love.shop.domain.delivery;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import love.shop.domain.address.Address;
 import love.shop.domain.order.Order;
@@ -11,6 +13,7 @@ import static jakarta.persistence.FetchType.*;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Delivery {
 
     @Id
@@ -27,9 +30,6 @@ public class Delivery {
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status; // READY : 준비, COMP : 배송
-
-    protected Delivery() {
-    }
 
     public Delivery(Address address, DeliveryStatus status) {
         this.address = address;

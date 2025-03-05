@@ -8,6 +8,6 @@ public class ItemCategoryDto {
     private String categoryName;
 
     public ItemCategoryDto(ItemCategory itemCategory) {
-        this.categoryName = itemCategory.getCategory().getName();
+        this.categoryName = itemCategory.getCategory().getCategoryName();
     }
 }
