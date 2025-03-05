@@ -14,7 +14,6 @@ import love.shop.domain.item.QItem;
 import love.shop.web.item.dto.BookUpdateReqDto;
 import love.shop.web.item.dto.SearchCond;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Slf4j
@@ -66,7 +65,19 @@ public class ItemRepository {
                 .getSingleResult();
     }
 
-    // 아이템 조건 검색
+    // toOne 관계는 페치 조인으로, ToMany 관계는 지연로딩으로 조회하기
+    public Category findCategoryByNameAndParentName(String categoryName, String parentName) {
+        log.info("카테고리 이름과 부모 이름으로 찾기");
+        return queryFactory.select(category)
+                .from(category)
+                .leftJoin(category.parent).fetchJoin()
+                .where(category.categoryName.eq(categoryName))
+                .where(category.parent.categoryName.eq(parentName))
+                .fetchOne();
+    }
+
+
+        // 아이템 조건 검색
     public List<Item> findItemsBySearchCond(SearchCond searchCond, int offset, int limit) {
 
         BooleanBuilder builder = new BooleanBuilder();

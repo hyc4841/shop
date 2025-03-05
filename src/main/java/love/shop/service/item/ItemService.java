@@ -42,6 +42,10 @@ public class ItemService {
         return itemRepository.findCategoryByName(categoryName);
     }
 
+    public Category findCategoryByNameAndParentName(String categoryName, String parentName) {
+        return itemRepository.findCategoryByNameAndParentName(categoryName, parentName);
+    }
+
     // 아이템 조건 검색
     public List<Item> findItemsBySearchCond(SearchCond searchCond, int offset, int limit) {
         return itemRepository.findItemsBySearchCond(searchCond, offset, limit);
