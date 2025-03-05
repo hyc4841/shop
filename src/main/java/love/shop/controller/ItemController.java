@@ -61,15 +61,13 @@ public class ItemController {
 
     // 아이템 상세 조회
     @GetMapping("/item/{itemId}")
-    public ResponseEntity findItemById(@PathVariable Long itemId) {
+    public ResponseEntity<String> findItemById(@PathVariable Long itemId) {
         Item item = itemService.findOne(itemId);
 
         String type = item.getType();
         // 아이템 타입에 따라서 아이템 dto를 내줘야한다?
 
-
-
-        new ItemDto()
+        return ResponseEntity.ok("ok");
     }
     //
 

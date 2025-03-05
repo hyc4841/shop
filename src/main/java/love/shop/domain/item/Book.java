@@ -1,11 +1,14 @@
 package love.shop.domain.item;
 
 import jakarta.persistence.Entity;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import love.shop.domain.ItemCategory.ItemCategory;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book extends Item{
 
     private String author;
@@ -26,10 +29,6 @@ public class Book extends Item{
         this.author = author;
         this.isbn = isbn;
     }
-
-    protected Book() {
-    }
-
 
     @Override
     public String getType() {

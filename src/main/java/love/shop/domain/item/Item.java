@@ -1,7 +1,9 @@
 package love.shop.domain.item;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public abstract class Item {
 
@@ -30,9 +33,6 @@ public abstract class Item {
 
 
     public abstract String getType();
-
-    protected Item() {
-    }
 
     // 연관관계 메서드
     public void addItemCategory(ItemCategory itemCategory) {

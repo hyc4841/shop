@@ -1,7 +1,9 @@
 package love.shop.domain.itemReview;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import love.shop.domain.item.Item;
 import love.shop.domain.member.Member;
 
@@ -11,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "item_review")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItemReview {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)

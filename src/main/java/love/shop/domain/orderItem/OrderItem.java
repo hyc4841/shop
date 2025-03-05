@@ -1,7 +1,9 @@
 package love.shop.domain.orderItem;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import love.shop.domain.item.Item;
 import love.shop.domain.order.Order;
 
@@ -10,6 +12,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @Table(name = "order_item")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
     @Id
@@ -34,9 +37,6 @@ public class OrderItem {
 
     public void setItem(Item item) {
         this.item = item;
-    }
-
-    protected OrderItem() {
     }
 
     public OrderItem(int count, int orderPrice, Item item) {

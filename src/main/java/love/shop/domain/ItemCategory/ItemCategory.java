@@ -1,7 +1,9 @@
 package love.shop.domain.ItemCategory;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import love.shop.domain.item.Item;
 import love.shop.domain.category.Category;
 
@@ -10,6 +12,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @Table(name = "item_category")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItemCategory {
 
     @Id
@@ -24,9 +27,6 @@ public class ItemCategory {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "item_id") // 외래키 설정
     private Item item;
-
-    protected ItemCategory() {
-    }
 
     public void setItem(Item item) {
         this.item = item;
