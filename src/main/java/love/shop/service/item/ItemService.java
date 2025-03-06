@@ -29,7 +29,7 @@ public class ItemService {
 
     // 아이템 id로 조회
     public Item findOne(Long ItemId) {
-        return itemRepository.findOne(ItemId);
+        return itemRepository.findOne(ItemId).orElseThrow(() -> new RuntimeException("값이 없음"));
     }
 
     // 모든 아이템 조회
@@ -39,11 +39,21 @@ public class ItemService {
 
     // 카테고리명으로 카테고리 조회
     public Category findCategoryByName(String categoryName) {
-        return itemRepository.findCategoryByName(categoryName);
+        return itemRepository.findCategoryByName(categoryName).orElseThrow(() -> new RuntimeException("값이 없음"));
     }
 
+    // 카테고리 이름으로 조회
+    public List<Category> findCategoryListByName(String categoryName) {
+        return itemRepository.findCategoryListByName(categoryName);
+    }
+
+    // 카테고리 이름과 부모 카테고리 이름으로 조회
     public Category findCategoryByNameAndParentName(String categoryName, String parentName) {
-        return itemRepository.findCategoryByNameAndParentName(categoryName, parentName);
+        return itemRepository.findCategoryByNameAndParentName(categoryName, parentName).orElseThrow(() -> new RuntimeException("값이 없음"));
+    }
+
+    public List<Category> findAllCategory() {
+        return itemRepository.findAllCategory();
     }
 
     // 아이템 조건 검색
@@ -54,7 +64,7 @@ public class ItemService {
     // 책 수정
     public Book updateBook(BookUpdateReqDto bookDto) {
         itemRepository.updateBook(bookDto);
-        Item item = itemRepository.findOne(bookDto.getItemId());
+        Item item = itemRepository.findOne(bookDto.getItemId()).orElseThrow(() -> new RuntimeException("값이 없음"));
         return (Book) item;
     }
 
@@ -63,4 +73,5 @@ public class ItemService {
     public void deleteItem(Long itemId) {
         itemRepository.deleteItem(itemId);
     }
+
 }
