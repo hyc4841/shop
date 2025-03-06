@@ -2,8 +2,10 @@ package love.shop.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.category.Category;
 import love.shop.domain.item.Book;
 import love.shop.domain.item.Item;
+import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
 import love.shop.web.item.dto.*;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -20,6 +22,7 @@ import java.util.Objects;
 public class ItemController {
 
     private final ItemService itemService;
+    private final ItemRepository itemRepository;
 
     @GetMapping("/item")
     public ResponseEntity<String> saveItem(@RequestBody BookSaveReqDto bookDto) {
@@ -76,6 +79,34 @@ public class ItemController {
 
         return ResponseEntity.ok("삭제 완료");
     }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<CategoryDto>> findAllCategory() {
+        log.info("모든 카테고리 조회");
+        List<Category> allCategory = itemService.findAllCategory();
+
+        List<CategoryDto> categoryDtos = allCategory.stream().map(category -> new CategoryDto(category))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(categoryDtos);
+    }
+
+    @GetMapping("/category/items")
+    public ResponseEntity<List<ItemDto>> findItemsByCategories() {
+
+        List<String> categories = new ArrayList<>();
+
+        categories.add("게이밍 노트북");
+        categories.add("노트북");
+
+        List<Item> itemsByCategories = itemRepository.findItemsByCategories(categories);
+        List<ItemDto> itemDto = ItemDto.createItemDto(itemsByCategories);
+
+        log.info("items={}", itemsByCategories);
+
+        return ResponseEntity.ok(itemDto);
+    }
+
 
 
     // 카테고리 테스트
