@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import love.shop.domain.item.Item;
 import love.shop.domain.category.Category;
 
@@ -13,6 +14,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @Table(name = "item_category")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class ItemCategory {
 
     @Id
@@ -26,6 +28,7 @@ public class ItemCategory {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "item_id") // 외래키 설정
+    @ToString.Exclude
     private Item item;
 
     public void setItem(Item item) {
