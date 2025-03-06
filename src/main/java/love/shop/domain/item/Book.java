@@ -30,4 +30,8 @@ public class Book extends Item{
         this.isbn = isbn;
     }
 
+    @Override
+    public String getType() {
+        return "";
+    }
 }
