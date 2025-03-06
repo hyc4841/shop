@@ -47,6 +47,9 @@ public class Category {
         this.categoryName = categoryName;
     }
 
+    public void addItemCategory(ItemCategory itemCategory) {
+        itemCategories.add(itemCategory);
+    }
 
     public void addChild(Category child) {
         // 자식 카테고리 추가할 때 이미 들어가 있는 카테고리면 넣지 않는다.
