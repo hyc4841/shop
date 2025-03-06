@@ -18,13 +18,21 @@ public class LapTop extends Item {
     private LapTopScreenSize lapTopScreenSize;
     private LapTopManufactureBrand lapTopManufactureBrand;
 
-    public LapTop(LapTop lapTop) {
-        super(lapTop.getName(), lapTop.getPrice(), lapTop.getStockQuantity());
-        this.lapTopBrand = lapTop.getLapTopBrand();
-        this.lapTopCpu = lapTop.getLapTopCpu();
-        this.lapTopStorage = lapTop.getLapTopStorage();
-        this.lapTopScreenSize = lapTop.getLapTopScreenSize();
-        this.lapTopManufactureBrand = lapTop.getLapTopManufactureBrand();
+    private String dataType;
+
+
+    public LapTop(String name, int price, int stockQuantity, LapTopBrand lapTopBrand, LapTopCpu lapTopCpu, LapTopStorage lapTopStorage, LapTopScreenSize lapTopScreenSize, LapTopManufactureBrand lapTopManufactureBrand) {
+        super(name, price, stockQuantity);
+        this.lapTopBrand = lapTopBrand;
+        this.lapTopCpu = lapTopCpu;
+        this.lapTopStorage = lapTopStorage;
+        this.lapTopScreenSize = lapTopScreenSize;
+        this.lapTopManufactureBrand = lapTopManufactureBrand;
+        this.dataType = "LapTop";
     }
 
+    @Override
+    public String getType() {
+        return dataType;
+    }
 }
