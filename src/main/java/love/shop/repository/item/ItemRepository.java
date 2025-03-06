@@ -15,6 +15,7 @@ import love.shop.web.item.dto.BookUpdateReqDto;
 import love.shop.web.item.dto.SearchCond;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -47,8 +48,8 @@ public class ItemRepository {
     }
 
     // id로 단건 조회
-    public Item findOne(Long id) {
-        return em.find(Item.class, id);
+    public Optional<Item> findOne(Long id) {
+        return Optional.ofNullable(em.find(Item.class, id));
     }
 
     // 모든 아이템 조회
@@ -58,24 +59,42 @@ public class ItemRepository {
     }
 
     // 카테고리명으로 카테고리 조회
-    public Category findCategoryByName(String categoryName) {
+    public Optional<Category> findCategoryByName(String categoryName) {
+        return Optional.ofNullable(em.createQuery("select c from Category c" +
+                        " where c.categoryName = :category_name", Category.class)
+                .setParameter("category_name", categoryName)
+                .getSingleResult());
+    }
+
+    public List<Category> findCategoryListByName(String categoryName) {
         return em.createQuery("select c from Category c" +
                         " where c.categoryName = :category_name", Category.class)
                 .setParameter("category_name", categoryName)
-                .getSingleResult();
+                .getResultList();
+    }
+
+    public Optional<Category> findCategoryById(Long categoryId) {
+        return Optional.ofNullable(em.find(Category.class, categoryId));
     }
 
     // toOne 관계는 페치 조인으로, ToMany 관계는 지연로딩으로 조회하기
-    public Category findCategoryByNameAndParentName(String categoryName, String parentName) {
+    public Optional<Category> findCategoryByNameAndParentName(String categoryName, String parentName) {
         log.info("카테고리 이름과 부모 이름으로 찾기");
-        return queryFactory.select(category)
+        return Optional.ofNullable(queryFactory.select(category)
                 .from(category)
                 .leftJoin(category.parent).fetchJoin()
                 .where(category.categoryName.eq(categoryName))
                 .where(category.parent.categoryName.eq(parentName))
-                .fetchOne();
+                .fetchOne());
     }
 
+    // 모든 카테고리 조회
+    public List<Category> findAllCategory() {
+        return queryFactory.select(category)
+                .from(category)
+                .leftJoin(category.parent).fetchJoin()
+                .fetch();
+    }
 
         // 아이템 조건 검색
     public List<Item> findItemsBySearchCond(SearchCond searchCond, int offset, int limit) {
@@ -133,5 +152,21 @@ public class ItemRepository {
                 .execute();
     }
 
+
+    // 카테고리로 아이템 조회하기
+    public List<Item> findItemsByCategories(List<String> categories) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        for (String categoryName : categories) {
+            builder.or(itemCategory.category.categoryName.eq(categoryName));
+        }
+
+        return queryFactory.select(item)
+                .from(itemCategory)
+                .join(itemCategory.item)
+                .join(itemCategory.category)
+                .where(builder)
+                .fetch();
+    }
 
 }
