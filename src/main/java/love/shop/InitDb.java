@@ -9,7 +9,7 @@ import love.shop.domain.address.Address;
 import love.shop.domain.category.Category;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.delivery.DeliveryStatus;
-import love.shop.domain.item.Book;
+import love.shop.domain.item.*;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.PasswordAndCheck;
@@ -127,8 +127,37 @@ public class InitDb {
         }
 
         public void initItem() {
+            // 노트북. 보통 사용자에게 보이는 상품 이름은 "제조사 + 브랜드 + 모델명" 이렇게 이루어져 있음.
+            // 즉, 아이템 이름에는 모델명이 들어가야한다.
 
+            // 아이템 생성
+            LapTop lapTop = new LapTop("15Z90N-VA7CL", 1800000, 9999, LapTopBrand.그램15, LapTopCpu.코어i7, LapTopStorage.TB_1, LapTopScreenSize.Inch_15, LapTopManufactureBrand.LG전자);
+            // 카테고리 조회
+            List<Category> gamingLapTop = itemService.findCategoryListByName("게이밍 노트북");
+            Category categorylaptop = itemService.findCategoryByName("노트북");
+            Category intel = itemService.findCategoryByName("인텔 CPU 노트북");
 
+            // 아이템-카테고리 생성
+            List<ItemCategory> itemCategories = new ArrayList<>();
+
+            // 아이템 카테고리를 생성할 떄 먼저 카테고리를 설정해두고 시작한다.
+            for (Category c : gamingLapTop) {
+                ItemCategory itemCategory = ItemCategory.createItemCategory(c);
+                itemCategories.add(itemCategory);
+            }
+            ItemCategory laptopItemCategory = ItemCategory.createItemCategory(categorylaptop);
+            ItemCategory intelItemCategory = ItemCategory.createItemCategory(intel);
+
+            itemCategories.add(laptopItemCategory);
+            itemCategories.add(intelItemCategory);
+
+            // 아이템에 아이템-카테고리 연결
+
+            for (ItemCategory i : itemCategories) {
+                lapTop.addItemCategory(i);
+            }
+
+            itemService.save(lapTop); // persist
         }
 
         public void initCategories() {
@@ -596,7 +625,8 @@ public class InitDb {
 
             // 3차 분류
             // 노트북
-            Category laptop = itemService.findCategoryByName("노트북");
+            Category laptop = itemService.findCategoryByNameAndParentName("노트북", "컴퓨터/노트북/조립PC");
+
             list.add("AI 노트북");
             list.add("게이밍 노트북");
             list.add("APPLE 맥묵");
