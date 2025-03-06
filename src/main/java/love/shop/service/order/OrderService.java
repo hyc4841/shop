@@ -35,7 +35,7 @@ public class OrderService {
         // 주문한 멤버 조회
         Member member = memberRepository.findMemberById(memberId);
         // 주문한 아이템 조회
-        Item item = itemRepository.findOne(itemId);
+        Item item = itemRepository.findOne(itemId).orElseThrow();
         // 회원이 등록해놓은 주소 조회
         Address address = addressRepository.findAddressById(addressId);
         // 배송정보 생성
