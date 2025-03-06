@@ -10,20 +10,30 @@ import java.util.stream.Collectors;
 public class CategoryDto {
 
     private Long categoryId;
-    private CategoryDto parent;
-    private List<CategoryDto> children;
     private String categoryName;
+    private Long parent;
+    private String parentName;
     private List<ItemCategoryDto> itemCategories;
+    private List<CategoryDto> children;
+
+
+
+    // 부모가 없을 수도 있다, 자식이 없을 수도 있다.
+    //
 
     public CategoryDto(Category category) {
-        this.categoryId = category.getId();
-        this.parent = new CategoryDto(category.getParent());
-        this.children = category.getChildren().stream()
-                .map(child -> new CategoryDto(child))
-                .collect(Collectors.toList());
-        this.categoryName = category.getCategoryName();
-        this.itemCategories = category.getItemCategories().stream()
-                .map(itemCategory -> new ItemCategoryDto(itemCategory))
-                .collect(Collectors.toList());
+        if (category != null) {
+            this.categoryId = category.getId();
+            this.categoryName = category.getCategoryName();
+            this.parent = category.getParent() == null ? null : category.getParent().getId();
+            this.parentName = category.getParent() == null ? null : category.getParent().getCategoryName();
+            this.itemCategories = category.getItemCategories().stream()
+                    .map(itemCategory -> new ItemCategoryDto(itemCategory))
+                    .collect(Collectors.toList());
+            this.children = category.getChildren().stream()
+                    .map(child -> new CategoryDto(child))
+                    .collect(Collectors.toList());
+
+        }
     }
 }
