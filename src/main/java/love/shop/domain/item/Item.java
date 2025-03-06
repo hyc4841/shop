@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @DiscriminatorColumn(name = "dtype")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public abstract class Item {
 
     @Id
@@ -30,10 +32,8 @@ public abstract class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<ItemCategory> itemCategories = new ArrayList<>();
 
-
-
-
     // 연관관계 메서드
+    // 아이템 - 아이템/카테고리 연결
     public void addItemCategory(ItemCategory itemCategory) {
         itemCategories.add(itemCategory);
         itemCategory.setItem(this);
@@ -59,6 +59,8 @@ public abstract class Item {
         }
         this.stockQuantity = restStock;
     }
+
+    public abstract String getType();
 
 
 }
