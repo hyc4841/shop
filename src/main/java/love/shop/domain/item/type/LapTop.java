@@ -1,10 +1,12 @@
-package love.shop.domain.item;
+package love.shop.domain.item.type;
 
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import love.shop.domain.item.*;
+import love.shop.web.item.dto.LapTopSaveReqDto;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -28,6 +30,16 @@ public class LapTop extends Item {
         this.lapTopStorage = lapTopStorage;
         this.lapTopScreenSize = lapTopScreenSize;
         this.lapTopManufactureBrand = lapTopManufactureBrand;
+        this.dataType = "LapTop";
+    }
+
+    public LapTop(LapTopSaveReqDto lapTopDto) {
+        super(lapTopDto.getName(), lapTopDto.getPrice(), lapTopDto.getStockQuantity());
+        this.lapTopBrand = lapTopDto.getLapTopBrand();
+        this.lapTopCpu = lapTopDto.getLapTopCpu();
+        this.lapTopStorage = lapTopDto.getLapTopStorage();
+        this.lapTopScreenSize = lapTopDto.getLapTopScreenSize();
+        this.lapTopManufactureBrand = lapTopDto.getLapTopManufactureBrand();
         this.dataType = "LapTop";
     }
 
