@@ -1,15 +1,17 @@
-package love.shop.domain.item;
+package love.shop.domain.item.type;
 
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.ItemCategory.ItemCategory;
+import love.shop.domain.item.Item;
+import love.shop.web.item.dto.BookSaveReqDto;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Book extends Item{
+public class Book extends Item {
 
     private String author;
     private String isbn; // 도서번호
@@ -28,6 +30,13 @@ public class Book extends Item{
         super(name, price, stockQuantity);
         this.author = author;
         this.isbn = isbn;
+    }
+
+    public Book(BookSaveReqDto bookDto) {
+        super(bookDto.getName(), bookDto.getPrice(), bookDto.getStockQuantity());
+        this.author = bookDto.getAuthor();
+        this.isbn = bookDto.getIsbn();
+        this.dtyep = bookDto.getAuthor();
     }
 
     @Override
