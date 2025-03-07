@@ -7,9 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
+import love.shop.domain.item.type.Book;
+import love.shop.domain.item.type.LapTop;
+import love.shop.web.item.dto.BookSaveReqDto;
+import love.shop.web.item.dto.ItemSaveReqDto;
+import love.shop.web.item.dto.LapTopSaveReqDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -20,6 +26,7 @@ import java.util.List;
 @ToString
 public abstract class Item {
 
+    private static final Logger log = LoggerFactory.getLogger(Item.class);
     @Id
     @GeneratedValue
     @Column(name = "item_id")
@@ -59,6 +66,57 @@ public abstract class Item {
         }
         this.stockQuantity = restStock;
     }
+
+    public static Item createItem(ItemSaveReqDto itemDto) {
+
+        switch (itemDto.getType()) {
+            case "LapTop":
+                return new LapTop((LapTopSaveReqDto) itemDto);
+            case "Book":
+                return new Book((BookSaveReqDto) itemDto);
+            case "SmartPhone":
+                return new Book((BookSaveReqDto) itemDto);
+            case "Projector":
+                return new Book((BookSaveReqDto) itemDto);
+            case "BeamScreen":
+                return new Book((BookSaveReqDto) itemDto);
+            case "StreamingDongle":
+                return new Book((BookSaveReqDto) itemDto);
+            case "streamingMediaPlayer":
+                return new Book((BookSaveReqDto) itemDto);
+            case "DeskTop":
+                return new Book((BookSaveReqDto) itemDto);
+            case "Monitor":
+                return new Book((BookSaveReqDto) itemDto);
+            case "MFP":
+                return new Book((BookSaveReqDto) itemDto);
+            case "Printer":
+                return new Book((BookSaveReqDto) itemDto);
+            case "TonerCartridge":
+                return new Book((BookSaveReqDto) itemDto);
+            case "InkCartridge":
+                return new Book((BookSaveReqDto) itemDto);
+            case "Scanner":
+                return new Book((BookSaveReqDto) itemDto);
+            case "WirelessEarbuds":
+                return new Book((BookSaveReqDto) itemDto);
+            case "WirelessHeadphones":
+                return new Book((BookSaveReqDto) itemDto);
+            case "WiredEarbuds":
+                return new Book((BookSaveReqDto) itemDto);
+            case "WiredHeadphones":
+                return new Book((BookSaveReqDto) itemDto);
+            case "WirelessHeadset":
+                return new Book((BookSaveReqDto) itemDto);
+            case "WiredHeadset":
+                return new Book((BookSaveReqDto) itemDto);
+            default:
+                log.info("카테고리에 없는 데이터 유형");
+                return null;
+        }
+
+    }
+
 
     public abstract String getType();
 
