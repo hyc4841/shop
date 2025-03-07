@@ -1,18 +1,22 @@
 package love.shop.web.item.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class BookSaveReqDto {
-    // item
-    private String name;
-    private Integer price;
-    private Integer stockQuantity;
+public class BookSaveReqDto extends ItemSaveReqDto {
 
-    // book
     private String author;
     private String isbn;
     private List<String> categories;
+
+    private String dataType;
+
+    @Override
+    public String getType() {
+        return dataType;
+    }
 }
