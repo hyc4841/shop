@@ -3,12 +3,12 @@ package love.shop.web.item.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
-import love.shop.domain.item.LapTop;
+import love.shop.domain.item.type.LapTop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +39,9 @@ public abstract class ItemDto {
             switch (item.getType()) {
                 case "LapTop":
                     itemDtoList.add(new LapTopDto((LapTop) item));
+                    break;
+                case "Book":
+                    itemDtoList.add(new BookDto((Book) item));
                     break;
 
 

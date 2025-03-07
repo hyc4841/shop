@@ -2,7 +2,7 @@ package love.shop.web.item.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import love.shop.domain.item.LapTop;
+import love.shop.domain.item.type.LapTop;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

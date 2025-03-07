@@ -10,6 +10,8 @@ import love.shop.domain.category.Category;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.delivery.DeliveryStatus;
 import love.shop.domain.item.*;
+import love.shop.domain.item.type.Book;
+import love.shop.domain.item.type.LapTop;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.PasswordAndCheck;
@@ -23,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
