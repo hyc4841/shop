@@ -2,11 +2,13 @@ package love.shop.service.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.category.Category;
-import love.shop.domain.item.Book;
+import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
 import love.shop.repository.item.ItemRepository;
 import love.shop.web.item.dto.BookUpdateReqDto;
+import love.shop.web.item.dto.ItemSaveReqDto;
 import love.shop.web.item.dto.SearchCond;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +23,30 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    // 아이템 저장
+    // 아이템 단일 저장
     @Transactional
     public void save(Item item) {
         itemRepository.save(item);
+
+        // 보통 아이템을 저장할 땐 카테고리를 같이 넣어서 저장한다.
+
     }
+
+    @Transactional
+    public void saveItemWithCategory(ItemSaveReqDto itemDto, List<Integer> categoriesId) {
+        Item item = Item.createItem(itemDto);// 아이템 저장 요청으로 들어온 DTO를 각 데이터타입에 맞게 구분한 후 해당 데이터타입의
+
+        // 아이템에 카테고리 등록
+        for (Integer categoryId : categoriesId) {
+            Category category = itemRepository.findCategoryById(Long.valueOf(categoryId)).orElseThrow(() -> new RuntimeException("해당 카테고리가 없음"));
+            ItemCategory itemCategory = ItemCategory.createItemCategory(category);
+            item.addItemCategory(itemCategory);
+        }
+
+        save(item);
+    }
+
+
 
     // 아이템 id로 조회
     public Item findOne(Long ItemId) {
