@@ -3,9 +3,9 @@ package love.shop.web.item.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import love.shop.domain.item.type.Book;
+import love.shop.domain.item.type.*;
 import love.shop.domain.item.Item;
-import love.shop.domain.item.type.LapTop;
+import love.shop.web.item.saveDto.BookSaveReqDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,10 @@ public abstract class ItemDto {
     public ItemDto() {
     }
 
-    public static List<ItemDto> createItemDto(List<Item> itemList) {
+
+
+    // 리스트로 들어온 아이템을 각자 알맞은 Dto로 만들어주는 메서드
+    public static List<ItemDto> createItemDtoList(List<Item> itemList) {
         List<ItemDto> itemDtoList = new ArrayList<>();
         for (Item item : itemList) {
             switch (item.getType()) {
@@ -53,6 +56,38 @@ public abstract class ItemDto {
         return itemDtoList;
     }
 
+
+    public static ItemDto createItemDto(Item item) {
+
+        return switch (item.getType()) {
+            case "LapTop" -> new LapTopDto((LapTop) item);
+            case "Book" -> new BookDto((Book) item);
+            case "SmartPhone" -> new SmartPhoneDto((SmartPhone) item);
+            case "Projector" -> new ProjectorDto((Projector) item);
+            case "BeamScreen" -> new BeamScreenDto((BeamScreen) item);
+            case "StreamingDongle" -> new StreamingDongleDto((StreamingDongle) item);
+            case "streamingMediaPlayer" -> new streamingMediaPlayerDto((streamingMediaPlayer) item);
+            case "DeskTop" -> new DeskTopDto((DeskTop) item);
+            case "Monitor" -> new MonitorDto((Monitor) item);
+            case "MFP" -> new MFPDto((MFP) item);
+            case "Printer" -> new PrinterDto((Printer) item);
+            case "TonerCartridge" -> new TonerCartridgeDto((TonerCartridge) item);
+            case "InkCartridge" -> new InkCartridgeDto((InkCartridge) item);
+            case "Scanner" -> new ScannerDto((Scanner) item);
+            case "WirelessEarbuds" -> new WirelessEarbudsDto((WirelessEarbuds) item);
+            case "WirelessHeadphones" -> new WirelessHeadphonesDto((WirelessHeadphones) item);
+            case "WiredEarbuds" -> new WiredEarbudsDto((WiredEarbuds) item);
+            case "WiredHeadphones" -> new WiredHeadphonesDto((WiredHeadphones) item);
+            case "WirelessHeadset" -> new WirelessHeadsetDto((WirelessHeadset) item);
+            case "WiredHeadset" -> new WiredHeadsetDto((WiredHeadset) item);
+
+            default -> {
+                log.info("유효한 카테고리가 없는 상품={}", item);
+                yield null;
+            }
+        };
+
+    }
 
 
 
