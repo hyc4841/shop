@@ -17,7 +17,6 @@ public class CategoryDto {
     private List<CategoryDto> children;
 
 
-
     // 부모가 없을 수도 있다, 자식이 없을 수도 있다.
     //
 
