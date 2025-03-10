@@ -6,17 +6,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.item.Item;
-import love.shop.web.item.dto.BookSaveReqDto;
+import love.shop.web.item.saveDto.BookSaveReqDto;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book extends Item {
 
-    private String author;
-    private String isbn; // 도서번호
+    private String author;      // 저자
+    private String isbn;        // 도서번호
 
-    private String dtyep = "Book";
+    private final String dataType = "Book";
+
+
 
     public static Book createBook(String author, String isbn, String name, int price, int stockQuantity, ItemCategory... itemCategories) {
         Book book = new Book(author, isbn, name, price, stockQuantity);
@@ -36,11 +38,12 @@ public class Book extends Item {
         super(bookDto.getName(), bookDto.getPrice(), bookDto.getStockQuantity());
         this.author = bookDto.getAuthor();
         this.isbn = bookDto.getIsbn();
-        this.dtyep = bookDto.getAuthor();
     }
 
     @Override
     public String getType() {
-        return "";
+        return dataType;
     }
+
+
 }
