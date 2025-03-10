@@ -1,4 +1,4 @@
-package love.shop.web.item.dto;
+package love.shop.web.item.saveDto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,10 +13,5 @@ public class BookSaveReqDto extends ItemSaveReqDto {
     private String isbn;
     private List<String> categories;
 
-    private String dataType;
 
-    @Override
-    public String getType() {
-        return dataType;
-    }
 }
