@@ -19,6 +19,7 @@ import love.shop.domain.order.Order;
 import love.shop.domain.orderItem.OrderItem;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
+import love.shop.web.item.saveDto.BookSaveReqDto;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,13 +63,12 @@ public class InitDb {
             // 회원가입
             SignupRequestDto signupRequest = new SignupRequestDto("Hell4", passwordAndCheck,"황윤철", "01099694841",
                     "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
-
             Long signUpMemberId = memberService.signUp(signupRequest);
 
             // 아이템, 주문, 배달, 주문아이템
             Member member = memberService.findMemberById(signUpMemberId);
 
-            // 1. 카테고리 생성
+            // 1. 카테고리 조회
             Category categoryToy = itemService.findCategoryByName("반려동물/취미/사무");
             Category categoryBook = itemService.findCategoryByName("식품/유아/완구");
 
@@ -78,7 +78,7 @@ public class InitDb {
 
             // 3. 아이템 생성(아이템-카테고리를 넣어서 완성 시킨다.)
             Book book = Book.createBook("저자1", "41541", "JPA1 BOOK", 10000, 100, itemCategoryBook, itemCategoryToy);
-            em.persist(book);
+            itemService.save(book);
 
             // 어떻게 만들든 연관관계 이어주고 저장만 제대로 하면 되는듯.
             Book book1 = createBook("저자1", "41541", "JPA1 BOOK", 10000, 100);
@@ -106,6 +106,8 @@ public class InitDb {
 
             // 아이템, 주문, 배달, 주문아이템
             Member member = memberService.findMemberById(signUpMemberId);
+
+//            BookSaveReqDto bookSaveReqDto = new BookSaveReqDto("필리파 페리", "1234", );
 
             Book book1 = createBook("저자1", "41541", "JPA2 BOOK", 10000, 100);
             em.persist(book1);
@@ -163,17 +165,17 @@ public class InitDb {
 
         public void initCategories() {
             // 1차 대분류
-            Category ai = new Category("Ai");
-            Category toy = new Category("가전/TV");
-            Category pc = new Category("컴퓨터/노트북/조립PC");
-            Category mobile = new Category("태블릿/모바일/디카");
-            Category golf = new Category("골프/스포츠");
-            Category car = new Category("자동차/용품/공구");
-            Category furniture = new Category("가구/조명");
-            Category food = new Category("식품/유아/완구");
-            Category living = new Category("생활/주방/건강");
-            Category fashion = new Category("패션/잡화/뷰티");
-            Category animal = new Category("반려동물/취미/사무");
+            Category ai = new Category("Ai", "Major category");
+            Category toy = new Category("가전/TV", "Major category");
+            Category pc = new Category("컴퓨터/노트북/조립PC", "Major category");
+            Category mobile = new Category("태블릿/모바일/디카", "Major category");
+            Category golf = new Category("골프/스포츠", "Major category");
+            Category car = new Category("자동차/용품/공구", "Major category");
+            Category furniture = new Category("가구/조명", "Major category");
+            Category food = new Category("식품/유아/완구", "Major category");
+            Category living = new Category("생활/주방/건강", "Major category");
+            Category fashion = new Category("패션/잡화/뷰티", "Major category");
+            Category animal = new Category("반려동물/취미/사무", "Major category");
 
             em.persist(ai);
             em.persist(toy);
