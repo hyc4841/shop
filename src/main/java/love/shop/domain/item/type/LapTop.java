@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.item.*;
-import love.shop.web.item.dto.LapTopSaveReqDto;
+import love.shop.web.item.saveDto.LapTopSaveReqDto;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -19,9 +19,7 @@ public class LapTop extends Item {
     private LapTopStorage lapTopStorage;
     private LapTopScreenSize lapTopScreenSize;
     private LapTopManufactureBrand lapTopManufactureBrand;
-
-    private String dataType;
-
+    private final String dataType = "LapTop";
 
     public LapTop(String name, int price, int stockQuantity, LapTopBrand lapTopBrand, LapTopCpu lapTopCpu, LapTopStorage lapTopStorage, LapTopScreenSize lapTopScreenSize, LapTopManufactureBrand lapTopManufactureBrand) {
         super(name, price, stockQuantity);
@@ -30,7 +28,6 @@ public class LapTop extends Item {
         this.lapTopStorage = lapTopStorage;
         this.lapTopScreenSize = lapTopScreenSize;
         this.lapTopManufactureBrand = lapTopManufactureBrand;
-        this.dataType = "LapTop";
     }
 
     public LapTop(LapTopSaveReqDto lapTopDto) {
@@ -40,7 +37,6 @@ public class LapTop extends Item {
         this.lapTopStorage = lapTopDto.getLapTopStorage();
         this.lapTopScreenSize = lapTopDto.getLapTopScreenSize();
         this.lapTopManufactureBrand = lapTopDto.getLapTopManufactureBrand();
-        this.dataType = "LapTop";
     }
 
     @Override
