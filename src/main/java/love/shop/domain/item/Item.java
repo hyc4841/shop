@@ -9,9 +9,9 @@ import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.type.LapTop;
-import love.shop.web.item.dto.BookSaveReqDto;
-import love.shop.web.item.dto.ItemSaveReqDto;
-import love.shop.web.item.dto.LapTopSaveReqDto;
+import love.shop.web.item.saveDto.BookSaveReqDto;
+import love.shop.web.item.saveDto.ItemSaveReqDto;
+import love.shop.web.item.saveDto.LapTopSaveReqDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,56 +69,35 @@ public abstract class Item {
 
     public static Item createItem(ItemSaveReqDto itemDto) {
 
-        switch (itemDto.getType()) {
-            case "LapTop":
-                return new LapTop((LapTopSaveReqDto) itemDto);
-            case "Book":
-                return new Book((BookSaveReqDto) itemDto);
-            case "SmartPhone":
-                return new Book((BookSaveReqDto) itemDto);
-            case "Projector":
-                return new Book((BookSaveReqDto) itemDto);
-            case "BeamScreen":
-                return new Book((BookSaveReqDto) itemDto);
-            case "StreamingDongle":
-                return new Book((BookSaveReqDto) itemDto);
-            case "streamingMediaPlayer":
-                return new Book((BookSaveReqDto) itemDto);
-            case "DeskTop":
-                return new Book((BookSaveReqDto) itemDto);
-            case "Monitor":
-                return new Book((BookSaveReqDto) itemDto);
-            case "MFP":
-                return new Book((BookSaveReqDto) itemDto);
-            case "Printer":
-                return new Book((BookSaveReqDto) itemDto);
-            case "TonerCartridge":
-                return new Book((BookSaveReqDto) itemDto);
-            case "InkCartridge":
-                return new Book((BookSaveReqDto) itemDto);
-            case "Scanner":
-                return new Book((BookSaveReqDto) itemDto);
-            case "WirelessEarbuds":
-                return new Book((BookSaveReqDto) itemDto);
-            case "WirelessHeadphones":
-                return new Book((BookSaveReqDto) itemDto);
-            case "WiredEarbuds":
-                return new Book((BookSaveReqDto) itemDto);
-            case "WiredHeadphones":
-                return new Book((BookSaveReqDto) itemDto);
-            case "WirelessHeadset":
-                return new Book((BookSaveReqDto) itemDto);
-            case "WiredHeadset":
-                return new Book((BookSaveReqDto) itemDto);
-            default:
+        return switch (itemDto.getDataType()) {
+            case "LapTop" -> new LapTop((LapTopSaveReqDto) itemDto);
+            case "Book" -> new Book((BookSaveReqDto) itemDto);
+            case "SmartPhone" -> new Book((BookSaveReqDto) itemDto);
+            case "Projector" -> new Book((BookSaveReqDto) itemDto);
+            case "BeamScreen" -> new Book((BookSaveReqDto) itemDto);
+            case "StreamingDongle" -> new Book((BookSaveReqDto) itemDto);
+            case "streamingMediaPlayer" -> new Book((BookSaveReqDto) itemDto);
+            case "DeskTop" -> new Book((BookSaveReqDto) itemDto);
+            case "Monitor" -> new Book((BookSaveReqDto) itemDto);
+            case "MFP" -> new Book((BookSaveReqDto) itemDto);
+            case "Printer" -> new Book((BookSaveReqDto) itemDto);
+            case "TonerCartridge" -> new Book((BookSaveReqDto) itemDto);
+            case "InkCartridge" -> new Book((BookSaveReqDto) itemDto);
+            case "Scanner" -> new Book((BookSaveReqDto) itemDto);
+            case "WirelessEarbuds" -> new Book((BookSaveReqDto) itemDto);
+            case "WirelessHeadphones" -> new Book((BookSaveReqDto) itemDto);
+            case "WiredEarbuds" -> new Book((BookSaveReqDto) itemDto);
+            case "WiredHeadphones" -> new Book((BookSaveReqDto) itemDto);
+            case "WirelessHeadset" -> new Book((BookSaveReqDto) itemDto);
+            case "WiredHeadset" -> new Book((BookSaveReqDto) itemDto);
+            default -> {
                 log.info("카테고리에 없는 데이터 유형");
-                return null;
-        }
+                yield null;
+            }
+        };
 
     }
 
-
     public abstract String getType();
-
 
 }
