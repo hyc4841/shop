@@ -1,4 +1,4 @@
-package love.shop.web.item.dto;
+package love.shop.web.item.updateDto;
 
 import lombok.Data;
 
