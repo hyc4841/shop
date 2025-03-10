@@ -8,8 +8,11 @@ import love.shop.domain.item.Item;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
 import love.shop.web.item.dto.*;
+import love.shop.web.item.saveDto.ItemSaveReqDto;
+import love.shop.web.item.updateDto.BookUpdateReqDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,14 +28,17 @@ public class ItemController {
     private final ItemRepository itemRepository;
 
     @PostMapping("/item")
-    public ResponseEntity<String> saveItemWithCategory(@RequestBody ItemSaveReqDto itemDto) {
+    public ResponseEntity<ItemDto> saveItemWithCategory(@RequestBody @Validated ItemSaveReqDto itemDto) {
+
+        log.info("itemDto={}", itemDto);
+        log.info("아이템 카테고리별로 저장하기");
+
+        Item savedItem = itemService.saveItemWithCategory(itemDto);
+
+        ItemDto savedItemDto = ItemDto.createItemDto(savedItem);
 
 
-        // 지금은 뭘하고 있냐면 아이템 생성하고 저장하려고 하는데 아이템-카테고리 아이템 생성할 때 같이 저장하고 싶은데 어떻게 할지
-        // 헤매고 있는중임.
-        // 상속 관계일 때는 객체 어떻게 생성하는지도 확실히 알아야함.
-
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok(savedItemDto);
     }
 
     // 아이템 조건 검색
@@ -77,6 +83,7 @@ public class ItemController {
         return ResponseEntity.ok("삭제 완료");
     }
 
+    // 모든 카테고리 조회
     @GetMapping("/category")
     public ResponseEntity<List<CategoryDto>> findAllCategory() {
         log.info("모든 카테고리 조회");
@@ -88,6 +95,19 @@ public class ItemController {
         return ResponseEntity.ok(categoryDtos);
     }
 
+    // 대분류 카테고리 조회
+    @GetMapping("/category/major")
+    public ResponseEntity<List<CategoryDto>> findMajorCategory() {
+        log.info("대분류 카테고리 조회");
+
+        List<Category> majorCategory = itemRepository.findMajorCategory();
+
+        List<CategoryDto> categoryDtoList = majorCategory.stream().map(category -> new CategoryDto(category))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(categoryDtoList);
+    }
+
     @GetMapping("/category/items")
     public ResponseEntity<List<ItemDto>> findItemsByCategories() {
 
@@ -97,7 +117,7 @@ public class ItemController {
         categories.add("노트북");
 
         List<Item> itemsByCategories = itemRepository.findItemsByCategories(categories);
-        List<ItemDto> itemDto = ItemDto.createItemDto(itemsByCategories);
+        List<ItemDto> itemDto = ItemDto.createItemDtoList(itemsByCategories);
 
         log.info("items={}", itemsByCategories);
 
