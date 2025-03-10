@@ -9,9 +9,9 @@ import love.shop.domain.ItemCategory.QItemCategory;
 import love.shop.domain.category.Category;
 import love.shop.domain.category.QCategory;
 import love.shop.domain.item.Item;
-import love.shop.domain.item.QBook;
 import love.shop.domain.item.QItem;
-import love.shop.web.item.dto.BookUpdateReqDto;
+import love.shop.domain.item.type.QBook;
+import love.shop.web.item.updateDto.BookUpdateReqDto;
 import love.shop.web.item.dto.SearchCond;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -93,6 +93,14 @@ public class ItemRepository {
         return queryFactory.select(category)
                 .from(category)
                 .leftJoin(category.parent).fetchJoin()
+                .fetch();
+    }
+
+    public List<Category> findMajorCategory() {
+        return queryFactory.select(category)
+                .from(category)
+                .leftJoin(category.parent).fetchJoin()
+                .where(category.subCategoryName.eq("Major Category"))
                 .fetch();
     }
 
