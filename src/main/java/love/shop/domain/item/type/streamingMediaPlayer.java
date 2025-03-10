@@ -1,4 +1,20 @@
 package love.shop.domain.item.type;
 
-public class streamingMediaPlayer {
+import jakarta.persistence.Entity;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import love.shop.domain.item.Item;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class streamingMediaPlayer extends Item {
+
+    private final String dataType = "streamingMediaPlayer";
+
+    @Override
+    public String getType() {
+        return dataType;
+    }
 }
