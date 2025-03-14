@@ -11,7 +11,8 @@ import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = LapTopSaveReqDto.class, name = "LapTop")
+        @JsonSubTypes.Type(value = LapTopSaveReqDto.class, name = "LapTop"),
+        @JsonSubTypes.Type(value = BookSaveReqDto.class, name = "Book"),
 })
 @Data
 @RequiredArgsConstructor
