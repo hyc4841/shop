@@ -1,5 +1,7 @@
 package love.shop.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
@@ -9,13 +11,13 @@ import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
 import love.shop.web.item.dto.*;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
+import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,9 +43,12 @@ public class ItemController {
         return ResponseEntity.ok(savedItemDto);
     }
 
-    // 아이템 조건 검색
+    // 카테고리별 아이템 리스트를 건네주는 컨트롤러가 따로 있어야할듯.
+    // 지금 이 메서드를 카테고리별 아이템 조회로 만들어야할듯
+
+    // 카테고리 중분류 아이템 조건 검색
     @GetMapping("/items")
-    public ResponseEntity<List<ItemDto>> items(@RequestBody SearchCond searchCond,
+    public ResponseEntity<List<ItemDto>> items(@ModelAttribute SearchCond searchCond, // 중분류 카테고리로 뿌려주는걸로 만들자
                                                @RequestParam(value = "offset", defaultValue = "0") int offset,
                                                @RequestParam(value = "limit", defaultValue = "50") int limit) {
         log.info("searchCond={}", searchCond);
@@ -51,9 +56,14 @@ public class ItemController {
         List<Item> items = itemService.findItemsBySearchCond(searchCond, offset, limit);
         log.info("조건으로 찾은 items={}", items);
 
-        List<ItemDto> result = new ArrayList<>();
+        for (Long categoryId : searchCond.getCategories()) {
+            Category category = itemService.findCategoryById(categoryId);
 
-        return ResponseEntity.ok(result);
+        }
+
+        List<ItemDto> itemDtoList = ItemDto.createItemDtoList(items);
+
+        return ResponseEntity.ok(itemDtoList);
     }
 
     // 아이템 상세 조회
@@ -108,22 +118,25 @@ public class ItemController {
         return ResponseEntity.ok(categoryDtoList);
     }
 
-    @GetMapping("/category/items")
-    public ResponseEntity<List<ItemDto>> findItemsByCategories() {
 
-        List<String> categories = new ArrayList<>();
-
-        categories.add("게이밍 노트북");
-        categories.add("노트북");
-
-        List<Item> itemsByCategories = itemRepository.findItemsByCategories(categories);
-        List<ItemDto> itemDto = ItemDto.createItemDtoList(itemsByCategories);
-
-        log.info("items={}", itemsByCategories);
-
-        return ResponseEntity.ok(itemDto);
+//    @GetMapping("/items")
+    public ResponseEntity<List<ItemDto>> findItemsByCategories(@RequestParam("categoryId") Long categoryId) {
+        log.info("categoryId={}", categoryId);
+        // 아이템 조회
+        Category findCategory = itemService.findCategoryById(categoryId);
+        List<Item> items = itemService.findItemsByCategoryId(categoryId);
+        List<ItemDto> itemDtoList = ItemDto.createItemDtoList(items);
+        return ResponseEntity.ok(itemDtoList);
     }
 
+
+    @Data
+    @AllArgsConstructor
+    static class ItemListResult<T> {
+        private T itemList;
+        private T filterList;
+
+    }
 
 
     // 카테고리 테스트
