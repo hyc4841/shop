@@ -13,8 +13,6 @@ public class BookDto extends ItemDto {
     private String author;
     private String isbn;
 
-    private String dtype = "Book";
-
     public BookDto(Book book) {
         super.setName(book.getName());
         super.setPrice(book.getPrice());
