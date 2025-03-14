@@ -3,11 +3,9 @@ package love.shop.web.item.dto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.item.type.*;
 import love.shop.domain.item.Item;
-import love.shop.web.item.saveDto.BookSaveReqDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +13,9 @@ import java.util.List;
 @Data
 @Getter
 @Setter
+@Slf4j
 public abstract class ItemDto {
 
-    private static final Logger log = LoggerFactory.getLogger(ItemDto.class);
     private String name;
     private int price;
     private int stockQuantity;
@@ -32,8 +30,6 @@ public abstract class ItemDto {
 
     public ItemDto() {
     }
-
-
 
     // 리스트로 들어온 아이템을 각자 알맞은 Dto로 만들어주는 메서드
     public static List<ItemDto> createItemDtoList(List<Item> itemList) {
