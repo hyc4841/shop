@@ -9,7 +9,7 @@ import love.shop.domain.item.Item;
 import love.shop.repository.item.ItemRepository;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
-import love.shop.web.item.dto.SearchCond;
+import love.shop.web.item.searchCond.SearchCond;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,9 +78,21 @@ public class ItemService {
         return itemRepository.findAllCategory();
     }
 
+    public Category findCategoryById(Long categoryId) {
+        return itemRepository.findCategoryById(categoryId).orElseThrow(() -> new RuntimeException("값이 없음"));
+    }
+
     // 아이템 조건 검색
     public List<Item> findItemsBySearchCond(SearchCond searchCond, int offset, int limit) {
         return itemRepository.findItemsBySearchCond(searchCond, offset, limit);
+    }
+
+    public List<Item> findItemsByCategories(List<String> categories) {
+        return itemRepository.findItemsByCategories(categories);
+    }
+
+    public List<Item> findItemsByCategoryId(Long categoryId) {
+        return itemRepository.findItemsByCategoryId(categoryId);
     }
 
     // 책 수정
