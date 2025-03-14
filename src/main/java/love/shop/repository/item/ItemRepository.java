@@ -8,11 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.ItemCategory.QItemCategory;
 import love.shop.domain.category.Category;
 import love.shop.domain.category.QCategory;
-import love.shop.domain.item.Item;
-import love.shop.domain.item.QItem;
+import love.shop.domain.item.*;
 import love.shop.domain.item.type.QBook;
+import love.shop.domain.item.type.QLapTop;
+import love.shop.web.item.searchCond.*;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
-import love.shop.web.item.dto.SearchCond;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +29,7 @@ public class ItemRepository {
     QItem item = QItem.item;
     QItemCategory itemCategory = QItemCategory.itemCategory;
     QBook book = QBook.book;
+    QLapTop lapTop = QLapTop.lapTop;
 
 
     // 아이템 저장
@@ -109,6 +110,33 @@ public class ItemRepository {
 
         BooleanBuilder builder = new BooleanBuilder();
 
+        switch (searchCond.getType()) {
+            case "LapTop" -> lapTopSearchCond((LapTopSearchCond) searchCond, builder);
+            case "Book" -> bookScreenSearchCond((BookSearchCond) searchCond, builder);
+            case "SmartPhone" -> smartPhoneSearchCond((SmartPhoneSearchCond) searchCond, builder);
+            case "Projector" -> projectorSearchCond((ProjectorSearchCond) searchCond, builder);
+            case "BeamScreen" -> beamScreenSearchCond((BeamScreenSearchCond) searchCond, builder);
+            case "StreamingDongle" -> streamingDongleSearchCond((StreamingDongleSearchCond) searchCond, builder);
+            case "streamingMediaPlayer" -> streamingMediaPlayerSearchCond((StreamingMediaPlayerSearchCond) searchCond, builder);
+            case "DeskTop" -> deskTopSearchCond((DeskTopSearchCond) searchCond, builder);
+            case "Monitor" -> monitorSearchCond((MonitorSearchCond) searchCond, builder);
+            case "MFP" -> mFPSearchCond((MFPSearchCond) searchCond, builder);
+            case "Printer" -> printerSearchCond((PrinterSearchCond) searchCond, builder);
+            case "TonerCartridge" -> tonerCartridgeSearchCond((TonerCartridgeSearchCond) searchCond, builder);
+            case "InkCartridge" -> inkCartridgeSearchCond((InkCartridgeSearchCond) searchCond, builder);
+            case "Scanner" -> scannerSearchCond((ScannerSearchCond) searchCond, builder);
+            case "WirelessEarbuds" -> wirelessEarBudsSearchCond((WirelessEarbudsSearchCond) searchCond, builder);
+            case "WirelessHeadphones" -> wirelessHeadphonesSearchCond((WirelessHeadphonesSearchCond) searchCond, builder);
+            case "WiredEarbuds" -> wiredEarbudsSearchCond((WiredEarbudsSearchCond) searchCond, builder);
+            case "WiredHeadphones" -> wiredHeadphonesSearchCond((WiredHeadphonesSearchCond) searchCond, builder);
+            case "WirelessHeadset" -> wirelessHeadsetSearchCond((WirelessHeadsetSearchCond) searchCond, builder);
+            case "WiredHeadset" -> wiredHeadsetSearchCond((WiredHeadsetSearchCond) searchCond, builder);
+
+            default -> {
+                log.info("유효한 카테고리가 없습니다={}", searchCond.getType());
+            }
+        }
+
         // 아이템 이름 조건
         if (searchCond.getItemName() != null && !searchCond.getItemName().isBlank()) { // isEmpty? isBlank?
             builder.and(item.name.like("%" + searchCond.getItemName() + "%"));
@@ -116,8 +144,8 @@ public class ItemRepository {
 
         // 카테고리 조건
         if (searchCond.getCategories() != null && !searchCond.getCategories().isEmpty()) {
-            for (String categoryName : searchCond.getCategories()) {
-                builder.or(category.categoryName.eq(categoryName));
+            for (Long categoryId : searchCond.getCategories()) {
+                builder.or(category.id.eq(categoryId));
             }
         }
 
@@ -139,6 +167,85 @@ public class ItemRepository {
                 .limit(limit)
                 .fetch();
     }
+
+    private void lapTopSearchCond(LapTopSearchCond searchCond, BooleanBuilder builder) {
+        if (searchCond.getLapTopBrand() != null) {
+            builder.and(lapTop.lapTopBrand.eq(LapTopBrand.valueOf(searchCond.getLapTopBrand())));
+        }
+        if (searchCond.getLapTopCpu() != null) {
+            builder.and(lapTop.lapTopCpu.eq(LapTopCpu.valueOf(searchCond.getLapTopCpu())));
+        }
+        if (searchCond.getLapTopStorage() != null) {
+            builder.and(lapTop.lapTopStorage.eq(LapTopStorage.valueOf(searchCond.getLapTopStorage())));
+        }
+        if (searchCond.getLapTopScreenSize() != null) {
+            builder.and(lapTop.lapTopScreenSize.eq(LapTopScreenSize.valueOf(searchCond.getLapTopStorage())));
+        }
+        if (searchCond.getLapTopManufactureBrand() != null) {
+            builder.and(lapTop.lapTopManufactureBrand.eq(LapTopManufactureBrand.valueOf(searchCond.getLapTopManufactureBrand())));
+        }
+    }
+
+    private void bookScreenSearchCond(BookSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void beamScreenSearchCond(BeamScreenSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void deskTopSearchCond(DeskTopSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void inkCartridgeSearchCond(InkCartridgeSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void mFPSearchCond(MFPSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void monitorSearchCond(MonitorSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void printerSearchCond(PrinterSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void projectorSearchCond(ProjectorSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void scannerSearchCond(ScannerSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void smartPhoneSearchCond(SmartPhoneSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void streamingDongleSearchCond(StreamingDongleSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void streamingMediaPlayerSearchCond(StreamingMediaPlayerSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void tonerCartridgeSearchCond(TonerCartridgeSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void wiredEarbudsSearchCond(WiredEarbudsSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void wiredHeadphonesSearchCond(WiredHeadphonesSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void wiredHeadsetSearchCond(WiredHeadsetSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void wirelessEarBudsSearchCond(WirelessEarbudsSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void wirelessHeadphonesSearchCond(WirelessHeadphonesSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+    private void wirelessHeadsetSearchCond(WirelessHeadsetSearchCond searchCond, BooleanBuilder builder) {
+
+    }
+
+
+
 
     // 책 수정
     public void updateBook(BookUpdateReqDto bookDto) {
@@ -174,6 +281,15 @@ public class ItemRepository {
                 .join(itemCategory.item)
                 .join(itemCategory.category)
                 .where(builder)
+                .fetch();
+    }
+
+    public List<Item> findItemsByCategoryId(Long categoryId) {
+        return queryFactory.select(item)
+                .from(itemCategory)
+                .join(itemCategory.item)
+                .join(itemCategory.category)
+                .where(itemCategory.category.id.eq(categoryId))
                 .fetch();
     }
 
