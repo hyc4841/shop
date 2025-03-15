@@ -1,4 +1,4 @@
 package love.shop.web.item.saveDto;
 
-public class WiredEarbudsSaveReqDto {
+public class WiredEarbudsSaveReqDto extends ItemSaveReqDto  {
 }

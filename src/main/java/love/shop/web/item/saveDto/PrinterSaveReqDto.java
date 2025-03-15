@@ -1,4 +1,4 @@
 package love.shop.web.item.saveDto;
 
-public class PrinterSaveReqDto {
+public class PrinterSaveReqDto extends ItemSaveReqDto {
 }

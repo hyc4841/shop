@@ -9,6 +9,7 @@ import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
+import love.shop.web.category.dto.CategoryDto;
 import love.shop.web.item.dto.*;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.searchCond.SearchCond;

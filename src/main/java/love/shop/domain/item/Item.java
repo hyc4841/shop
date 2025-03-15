@@ -69,7 +69,7 @@ public abstract class Item {
 
     public static Item createItem(ItemSaveReqDto itemDto) {
 
-        return switch (itemDto.getDataType()) {
+        return switch (itemDto.getType()) {
             case "LapTop" -> new LapTop((LapTopSaveReqDto) itemDto);
             case "Book" -> new Book((BookSaveReqDto) itemDto);
             case "SmartPhone" -> new Book((BookSaveReqDto) itemDto);

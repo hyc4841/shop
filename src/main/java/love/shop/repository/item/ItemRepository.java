@@ -11,6 +11,7 @@ import love.shop.domain.category.QCategory;
 import love.shop.domain.item.*;
 import love.shop.domain.item.type.QBook;
 import love.shop.domain.item.type.QLapTop;
+import love.shop.web.item.filter.lapTop.*;
 import love.shop.web.item.searchCond.*;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import org.springframework.stereotype.Repository;

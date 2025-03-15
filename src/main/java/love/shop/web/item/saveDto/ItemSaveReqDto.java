@@ -13,11 +13,31 @@ import java.util.List;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LapTopSaveReqDto.class, name = "LapTop"),
         @JsonSubTypes.Type(value = BookSaveReqDto.class, name = "Book"),
+        @JsonSubTypes.Type(value = BeamScreenSaveReqDto.class, name = "BeamScreen"),
+        @JsonSubTypes.Type(value = DeskTopSaveReqDto.class, name = "DeskTop"),
+        @JsonSubTypes.Type(value = InkCartridgeSaveReqDto.class, name = "InkCartridge"),
+        @JsonSubTypes.Type(value = MFPSaveReqDto.class, name = "MFP"),
+        @JsonSubTypes.Type(value = MonitorSaveReqDto.class, name = "Monitor"),
+        @JsonSubTypes.Type(value = PrinterSaveReqDto.class, name = "Printer"),
+        @JsonSubTypes.Type(value = ProjectorSaveReqDto.class, name = "Projector"),
+        @JsonSubTypes.Type(value = ScannerSaveReqDto.class, name = "Scanner"),
+        @JsonSubTypes.Type(value = SmartPhoneSaveReqDto.class, name = "SmartPhone"),
+        @JsonSubTypes.Type(value = StreamingDongleSaveReqDto.class, name = "StreamingDongle"),
+        @JsonSubTypes.Type(value = StreamingMediaPlayerSaveReqDto.class, name = "streamingMediaPlayer"),
+        @JsonSubTypes.Type(value = TonerCartridgeSaveReqDto.class, name = "TonerCartridge"),
+        @JsonSubTypes.Type(value = WiredEarbudsSaveReqDto.class, name = "WiredEarbuds"),
+        @JsonSubTypes.Type(value = WiredHeadphonesSaveReqDto.class, name = "WiredHeadphones"),
+        @JsonSubTypes.Type(value = WiredHeadsetSaveReqDto.class, name = "WiredHeadset"),
+        @JsonSubTypes.Type(value = WirelessEarbudsSaveReqDto.class, name = "WirelessEarbuds"),
+        @JsonSubTypes.Type(value = WirelessHeadphonesSaveReqDto.class, name = "WirelessHeadphones"),
+        @JsonSubTypes.Type(value = WirelessHeadsetSaveReqDto.class, name = "WirelessHeadset"),
+
 })
 @Data
 @RequiredArgsConstructor
 public class ItemSaveReqDto {
 
+    private String type;
     @NotBlank
     private String name;
     @NotNull
@@ -27,19 +47,17 @@ public class ItemSaveReqDto {
 
     private List<Integer> categoriesId; // 카테고리도 반드시 있어야하긴 한데..
 
-    @NotBlank
-    private String dataType;
 
-    public ItemSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String dataType) {
+    public ItemSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String type) {
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.categoriesId = categoriesId;
-        this.dataType = dataType;
+        this.type = type;
     }
 
-    public String getDataType() {
-        return dataType;
+    public String getType() {
+        return type;
     }
 
 

@@ -1,4 +1,4 @@
 package love.shop.web.item.saveDto;
 
-public class StreamingDongleSaveReqDto {
+public class StreamingDongleSaveReqDto extends ItemSaveReqDto {
 }
