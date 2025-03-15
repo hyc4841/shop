@@ -1,4 +1,4 @@
 package love.shop.web.item.saveDto;
 
-public class MFPSaveReqDto {
+public class MFPSaveReqDto extends ItemSaveReqDto {
 }

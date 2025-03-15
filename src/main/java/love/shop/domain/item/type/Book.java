@@ -18,8 +18,6 @@ public class Book extends Item {
 
     private final String dataType = "Book";
 
-
-
     public static Book createBook(String author, String isbn, String name, int price, int stockQuantity, ItemCategory... itemCategories) {
         Book book = new Book(author, isbn, name, price, stockQuantity);
         for (ItemCategory itemCategory : itemCategories) {

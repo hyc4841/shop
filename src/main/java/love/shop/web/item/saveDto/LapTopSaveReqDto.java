@@ -3,7 +3,7 @@ package love.shop.web.item.saveDto;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import love.shop.domain.item.*;
+import love.shop.web.item.filter.lapTop.*;
 
 import java.util.List;
 

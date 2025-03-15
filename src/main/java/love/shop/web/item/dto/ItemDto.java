@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.item.type.*;
 import love.shop.domain.item.Item;
+import love.shop.web.itemCategory.dto.ItemCategoryDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public abstract class ItemDto {
             case "Projector" -> new ProjectorDto((Projector) item);
             case "BeamScreen" -> new BeamScreenDto((BeamScreen) item);
             case "StreamingDongle" -> new StreamingDongleDto((StreamingDongle) item);
-            case "streamingMediaPlayer" -> new streamingMediaPlayerDto((streamingMediaPlayer) item);
+            case "streamingMediaPlayer" -> new StreamingMediaPlayerDto((streamingMediaPlayer) item);
             case "DeskTop" -> new DeskTopDto((DeskTop) item);
             case "Monitor" -> new MonitorDto((Monitor) item);
             case "MFP" -> new MFPDto((MFP) item);

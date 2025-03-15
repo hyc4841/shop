@@ -1,4 +1,4 @@
 package love.shop.web.item.saveDto;
 
-public class ProjectorSaveReqDto {
+public class ProjectorSaveReqDto extends ItemSaveReqDto {
 }
