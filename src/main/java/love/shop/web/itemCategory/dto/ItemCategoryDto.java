@@ -1,4 +1,4 @@
-package love.shop.web.item.dto;
+package love.shop.web.itemCategory.dto;
 
 import lombok.Data;
 import love.shop.domain.ItemCategory.ItemCategory;
