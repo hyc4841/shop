@@ -1,7 +1,8 @@
-package love.shop.web.item.dto;
+package love.shop.web.category.dto;
 
 import lombok.Data;
 import love.shop.domain.category.Category;
+import love.shop.web.itemCategory.dto.ItemCategoryDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
