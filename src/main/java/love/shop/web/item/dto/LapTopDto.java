@@ -3,6 +3,9 @@ package love.shop.web.item.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import love.shop.domain.item.type.LapTop;
+import love.shop.web.itemCategory.dto.ItemCategoryDto;
+
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -16,6 +19,10 @@ public class LapTopDto extends ItemDto {
 
     public LapTopDto(LapTop lapTop) {
         super(lapTop.getName(), lapTop.getPrice(), lapTop.getStockQuantity());
+
+        super.setItemCategories(lapTop.getItemCategories().stream()
+                .map(itemCategory -> new ItemCategoryDto(itemCategory))
+                .collect(Collectors.toList()));
         this.lapTopBrand = String.valueOf(lapTop.getLapTopBrand());
         this.lapTopCpu = String.valueOf(lapTop.getLapTopCpu());
         this.lapTopStorage = String.valueOf(lapTop.getLapTopStorage());
