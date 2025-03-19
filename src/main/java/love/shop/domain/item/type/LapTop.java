@@ -1,6 +1,8 @@
 package love.shop.domain.item.type;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,11 +17,17 @@ import love.shop.web.item.saveDto.LapTopSaveReqDto;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LapTop extends Item {
 
+    @Enumerated(EnumType.STRING)
     private LapTopBrand lapTopBrand;
+    @Enumerated(EnumType.STRING)
     private LapTopCpu lapTopCpu;
+    @Enumerated(EnumType.STRING)
     private LapTopStorage lapTopStorage;
+    @Enumerated(EnumType.STRING)
     private LapTopScreenSize lapTopScreenSize;
+    @Enumerated(EnumType.STRING)
     private LapTopManufactureBrand lapTopManufactureBrand;
+
     private final String dataType = "LapTop";
 
     public LapTop(String name, int price, int stockQuantity, LapTopBrand lapTopBrand, LapTopCpu lapTopCpu, LapTopStorage lapTopStorage, LapTopScreenSize lapTopScreenSize, LapTopManufactureBrand lapTopManufactureBrand) {
