@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -258,10 +259,16 @@ public class InitDb {
             Iterator<String> iterator3 = list.iterator();
             while (iterator3.hasNext()) {
                 String categoryName = iterator3.next();
-                Category category = new Category(categoryName, "노트북/데스크탑");
+                Category category;
+                if (Objects.equals(categoryName, "노트북")) {
+                    category = new Category(categoryName, "노트북/데스크탑", "LapTop");
+                } else {
+                    category = new Category(categoryName, "노트북/데스크탑");
+                }
                 pc.addChild(category);
                 em.persist(category);
                 iterator3.remove();
+
             }
 
             list.add("모니터");
