@@ -2,10 +2,14 @@ package love.shop.web.item.searchCond;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LapTopSearchCond.class, name = "LapTop"),
@@ -29,13 +33,15 @@ import java.util.List;
         @JsonSubTypes.Type(value = WirelessHeadphonesSearchCond.class, name = "WirelessHeadphones"),
         @JsonSubTypes.Type(value = WirelessHeadsetSearchCond.class, name = "WirelessHeadset"),
 })
-@Data
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SearchCond {
 
     private String type; // 자식 클래스 이름
 
     // 검색 조건
-    private List<Long> categories;
+    private Long categories;
     private String itemName;
 
     // 가격 범위
