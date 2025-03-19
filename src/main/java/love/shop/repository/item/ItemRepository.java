@@ -1,6 +1,7 @@
 package love.shop.repository.item;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import love.shop.domain.ItemCategory.QItemCategory;
 import love.shop.domain.category.Category;
 import love.shop.domain.category.QCategory;
 import love.shop.domain.item.*;
+import love.shop.domain.item.type.LapTop;
 import love.shop.domain.item.type.QBook;
 import love.shop.domain.item.type.QLapTop;
 import love.shop.web.item.filter.lapTop.*;
@@ -109,45 +111,26 @@ public class ItemRepository {
         // 아이템 조건 검색
     public List<Item> findItemsBySearchCond(SearchCond searchCond, int offset, int limit) {
 
+        JPAQuery<Item> query = queryFactory.selectFrom(item);
         BooleanBuilder builder = new BooleanBuilder();
 
-        switch (searchCond.getType()) {
-            case "LapTop" -> lapTopSearchCond((LapTopSearchCond) searchCond, builder);
-            case "Book" -> bookScreenSearchCond((BookSearchCond) searchCond, builder);
-            case "SmartPhone" -> smartPhoneSearchCond((SmartPhoneSearchCond) searchCond, builder);
-            case "Projector" -> projectorSearchCond((ProjectorSearchCond) searchCond, builder);
-            case "BeamScreen" -> beamScreenSearchCond((BeamScreenSearchCond) searchCond, builder);
-            case "StreamingDongle" -> streamingDongleSearchCond((StreamingDongleSearchCond) searchCond, builder);
-            case "streamingMediaPlayer" -> streamingMediaPlayerSearchCond((StreamingMediaPlayerSearchCond) searchCond, builder);
-            case "DeskTop" -> deskTopSearchCond((DeskTopSearchCond) searchCond, builder);
-            case "Monitor" -> monitorSearchCond((MonitorSearchCond) searchCond, builder);
-            case "MFP" -> mFPSearchCond((MFPSearchCond) searchCond, builder);
-            case "Printer" -> printerSearchCond((PrinterSearchCond) searchCond, builder);
-            case "TonerCartridge" -> tonerCartridgeSearchCond((TonerCartridgeSearchCond) searchCond, builder);
-            case "InkCartridge" -> inkCartridgeSearchCond((InkCartridgeSearchCond) searchCond, builder);
-            case "Scanner" -> scannerSearchCond((ScannerSearchCond) searchCond, builder);
-            case "WirelessEarbuds" -> wirelessEarBudsSearchCond((WirelessEarbudsSearchCond) searchCond, builder);
-            case "WirelessHeadphones" -> wirelessHeadphonesSearchCond((WirelessHeadphonesSearchCond) searchCond, builder);
-            case "WiredEarbuds" -> wiredEarbudsSearchCond((WiredEarbudsSearchCond) searchCond, builder);
-            case "WiredHeadphones" -> wiredHeadphonesSearchCond((WiredHeadphonesSearchCond) searchCond, builder);
-            case "WirelessHeadset" -> wirelessHeadsetSearchCond((WirelessHeadsetSearchCond) searchCond, builder);
-            case "WiredHeadset" -> wiredHeadsetSearchCond((WiredHeadsetSearchCond) searchCond, builder);
-
-            default -> {
-                log.info("유효한 카테고리가 없습니다={}", searchCond.getType());
-            }
-        }
+        log.info("데이터 타입={}", searchCond.getType());
 
         // 아이템 이름 조건
         if (searchCond.getItemName() != null && !searchCond.getItemName().isBlank()) { // isEmpty? isBlank?
             builder.and(item.name.like("%" + searchCond.getItemName() + "%"));
         }
-
+        /*
         // 카테고리 조건
         if (searchCond.getCategories() != null && !searchCond.getCategories().isEmpty()) {
             for (Long categoryId : searchCond.getCategories()) {
                 builder.or(category.id.eq(categoryId));
             }
+        }
+         */
+        if (searchCond.getCategories() != null) {
+//            builder.and(category.id.eq(searchCond.getCategories()));
+            builder.and(category.id.eq(searchCond.getCategories()));
         }
 
         // 가격 조건
@@ -159,7 +142,50 @@ public class ItemRepository {
             builder.and(item.price.loe(searchCond.getLessPrice()));
         }
 
-        return queryFactory.select(item)
+        if (searchCond.getType() != null) {
+            switch (searchCond.getType()) {
+                case "LapTop" :
+                    log.info("노트북 변환중");
+                    lapTopSearchCond((LapTopSearchCond) searchCond, builder);
+                    query.join(lapTop).on(item.id.eq(lapTop.id));
+
+                    break;
+                    /*
+                case "Book" -> bookScreenSearchCond((BookSearchCond) searchCond, builder);
+                case "SmartPhone" -> smartPhoneSearchCond((SmartPhoneSearchCond) searchCond, builder);
+                case "Projector" -> projectorSearchCond((ProjectorSearchCond) searchCond, builder);
+                case "BeamScreen" -> beamScreenSearchCond((BeamScreenSearchCond) searchCond, builder);
+                case "StreamingDongle" -> streamingDongleSearchCond((StreamingDongleSearchCond) searchCond, builder);
+                case "streamingMediaPlayer" -> streamingMediaPlayerSearchCond((StreamingMediaPlayerSearchCond) searchCond, builder);
+                case "DeskTop" -> deskTopSearchCond((DeskTopSearchCond) searchCond, builder);
+                case "Monitor" -> monitorSearchCond((MonitorSearchCond) searchCond, builder);
+                case "MFP" -> mFPSearchCond((MFPSearchCond) searchCond, builder);
+                case "Printer" -> printerSearchCond((PrinterSearchCond) searchCond, builder);
+                case "TonerCartridge" -> tonerCartridgeSearchCond((TonerCartridgeSearchCond) searchCond, builder);
+                case "InkCartridge" -> inkCartridgeSearchCond((InkCartridgeSearchCond) searchCond, builder);
+                case "Scanner" -> scannerSearchCond((ScannerSearchCond) searchCond, builder);
+                case "WirelessEarbuds" -> wirelessEarBudsSearchCond((WirelessEarbudsSearchCond) searchCond, builder);
+                case "WirelessHeadphones" -> wirelessHeadphonesSearchCond((WirelessHeadphonesSearchCond) searchCond, builder);
+                case "WiredEarbuds" -> wiredEarbudsSearchCond((WiredEarbudsSearchCond) searchCond, builder);
+                case "WiredHeadphones" -> wiredHeadphonesSearchCond((WiredHeadphonesSearchCond) searchCond, builder);
+                case "WirelessHeadset" -> wirelessHeadsetSearchCond((WirelessHeadsetSearchCond) searchCond, builder);
+                case "WiredHeadset" -> wiredHeadsetSearchCond((WiredHeadsetSearchCond) searchCond, builder)
+                     */
+                default:
+                    log.info("유효한 카테고리가 없습니다={}", searchCond.getType());
+                    break;
+            }
+        }
+
+
+
+        return query
+                .join(itemCategory).on(item.id.eq(itemCategory.item.id))
+                .join(category).on(itemCategory.category.id.eq(category.id))
+                .where(builder).fetch();
+
+                /*
+                query.select(item)
                 .from(itemCategory)
                 .join(itemCategory.item, item)
                 .join(itemCategory.category, category)
@@ -167,23 +193,49 @@ public class ItemRepository {
                 .offset(offset)
                 .limit(limit)
                 .fetch();
+
+                 */
+
+                /*
+                queryFactory.select(item)
+                .from(itemCategory)
+                .join(itemCategory.item, item)
+                .join(itemCategory.category, category)
+                .where(builder)
+                .offset(offset)
+                .limit(limit)
+                .fetch();
+                */
     }
 
     private void lapTopSearchCond(LapTopSearchCond searchCond, BooleanBuilder builder) {
-        if (searchCond.getLapTopBrand() != null) {
-            builder.and(lapTop.lapTopBrand.eq(LapTopBrand.valueOf(searchCond.getLapTopBrand())));
+
+        if (searchCond.getLapTopBrands() != null) {
+            for (LapTopBrand lapTopBrand : searchCond.getLapTopBrands()) {
+                builder.or(lapTop.lapTopBrand.eq(LapTopBrand.valueOf(lapTopBrand.name())));
+            }
         }
-        if (searchCond.getLapTopCpu() != null) {
-            builder.and(lapTop.lapTopCpu.eq(LapTopCpu.valueOf(searchCond.getLapTopCpu())));
+
+        if (searchCond.getLapTopCpus() != null) {
+            for (LapTopCpu lapTopCpu : searchCond.getLapTopCpus()) {
+                builder.or(lapTop.lapTopCpu.eq(lapTopCpu));
+            }
         }
-        if (searchCond.getLapTopStorage() != null) {
-            builder.and(lapTop.lapTopStorage.eq(LapTopStorage.valueOf(searchCond.getLapTopStorage())));
+
+        if (searchCond.getLapTopStorages() != null) {
+            for (LapTopStorage lapTopStorage : searchCond.getLapTopStorages()) {
+                builder.or(lapTop.lapTopStorage.eq(lapTopStorage));
+            }
         }
-        if (searchCond.getLapTopScreenSize() != null) {
-            builder.and(lapTop.lapTopScreenSize.eq(LapTopScreenSize.valueOf(searchCond.getLapTopStorage())));
+        if (searchCond.getLapTopScreenSizes() != null) {
+            for (LapTopScreenSize lapTopScreenSize : searchCond.getLapTopScreenSizes()) {
+                builder.or(lapTop.lapTopScreenSize.eq(lapTopScreenSize));
+            }
         }
-        if (searchCond.getLapTopManufactureBrand() != null) {
-            builder.and(lapTop.lapTopManufactureBrand.eq(LapTopManufactureBrand.valueOf(searchCond.getLapTopManufactureBrand())));
+        if (searchCond.getLapTopManufactureBrands() != null) {
+            for (LapTopManufactureBrand lapTopManufactureBrand : searchCond.getLapTopManufactureBrands()) {
+                builder.or(lapTop.lapTopManufactureBrand.eq(lapTopManufactureBrand));
+            }
         }
     }
 
@@ -243,6 +295,14 @@ public class ItemRepository {
     }
     private void wirelessHeadsetSearchCond(WirelessHeadsetSearchCond searchCond, BooleanBuilder builder) {
 
+    }
+
+    // 해당 카테고리의 데이터 타입 조회하기
+    public Optional<Category> findCategoryType(Long categoryId) {
+        return Optional.ofNullable(queryFactory.select(category)
+                .from(category)
+                .where(category.id.eq(categoryId))
+                .fetchOne());
     }
 
 
