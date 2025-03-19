@@ -95,7 +95,11 @@ public class ItemService {
         return itemRepository.findItemsByCategoryId(categoryId);
     }
 
-    // 책 수정
+    public Category findCategoryType(Long categoryId) {
+        return itemRepository.findCategoryType(categoryId).orElseThrow(() -> new RuntimeException("해당 카테고리는 존재하지 않습니다."));
+    }
+
+    // 책 수정A
     public Book updateBook(BookUpdateReqDto bookDto) {
         itemRepository.updateBook(bookDto);
         Item item = itemRepository.findOne(bookDto.getItemId()).orElseThrow(() -> new RuntimeException("값이 없음"));
