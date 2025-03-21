@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -83,8 +84,8 @@ public class ItemService {
     }
 
     // 아이템 조건 검색
-    public List<Item> findItemsBySearchCond(SearchCond searchCond, int offset, int limit) {
-        return itemRepository.findItemsBySearchCond(searchCond, offset, limit);
+    public List<Item> findItemsBySearchCond(SearchCond searchCond, Map<String, List<String>> filters, int offset, int limit) {
+        return itemRepository.findItemsBySearchCond(searchCond, filters, offset, limit);
     }
 
     public List<Item> findItemsByCategories(List<String> categories) {
