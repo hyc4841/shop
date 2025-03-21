@@ -1,13 +1,15 @@
 package love.shop.web.item.searchFilter;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import love.shop.web.item.filter.lapTop.*;
 
 import java.util.Arrays;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class LapTopSearchFilter {
+public class LapTopSearchFilter extends SearchFilter {
 
     private List<LapTopBrand> lapTopBrands;
     private List<LapTopCpu> lapTopCpus;
