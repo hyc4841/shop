@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
+import love.shop.domain.item.type.LapTop;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
 import love.shop.web.category.dto.CategoryDto;
@@ -14,15 +15,15 @@ import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.searchCond.LapTopSearchCond;
 import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.item.searchFilter.LapTopSearchFilter;
+import love.shop.web.item.searchFilter.SearchFilter;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -52,37 +53,99 @@ public class ItemController {
 
     // 카테고리 중분류 아이템 조건 검색
     @GetMapping("/items")
-    public ResponseEntity<ItemListPageResult<Object>> items(@ModelAttribute LapTopSearchCond searchCond,// 중분류 카테고리로 뿌려주는걸로 만들자
-                                                            @RequestParam(value = "offset", defaultValue = "0") int offset,
-                                                            @RequestParam(value = "limit", defaultValue = "50") int limit) {
+    public ResponseEntity<?> items(@ModelAttribute SearchCond searchCond, // 중분류 카테고리로 뿌려주는걸로 만들자
+                                    @RequestParam Map<String, String> checkedFilter,
+                                    @RequestParam(value = "offset", defaultValue = "0") int offset,
+                                    @RequestParam(value = "limit", defaultValue = "50") int limit) {
 
-        // 부모 부분은 그대로 SearchCond로 받고 나머지는 map으로 받는 방법
-        // 이후에 searchCond와 map을 조합해서 해당 객체로 만들고
+        checkedFilter.remove("itemName");
+        checkedFilter.remove("morePrice");
+        checkedFilter.remove("categories");
+        checkedFilter.remove("type");
+        checkedFilter.remove("lessPrice");
 
-        // 왜자꾸 쓸데없는 데이터가 끼어서 보이는거지
-        log.info("검색 조건={}", searchCond);
+
+        // 1. 스트링으로 들어온 Map<String, String> filter 를 Map<String, List<String>> 으로 변환하기
+        Map<String, List<String>> convertedFilter = new HashMap<>();
+
+        for (String key : checkedFilter.keySet()) {
+            List<String> values = List.of(checkedFilter.get(key).split(","));
+            convertedFilter.put(key, values);
+        }
+
+        log.info("들어온 조건들={}", checkedFilter);
+        log.info("변환한 조건들={}", convertedFilter);
+        log.info("searchCond={}", searchCond);
 
         // 타입이 없고 카테고리 id만 넘어온다면
         Category findCategory = itemService.findCategoryType(searchCond.getCategories());
         String type = findCategory.getType();
 
-        LapTopSearchFilter lapTopFilter = null;
-        if (Objects.equals(type, "LapTop")) {
-            lapTopFilter = LapTopSearchFilter.createLapTopFilter();
-        }
+        // 클라이언트 쪽에서 보여줄 필터
+        SearchFilter filters = findFilter(type);
 
-
-        List<Item> items = itemService.findItemsBySearchCond(searchCond, offset, limit);
+        List<Item> items = itemService.findItemsBySearchCond(searchCond, convertedFilter, offset, limit);
         log.info("조건으로 찾은 items={}", items);
-
+        // 검색 조건으로 찾은 아이템 Dto로 변환
         List<ItemDto> itemDtoList = ItemDto.createItemDtoList(items);
 
-        ItemListPageResult<Object> objectItemListPageResult = new ItemListPageResult<>(itemDtoList, lapTopFilter, type);
-
+        // 응답 데이터 형태로 감싸기
+        ItemListPageResult<Object> objectItemListPageResult = new ItemListPageResult<>(itemDtoList, filters, type);
 
         return ResponseEntity.ok(objectItemListPageResult);
     }
 
+    private SearchFilter findFilter(String type) {
+        if (type == null) {
+            return null;
+        }
+        switch (type) {
+            case "LapTop":
+                return LapTopSearchFilter.createLapTopFilter();
+            case "Book":
+                break;
+            case "SmartPhone":
+                break;
+            case "Projector":
+                break;
+            case "BeamScreen":
+                break;
+            case "StreamingDongle":
+                break;
+            case "streamingMediaPlayer":
+                break;
+            case "DeskTop":
+                break;
+            case "Monitor":
+                break;
+            case "MFP":
+                break;
+            case "Printer":
+                break;
+            case "TonerCartridge":
+                break;
+            case "InkCartridge":
+                break;
+            case "Scanner":
+                break;
+            case "WirelessEarbuds":
+                break;
+            case "WirelessHeadphones":
+                break;
+            case "WiredEarbuds":
+                break;
+            case "WiredHeadphones":
+                break;
+            case "WirelessHeadset":
+                break;
+            case "WiredHeadset":
+                break;
+            default:
+                log.info("맞는 타입 없음");
+                return null;
+        }
+        return null;
+    }
 
 
     @Data
@@ -166,29 +229,21 @@ public class ItemController {
 
     // 카테고리 테스트
 
-    @Getter
-    @Setter
-    @Data
-    private class baseClss {
-        private String test;
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Getter
-    @Setter
-    @Data
-    private class childClss extends baseClss {
-        private String test2;
-    }
-
 
     @GetMapping("/test123")
-    public String test123(@ModelAttribute baseClss baseClss) {
-        log.info("baseClss={}", baseClss.toString());
-        childClss baseClss1 = (childClss) baseClss;
-        log.info("baseClss1={}", baseClss1);
+    public ResponseEntity<?> test123(@RequestParam Map<String, String> test) {
 
-        return "ok";
+        List<String> tests = List.of(test.get("test").split(","));
+
+        for (String s : test.keySet()) {
+            log.info(s);
+        }
+
+        log.info("나눈거={}", tests);
+
+        log.info("test={}", test);
+
+        return ResponseEntity.ok(test);
     }
 
 }
