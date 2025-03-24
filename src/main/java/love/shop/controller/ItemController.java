@@ -16,13 +16,13 @@ import love.shop.web.item.searchCond.LapTopSearchCond;
 import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.item.searchFilter.LapTopSearchFilter;
 import love.shop.web.item.searchFilter.SearchFilter;
+import love.shop.web.item.searchFilter.TVSearchFilter;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,6 +81,9 @@ public class ItemController {
         Category findCategory = itemService.findCategoryType(searchCond.getCategories());
         String type = findCategory.getType();
 
+//        데이터 타입이 두가지 이상이라면?
+//        예를 들어서, 베어본, 맥미니pc 라면?
+
         // 클라이언트 쪽에서 보여줄 필터
         SearchFilter filters = findFilter(type);
 
@@ -104,6 +107,8 @@ public class ItemController {
                 return LapTopSearchFilter.createLapTopFilter();
             case "Book":
                 break;
+            case "TV":
+                return TVSearchFilter.createTVSearchFilter();
             case "SmartPhone":
                 break;
             case "Projector":
