@@ -18,7 +18,7 @@ public class TVDto extends ItemDto{
     private TVProcessor processor;
     private TVRefreshRate refreshRate;
     private TVScreenSize screenSize;
-    private TVSound sound;
+    private String sound;
     private TVSpeakerChannel speakerChannel;
     private TVSpeakerOutput speakerOutput;
 
