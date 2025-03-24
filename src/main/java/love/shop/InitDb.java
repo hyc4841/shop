@@ -164,6 +164,7 @@ public class InitDb {
         }
 
         public void initCategories() {
+
             // 1차 대분류
             Category ai = new Category("Ai", "Major category");
             Category toy = new Category("가전/TV", "Major category");
@@ -212,7 +213,7 @@ public class InitDb {
             }
 
             // 가전/TV
-            list.add("TV");
+            // 영상/음향가전
             list.add("영상가전");
             list.add("음향가전");
             Iterator<String> iterator = list.iterator();
@@ -223,9 +224,14 @@ public class InitDb {
                 em.persist(category);
                 iterator.remove();
             }
+            // tv 따로 저장
+            Category tv_2 = new Category("TV", "영상/음향가전", "TV");
+            toy.addChild(tv_2);
+            em.persist(tv_2);
 
+
+            // 생활 계절 가전
             list.add("세탁기/건조기");
-            list.add("청소기");
             list.add("에어컨/계절가전");
             list.add("이미용/소형가전");
             Iterator<String> iterator1 = list.iterator();
@@ -236,7 +242,13 @@ public class InitDb {
                 em.persist(category);
                 iterator1.remove();
             }
+            // 청소기 따로 저장
+            Category vacuum = new Category("청소기", "생활/계절가전", "VacuumCleaner");
+            toy.addChild(vacuum);
+            em.persist(vacuum);
 
+
+            // 주방가전
             list.add("냉장고/김치냉장고");
             list.add("전기밥솥");
             list.add("식기세척/건조기");
@@ -683,6 +695,7 @@ public class InitDb {
                 em.persist(category);
                 iterator32.remove();
             }
+
 
 
 
