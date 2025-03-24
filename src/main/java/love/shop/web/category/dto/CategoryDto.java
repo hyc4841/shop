@@ -15,11 +15,11 @@ public class CategoryDto {
     private Long parent;
     private String parentName;
     private List<ItemCategoryDto> itemCategories;
+    private String type;
     private List<CategoryDto> children;
-
+    private String subCategoryName;
 
     // 부모가 없을 수도 있다, 자식이 없을 수도 있다.
-    //
 
     public CategoryDto(Category category) {
         if (category != null) {
@@ -33,6 +33,8 @@ public class CategoryDto {
             this.children = category.getChildren().stream()
                     .map(child -> new CategoryDto(child))
                     .collect(Collectors.toList());
+            this.type = category.getType();
+            this.subCategoryName = category.getSubCategoryName();
 
         }
     }
