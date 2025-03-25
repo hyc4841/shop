@@ -13,9 +13,11 @@ import love.shop.repository.address.AddressRepository;
 import love.shop.repository.item.ItemRepository;
 import love.shop.repository.member.MemberRepository;
 import love.shop.repository.order.OrderRepository;
+import love.shop.web.order.dto.OrderItemSet;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -31,19 +33,26 @@ public class OrderService {
 
     // 주문
     @Transactional
-    public Long order(Long memberId, Long itemId, int count, Long addressId) {
-        // 주문한 멤버 조회
-        Member member = memberRepository.findMemberById(memberId);
-        // 주문한 아이템 조회
-        Item item = itemRepository.findOne(itemId).orElseThrow();
+    public Long order(Long memberId, List<OrderItemSet> orderItemSets, Long addressId) {
+
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for (OrderItemSet orderItemSet : orderItemSets) {
+            Item item = itemRepository.findOne(orderItemSet.getItemId()).orElseThrow(); // 주문한 아이템 조회
+            OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), orderItemSet.getCount()); // 주문 상품 생성
+            orderItems.add(orderItem);
+        }
+
         // 회원이 등록해놓은 주소 조회
         Address address = addressRepository.findAddressById(addressId);
         // 배송정보 생성
         Delivery delivery = new Delivery(address, DeliveryStatus.PENDING);
-        // 주문 상품 생성
-        OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
+
+
+        // 주문한 멤버 조회
+        Member member = memberRepository.findMemberById(memberId);
         // 주문 생성
-        Order order = Order.createOrder(member, delivery, orderItem); // 현재 로직은 주문 아이템이 하나만 들어간다.
+        Order order = Order.createOrder(member, delivery, orderItems); // 현재 로직은 주문 아이템이 하나만 들어간다.
 
         orderRepository.save(order); // order를 persist하게 되면 order에 id가 생긴다.
         return order.getId();
@@ -74,5 +83,7 @@ public class OrderService {
     public Order findOrderById(Long orderId) {
         return orderRepository.findOne(orderId);
     }
+
+
 
 }
