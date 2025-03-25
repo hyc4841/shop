@@ -2,11 +2,14 @@ package love.shop.controller;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.cart.Cart;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
+import love.shop.domain.member.Member;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
+import love.shop.service.member.MemberService;
 import love.shop.web.cart.dto.CartSaveReqDto;
 import love.shop.web.category.dto.CategoryDto;
 import love.shop.web.item.dto.*;
@@ -16,9 +19,12 @@ import love.shop.web.item.searchFilter.LapTopSearchFilter;
 import love.shop.web.item.searchFilter.SearchFilter;
 import love.shop.web.item.searchFilter.TVSearchFilter;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
+import love.shop.web.login.dto.CustomUser;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import love.shop.web.cart.dto.CartDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +36,7 @@ public class ItemController {
 
     private final ItemService itemService;
     private final ItemRepository itemRepository;
+    private final MemberService memberService;
 
     // 아이템 저장.
     @PostMapping("/item")
@@ -49,9 +56,9 @@ public class ItemController {
     // 아이템 조회
     @GetMapping("/items")
     public ResponseEntity<?> items(@ModelAttribute SearchCond searchCond, // 중분류 카테고리로 뿌려주는걸로 만들자
-                                    @RequestParam Map<String, String> checkedFilter,
-                                    @RequestParam(value = "offset", defaultValue = "0") int offset,
-                                    @RequestParam(value = "limit", defaultValue = "50") int limit) {
+                                   @RequestParam Map<String, String> checkedFilter,
+                                   @RequestParam(value = "offset", defaultValue = "0") int offset,
+                                   @RequestParam(value = "limit", defaultValue = "50") int limit) {
 
         checkedFilter.remove("itemName");
         checkedFilter.remove("morePrice");
@@ -157,10 +164,39 @@ public class ItemController {
         private T filterList;
     }
 
+    // 장바구니 생성
+
     @PostMapping("/cart")
-    public ResponseEntity<?> saveCart(@RequestBody CartSaveReqDto cartSaveReqDto) {
+    public ResponseEntity<?> createCart
 
+    // 장바구니 저장? 이건 수정이 필요함. 장바구니에 상품 추가?
+    @PatchMapping("/cart")
+    public ResponseEntity<?> addCart(@RequestBody CartSaveReqDto cartSaveReqDto) {
 
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
+        Member member = memberService.findMemberById(memberId);
+
+        itemService.saveCart(cartSaveReqDto, member);
+
+        return ResponseEntity.ok("ok");
+    }
+
+    // 장바구니에 상품 제거
+    @DeleteMapping("/cart")
+    public ResponseEntity<?> removeCartItem(@RequestParam Long itemCartId) {
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
+
+        itemService.removeCartItem(itemCartId, memberId);
+    }
+
+    @GetMapping("/cart")
+    public ResponseEntity<?> findMemberCart() {
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
+
+        Cart cart = itemService.findCartByMemberId(memberId);
+        CartDto cartDto = new CartDto(cart);
+
+        return ResponseEntity.ok(cartDto);
     }
 
 
