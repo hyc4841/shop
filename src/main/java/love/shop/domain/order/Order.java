@@ -71,7 +71,7 @@ public class Order {
     }
 
     // 주문 생성 메서드
-    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+    public static Order createOrder(Member member, Delivery delivery, List<OrderItem> orderItems) {
         Order order = new Order();
         order.setMember(member);                 // 멤버 설정(ManyToTone 관계)
         order.setDelivery(delivery);             // 배송 설정(OneToOne 관계)
