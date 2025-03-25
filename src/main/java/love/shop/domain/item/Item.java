@@ -104,4 +104,8 @@ public abstract class Item {
 
     public abstract String getType();
 
+    public void setItemCarts(ItemCart itemCart) {
+        this.itemCarts.add(itemCart);
+    }
+
 }
