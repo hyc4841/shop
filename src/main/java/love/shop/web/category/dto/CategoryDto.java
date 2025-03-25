@@ -18,6 +18,7 @@ public class CategoryDto {
     private String type;
     private List<CategoryDto> children;
     private String subCategoryName;
+    private Integer sequence;
 
     // 부모가 없을 수도 있다, 자식이 없을 수도 있다.
 
@@ -35,6 +36,7 @@ public class CategoryDto {
                     .collect(Collectors.toList());
             this.type = category.getType();
             this.subCategoryName = category.getSubCategoryName();
+            this.sequence = category.getSequence();
 
         }
     }

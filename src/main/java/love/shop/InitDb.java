@@ -85,13 +85,18 @@ public class InitDb {
             em.persist(book1);
             Book book2 = createBook("저자2", "5461654", "JPA4 BOOK", 20000, 200);
             em.persist(book2);
+
             OrderItem orderItem1 = OrderItem.createOrderItem(book1, 10000, 1);
             OrderItem orderItem2 = OrderItem.createOrderItem(book2, 20000, 2);
+            List<OrderItem> orderItems = new ArrayList<>();
+            orderItems.add(orderItem1);
+            orderItems.add(orderItem2);
+
             Address address = new Address("서울", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
 
             Delivery delivery = createDelivery(member, address);
 
-            Order order = Order.createOrder(member, delivery, orderItem1, orderItem2);
+            Order order = Order.createOrder(member, delivery, orderItems);
 
             em.persist(order);
 
@@ -107,8 +112,6 @@ public class InitDb {
             // 아이템, 주문, 배달, 주문아이템
             Member member = memberService.findMemberById(signUpMemberId);
 
-//            BookSaveReqDto bookSaveReqDto = new BookSaveReqDto("필리파 페리", "1234", );
-
             Book book1 = createBook("저자1", "41541", "JPA2 BOOK", 10000, 100);
             em.persist(book1);
             Book book2 = createBook("저자2", "5461654", "JPA3 BOOK", 20000, 200);
@@ -116,15 +119,18 @@ public class InitDb {
 
             // 아이템에 카테고리 설정해주는건 저장할 때 해주면 제일 베스트인듯?
 
-
             OrderItem orderItem1 = OrderItem.createOrderItem(book1, 10000, 1);
             OrderItem orderItem2 = OrderItem.createOrderItem(book2, 20000, 2);
+
+            List<OrderItem> orderItems = new ArrayList<>();
+            orderItems.add(orderItem1);
+            orderItems.add(orderItem2);
 
             Address address = new Address("서울", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
 
             Delivery delivery = createDelivery(member, address);
 
-            Order order = Order.createOrder(member, delivery, orderItem1, orderItem2);
+            Order order = Order.createOrder(member, delivery, orderItems);
 
             em.persist(order);
         }
@@ -139,6 +145,7 @@ public class InitDb {
             List<Category> gamingLapTop = itemService.findCategoryListByName("게이밍 노트북");
             Category categorylaptop = itemService.findCategoryByName("노트북");
             Category intel = itemService.findCategoryByName("인텔 CPU 노트북");
+            Category lapTopAll = itemService.findCategoryByName("노트북 전체");
 
             // 아이템-카테고리 생성
             List<ItemCategory> itemCategories = new ArrayList<>();
@@ -150,9 +157,11 @@ public class InitDb {
             }
             ItemCategory laptopItemCategory = ItemCategory.createItemCategory(categorylaptop);
             ItemCategory intelItemCategory = ItemCategory.createItemCategory(intel);
+            ItemCategory allItemCategory = ItemCategory.createItemCategory(lapTopAll);
 
             itemCategories.add(laptopItemCategory);
             itemCategories.add(intelItemCategory);
+            itemCategories.add(allItemCategory);
 
             // 아이템에 아이템-카테고리 연결
 
@@ -193,6 +202,8 @@ public class InitDb {
             // 2차 분류
             List<String> list = new ArrayList<>();
 
+            int sequence = 0;
+
             // Ai
             list.add("AI 노트북");
             list.add("스마트폰/태블릿");
@@ -206,10 +217,11 @@ public class InitDb {
             Iterator<String> iterator25 = list.iterator();
             while (iterator25.hasNext()) {
                 String categoryName = iterator25.next();
-                Category category = new Category(categoryName, "Ai");
+                Category category = new Category(categoryName, "Ai", sequence);
                 ai.addChild(category);
                 em.persist(category);
                 iterator25.remove();
+                sequence++;
             }
 
             // 가전/TV
@@ -217,15 +229,17 @@ public class InitDb {
             list.add("영상가전");
             list.add("음향가전");
             Iterator<String> iterator = list.iterator();
+            sequence = 1;
             while (iterator.hasNext()) {
                 String categoryName = iterator.next();
-                Category category = new Category(categoryName, "영상/음향가전");
+                Category category = new Category(categoryName, "영상/음향가전", sequence);
                 toy.addChild(category);
                 em.persist(category);
                 iterator.remove();
+                sequence++;
             }
             // tv 따로 저장
-            Category tv_2 = new Category("TV", "영상/음향가전", "TV");
+            Category tv_2 = new Category("TV", "영상/음향가전", "TV", 0);
             toy.addChild(tv_2);
             em.persist(tv_2);
 
@@ -235,15 +249,17 @@ public class InitDb {
             list.add("에어컨/계절가전");
             list.add("이미용/소형가전");
             Iterator<String> iterator1 = list.iterator();
+            sequence = 1;
             while (iterator1.hasNext()) {
                 String categoryName = iterator1.next();
-                Category category = new Category(categoryName, "생활/계절가전");
+                Category category = new Category(categoryName, "생활/계절가전", sequence);
                 toy.addChild(category);
                 em.persist(category);
                 iterator1.remove();
+                sequence++;
             }
             // 청소기 따로 저장
-            Category vacuum = new Category("청소기", "생활/계절가전", "VacuumCleaner");
+            Category vacuum = new Category("청소기", "생활/계절가전", "VacuumCleaner", 0);
             toy.addChild(vacuum);
             em.persist(vacuum);
 
@@ -255,12 +271,14 @@ public class InitDb {
             list.add("오븐/레인지/인덕션");
             list.add("정수기/소형가전");
             Iterator<String> iterator2 = list.iterator();
+            sequence = 0;
             while (iterator2.hasNext()) {
                 String categoryName = iterator2.next();
-                Category category = new Category(categoryName, "주방가전");
+                Category category = new Category(categoryName, "주방가전", sequence);
                 toy.addChild(category);
                 em.persist(category);
                 iterator2.remove();
+                sequence++;
             }
 
             // 컴퓨터/노트북/조립PC
@@ -269,17 +287,19 @@ public class InitDb {
             list.add("브랜드PC/조립PC");
             list.add("딥러닐(GPU)PC");
             Iterator<String> iterator3 = list.iterator();
+            sequence = 0;
             while (iterator3.hasNext()) {
                 String categoryName = iterator3.next();
                 Category category;
                 if (Objects.equals(categoryName, "노트북")) {
-                    category = new Category(categoryName, "노트북/데스크탑", "LapTop");
+                    category = new Category(categoryName, "노트북/데스크탑", "LapTop", sequence);
                 } else {
-                    category = new Category(categoryName, "노트북/데스크탑");
+                    category = new Category(categoryName, "노트북/데스크탑", sequence);
                 }
                 pc.addChild(category);
                 em.persist(category);
                 iterator3.remove();
+                sequence++;
 
             }
 
@@ -287,12 +307,14 @@ public class InitDb {
             list.add("게이밍 모니터");
             list.add("복합기/프린터/SW");
             Iterator<String> iterator4 = list.iterator();
+            sequence = 0;
             while (iterator4.hasNext()) {
                 String categoryName = iterator4.next();
-                Category category = new Category(categoryName, "모니터/복합기");
+                Category category = new Category(categoryName, "모니터/복합기", sequence);
                 pc.addChild(category);
                 em.persist(category);
                 iterator4.remove();
+                sequence++;
             }
 
             list.add("주요부품");
@@ -300,35 +322,41 @@ public class InitDb {
             list.add("키보드/마우스/웹캠");
             list.add("공유기/주변기기");
             Iterator<String> iterator5 = list.iterator();
+            sequence = 0;
             while (iterator5.hasNext()) {
                 String categoryName = iterator5.next();
-                Category category = new Category(categoryName, "PC부품");
+                Category category = new Category(categoryName, "PC부품", sequence);
                 pc.addChild(category);
                 em.persist(category);
                 iterator5.remove();
+                sequence++;
             }
 
             list.add("게임기/게이밍가구");
             list.add("사운드/스피커");
             Iterator<String> iterator6 = list.iterator();
+            sequence = 0;
             while (iterator6.hasNext()) {
                 String categoryName = iterator6.next();
-                Category category = new Category(categoryName, "게임/사운드");
+                Category category = new Category(categoryName, "게임/사운드", sequence);
                 pc.addChild(category);
                 em.persist(category);
                 iterator6.remove();
+                sequence++;
             }
 
             // 태블릿/모바일/디카
             list.add("갤럭시 최신형");
             list.add("애플 최신형");
             Iterator<String> iterator7 = list.iterator();
+            sequence = 0;
             while (iterator7.hasNext()) {
                 String categoryName = iterator7.next();
-                Category category = new Category(categoryName, "신제품 바로가기");
+                Category category = new Category(categoryName, "신제품 바로가기", sequence);
                 mobile.addChild(category);
                 em.persist(category);
                 iterator7.remove();
+                sequence++;
             }
 
             list.add("휴대폰/스마트폰");
@@ -337,36 +365,42 @@ public class InitDb {
             list.add("충전기/보조배터리");
             list.add("케이스/필름/터치펜");
             Iterator<String> iterator8 = list.iterator();
+            sequence = 0;
             while (iterator8.hasNext()) {
                 String categoryName = iterator8.next();
-                Category category = new Category(categoryName, "태블릿/스마트폰");
+                Category category = new Category(categoryName, "태블릿/스마트폰", sequence);
                 mobile.addChild(category);
                 em.persist(category);
                 iterator8.remove();
+                sequence++;
             }
 
             list.add("이어폰/헤드폰");
             list.add("블루투스/Ai스피커");
             list.add("휴대용 플레이어");
             Iterator<String> iterator9 = list.iterator();
+            sequence = 0;
             while (iterator9.hasNext()) {
                 String categoryName = iterator9.next();
-                Category category = new Category(categoryName, "포터블 음향");
+                Category category = new Category(categoryName, "포터블 음향", sequence);
                 mobile.addChild(category);
                 em.persist(category);
                 iterator9.remove();
+                sequence++;
             }
 
             list.add("카메라/렌즈/캠코더");
             list.add("플래시/액세서리");
             list.add("메모리카드/리더기");
             Iterator<String> iterator10 = list.iterator();
+            sequence = 0;
             while (iterator10.hasNext()) {
                 String categoryName = iterator10.next();
-                Category category = new Category(categoryName, "디카");
+                Category category = new Category(categoryName, "디카", sequence);
                 mobile.addChild(category);
                 em.persist(category);
                 iterator10.remove();
+                sequence++;
             }
 
             // 골프/스포츠
@@ -384,12 +418,14 @@ public class InitDb {
             list.add("스포츠잡화");
             list.add("젝시믹스 브랜드관");
             Iterator<String> iterator11 = list.iterator();
+            sequence = 0;
             while (iterator11.hasNext()) {
                 String categoryName = iterator11.next();
-                Category category = new Category(categoryName, "아웃도어/스포츠");
+                Category category = new Category(categoryName, "아웃도어/스포츠", sequence);
                 golf.addChild(category);
                 em.persist(category);
                 iterator11.remove();
+                sequence++;
             }
 
             list.add("라운딩갈때");
@@ -398,12 +434,14 @@ public class InitDb {
             list.add("여성골프패션");
             list.add("골프용품");
             Iterator<String> iterator12 = list.iterator();
+            sequence = 0;
             while (iterator12.hasNext()) {
                 String categoryName = iterator12.next();
-                Category category = new Category(categoryName, "골프");
+                Category category = new Category(categoryName, "골프", sequence);
                 golf.addChild(category);
                 em.persist(category);
                 iterator12.remove();
+                sequence++;
             }
 
             // 자동차/용품/공구
@@ -415,12 +453,14 @@ public class InitDb {
             list.add("매트/시트/인테리어");
             list.add("스쿠터/오토바이");
             Iterator<String> iterator13 = list.iterator();
+            sequence = 0;
             while (iterator13.hasNext()) {
                 String categoryName = iterator13.next();
-                Category category = new Category(categoryName, "자동차용품");
+                Category category = new Category(categoryName, "자동차용품", sequence);
                 car.addChild(category);
                 em.persist(category);
                 iterator13.remove();
+                sequence++;
             }
 
             list.add("전동드릴/드라이버");
@@ -432,12 +472,14 @@ public class InitDb {
             list.add("안전용품/운반/건설");
             list.add("예초기/원예/농업");
             Iterator<String> iterator14 = list.iterator();
+            sequence = 0;
             while (iterator14.hasNext()) {
                 String categoryName = iterator14.next();
-                Category category = new Category(categoryName, "공구/산업용품");
+                Category category = new Category(categoryName, "공구/산업용품", sequence);
                 car.addChild(category);
                 em.persist(category);
                 iterator14.remove();
+                sequence++;
             }
 
             // 가구/조명
@@ -453,23 +495,27 @@ public class InitDb {
             list.add("침구/커튼/카페트");
             list.add("홈데코/소품");
             Iterator<String> iterator15 = list.iterator();
+            sequence = 0;
             while (iterator15.hasNext()) {
                 String categoryName = iterator15.next();
-                Category category = new Category(categoryName, "가구/조명/시공");
+                Category category = new Category(categoryName, "가구/조명/시공", sequence);
                 furniture.addChild(category);
                 em.persist(category);
                 iterator15.remove();
+                sequence++;
             }
 
             list.add("오늘의집");
             list.add("GS SHOP");
             Iterator<String> iterator16 = list.iterator();
+            sequence = 0;
             while (iterator16.hasNext()) {
                 String categoryName = iterator16.next();
-                Category category = new Category(categoryName, "가구/조명-브랜드관");
+                Category category = new Category(categoryName, "가구/조명-브랜드관", sequence);
                 furniture.addChild(category);
                 em.persist(category);
                 iterator16.remove();
+                sequence++;
             }
 
             // 식품/유아/완구
@@ -485,12 +531,14 @@ public class InitDb {
             list.add("조미료/양념/식용유");
             list.add("과자/초콜릿/시리얼");
             Iterator<String> iterator17 = list.iterator();
+            sequence = 0;
             while (iterator17.hasNext()) {
                 String categoryName = iterator17.next();
-                Category category = new Category(categoryName, "식품");
+                Category category = new Category(categoryName, "식품", sequence);
                 food.addChild(category);
                 em.persist(category);
                 iterator17.remove();
+                sequence++;
             }
 
             list.add("분유/기저귀/물티슈");
@@ -499,12 +547,14 @@ public class InitDb {
             list.add("젖병/출산/육아용품");
             list.add("유아의류/신발/도서");
             Iterator<String> iterator18 = list.iterator();
+            sequence = 0;
             while (iterator18.hasNext()) {
                 String categoryName = iterator18.next();
-                Category category = new Category(categoryName, "유아/완구");
+                Category category = new Category(categoryName, "유아/완구", sequence);
                 food.addChild(category);
                 em.persist(category);
                 iterator18.remove();
+                sequence++;
             }
 
             // 생활/주방/건강
@@ -514,37 +564,43 @@ public class InitDb {
             list.add("욕실용품/수전");
             list.add("세탁/청소/수납");
             list.add("모기퇴치/제습/탈취");
+            sequence = 0;
             Iterator<String> iterator19 = list.iterator();
             while (iterator19.hasNext()) {
                 String categoryName = iterator19.next();
-                Category category = new Category(categoryName, "생활용품");
+                Category category = new Category(categoryName, "생활용품", sequence);
                 living.addChild(category);
                 em.persist(category);
                 iterator19.remove();
+                sequence++;
             }
 
             list.add("냄비/팬/조리도구");
             list.add("식기/컵/보관용기");
             list.add("주방잡화/일회용품");
             Iterator<String> iterator20 = list.iterator();
+            sequence = 0;
             while (iterator20.hasNext()) {
                 String categoryName = iterator20.next();
-                Category category = new Category(categoryName, "주방용품");
+                Category category = new Category(categoryName, "주방용품", sequence);
                 living.addChild(category);
                 em.persist(category);
                 iterator20.remove();
+                sequence++;
             }
 
             list.add("마스크/실버용품");
             list.add("안마/마사지기");
             list.add("건강측정/물리치료");
             Iterator<String> iterator21 = list.iterator();
+            sequence = 0;
             while (iterator21.hasNext()) {
                 String categoryName = iterator21.next();
-                Category category = new Category(categoryName, "건강/의료용품");
+                Category category = new Category(categoryName, "건강/의료용품", sequence);
                 living.addChild(category);
                 em.persist(category);
                 iterator21.remove();
+                sequence++;
             }
 
             // 패션/잡화/뷰티
@@ -559,12 +615,14 @@ public class InitDb {
             list.add("잠옷/언더웨어");
             list.add("명품관");
             Iterator<String> iterator22 = list.iterator();
+            sequence = 0;
             while (iterator22.hasNext()) {
                 String categoryName = iterator22.next();
-                Category category = new Category(categoryName, "패션잡화/의류");
+                Category category = new Category(categoryName, "패션잡화/의류", sequence);
                 fashion.addChild(category);
                 em.persist(category);
                 iterator22.remove();
+                sequence++;
             }
 
             list.add("남성뷰티");
@@ -573,22 +631,26 @@ public class InitDb {
             list.add("바디케어");
             list.add("향수/메이크업");
             Iterator<String> iterator23 = list.iterator();
+            sequence = 0;
             while (iterator23.hasNext()) {
                 String categoryName = iterator23.next();
-                Category category = new Category(categoryName, "뷰티");
+                Category category = new Category(categoryName, "뷰티", sequence);
                 fashion.addChild(category);
                 em.persist(category);
                 iterator23.remove();
+                sequence++;
             }
 
             list.add("무신사스토어");
             Iterator<String> iterator24 = list.iterator();
+            sequence = 0;
             while (iterator24.hasNext()) {
                 String categoryName = iterator24.next();
-                Category category = new Category(categoryName, "패션/잡화/뷰티-브랜드관");
+                Category category = new Category(categoryName, "패션/잡화/뷰티-브랜드관", sequence);
                 fashion.addChild(category);
                 em.persist(category);
                 iterator24.remove();
+                sequence++;
             }
 
             // 반려동물/취미/사무
@@ -596,24 +658,28 @@ public class InitDb {
             list.add("고양이용품");
             list.add("수족관/소동물용품");
             Iterator<String> iterator30 = list.iterator();
+            sequence = 0;
             while (iterator30.hasNext()) {
                 String categoryName = iterator30.next();
-                Category category = new Category(categoryName, "반려동물용품");
+                Category category = new Category(categoryName, "반려동물용품", sequence);
                 animal.addChild(category);
                 em.persist(category);
                 iterator30.remove();
+                sequence++;
             }
 
             list.add("악기/디지털피아노");
             list.add("드론/레고/키덜트");
             list.add("상품권/쿠폰/원예");
             Iterator<String> iterator26 = list.iterator();
+            sequence = 0;
             while (iterator26.hasNext()) {
                 String categoryName = iterator26.next();
-                Category category = new Category(categoryName, "취미/상품권");
+                Category category = new Category(categoryName, "취미/상품권", sequence);
                 animal.addChild(category);
                 em.persist(category);
                 iterator26.remove();
+                sequence++;
             }
 
             list.add("방학 열공템");
@@ -626,22 +692,26 @@ public class InitDb {
             list.add("복합기/프린터/SW");
             list.add("CCTV/보안/금고");
             Iterator<String> iterator27 = list.iterator();
+            sequence = 0;
             while (iterator27.hasNext()) {
                 String categoryName = iterator27.next();
-                Category category = new Category(categoryName, "문구/사무용품");
+                Category category = new Category(categoryName, "문구/사무용품", sequence);
                 animal.addChild(category);
                 em.persist(category);
                 iterator27.remove();
+                sequence++;
             }
 
             list.add("도서");
             Iterator<String> iterator28 = list.iterator();
+            sequence = 0;
             while (iterator28.hasNext()) {
                 String categoryName = iterator28.next();
-                Category category = new Category(categoryName, "도서");
+                Category category = new Category(categoryName, "도서", sequence);
                 animal.addChild(category);
                 em.persist(category);
                 iterator28.remove();
+                sequence++;
             }
 
             // 3차 분류
@@ -655,28 +725,36 @@ public class InitDb {
             list.add("AMD CPU 노트북");
             list.add("주변기기");
             Iterator<String> iterator29 = list.iterator();
+            sequence = 1;
             while (iterator29.hasNext()) {
                 String categoryName = iterator29.next();
-                Category category = new Category(categoryName);
+                Category category = new Category(categoryName, sequence);
                 laptop.addChild(category);
                 em.persist(category);
                 iterator29.remove();
+                sequence++;
             }
+
+            Category lapTopall = new Category("노트북 전체", null, "LapTop", 0);
+            laptop.addChild(lapTopall);
+            em.persist(lapTopall);
+
 
             // 게이밍 노트북
             Category gamingLapTop = itemService.findCategoryByNameAndParentName("게이밍 노트북", "노트북");
-            log.info("카테고리 이름은 게이밍 노트북, 부모 이름은 노트북={}", gamingLapTop.getId());
 
             list.add("RTX4060");
             list.add("RTX4070");
             list.add("배틀그라운드");
             Iterator<String> iterator31 = list.iterator();
+            sequence = 0;
             while (iterator31.hasNext()) {
                 String categoryName = iterator31.next();
-                Category category = new Category(categoryName);
+                Category category = new Category(categoryName, sequence);
                 gamingLapTop.addChild(category);
                 em.persist(category);
                 iterator31.remove();
+                sequence++;
             }
 
             Category brandPC = itemService.findCategoryByName("브랜드PC/조립PC");
@@ -688,13 +766,17 @@ public class InitDb {
             list.add("딥러닝(GPU)PC");
             list.add("서버/워크스테이션");
             Iterator<String> iterator32 = list.iterator();
+            sequence = 0;
             while (iterator32.hasNext()) {
                 String categoryName = iterator32.next();
-                Category category = new Category(categoryName);
+                Category category = new Category(categoryName, sequence);
                 brandPC.addChild(category);
                 em.persist(category);
                 iterator32.remove();
+                sequence++;
             }
+
+
 
 
 

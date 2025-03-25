@@ -37,6 +37,9 @@ public class Category {
     @Column
     private String type;
 
+    @Column
+    private Integer sequence; // 해당 분류 카테고리 안에서의 순서
+
     // mappedBy = "category"는 주인쪽 category 필드를 참조하고 있다는 뜻
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<ItemCategory> itemCategories = new ArrayList<>();
@@ -47,14 +50,33 @@ public class Category {
         this.subCategoryName = subCategoryName;
     }
 
+    public Category(String categoryName, String subCategoryName, Integer sequence) {
+        this.categoryName = categoryName;
+        this.subCategoryName = subCategoryName;
+        this.sequence = sequence;
+    }
+
+
     public Category(String categoryName, String subCategoryName, String type) {
         this.categoryName = categoryName;
         this.subCategoryName = subCategoryName;
         this.type = type;
     }
 
+    public Category(String categoryName, String subCategoryName, String type, Integer sequence) {
+        this.categoryName = categoryName;
+        this.subCategoryName = subCategoryName;
+        this.type = type;
+        this.sequence = sequence;
+    }
+
     public Category(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public Category(String categoryName, Integer sequence) {
+        this.categoryName = categoryName;
+        this.sequence = sequence;
     }
 
     public void addItemCategory(ItemCategory itemCategory) {
