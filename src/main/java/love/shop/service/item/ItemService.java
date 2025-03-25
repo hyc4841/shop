@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -121,13 +123,45 @@ public class ItemService {
         itemRepository.deleteItem(itemId);
     }
 
+    // 이건 아마 회원가입 할때 장바구니를 만들어 놓고, 아이템 추가 제거만 하는걸로 해야할듯? 지금 해놓은건 아이템 추가하면서 장바구니 생서임.
+    // 이게 아니고 장바구니에 아이템만 넣어다 뺏다만 하도록 해야 할듯.
     @Transactional
     public void saveCart(CartSaveReqDto cartSaveReqDto, Member member) {
         // itemCart 생성 및 설정
-        new ItemCart();
 
-        Cart cart = Cart.createCart();
+        Item item = itemRepository.findOne(cartSaveReqDto.getItemId()).orElseThrow(() -> new RuntimeException("장바구니에 추가하려는 해당 상품이 없음"));
+        ItemCart itemCart = ItemCart.createItemCart(item, cartSaveReqDto.getCount());
+        Cart cart = Cart.createCart(itemCart, member);
 
         itemRepository.saveCart(cart);
+    }
+
+    // 장바구니 조회
+    public Cart findCartByMemberId(Long memberId) {
+        return itemRepository.findCartByMemberId(memberId).orElseThrow(() -> new RuntimeException("해당 멤버의 장바구니가 존재하지 않음."));
+    }
+
+    //
+    @Transactional
+    public void removeCartItem(Long itemCartId, Long memberId) {
+        // memberId 필요 없고 itemCartId로 itemCart 찾으면 그 안에 정보 다있다.
+
+
+        // cart에서 itemCart 제거
+        Cart cart = findCartByMemberId(memberId);
+        List<ItemCart> itemCartList = cart.getItemCartList();
+        itemCartList.removeIf(itemCart -> Objects.equals(itemCart.getId(), itemCartId));
+        //아래 코드가 위 한줄로 바뀜.
+        /*for (ItemCart itemCart : itemCartList) {
+            if (Objects.equals(itemCart.getId(), itemCartId)) {
+                itemCartList.remove(itemCart);
+            }
+        }*/
+
+        // item에서 itemCart 제거
+
+
+
+        //
     }
 }
