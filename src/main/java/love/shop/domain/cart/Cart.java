@@ -40,9 +40,8 @@ public class Cart { // 장바구니
 
     public static Cart createCart(ItemCart itemCart, Member member) {
         Cart cart = new Cart();
-
         // itemCart 설정
-            cart.addItemCart(itemCart);
+        cart.addItemCart(itemCart);
         // member 설정
         cart.setMember(member);
         return cart;
