@@ -30,7 +30,14 @@ public class ItemCart {
 
     public static ItemCart createItemCart(Item item, Integer itemCount) {
         ItemCart itemCart = new ItemCart(item, itemCount);
-        item
+        item.setItemCarts(itemCart);
+
+        return itemCart;
+    }
+
+    public void addItem(Item item) {
+        //이걸 아이템에서 해야돼 아님 여기서 해야돼.. 연관관계 맺는거 지금 헷갈림
+
     }
 
     public ItemCart(Item item, Integer itemCount) {
