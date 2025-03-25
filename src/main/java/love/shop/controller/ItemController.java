@@ -167,7 +167,10 @@ public class ItemController {
     // 장바구니 생성
 
     @PostMapping("/cart")
-    public ResponseEntity<?> createCart
+    public ResponseEntity<?> createCart() {
+
+        return ResponseEntity.ok("ok");
+    }
 
     // 장바구니 저장? 이건 수정이 필요함. 장바구니에 상품 추가?
     @PatchMapping("/cart")
@@ -187,6 +190,8 @@ public class ItemController {
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
 
         itemService.removeCartItem(itemCartId, memberId);
+
+        return ResponseEntity.ok("ok");
     }
 
     @GetMapping("/cart")
