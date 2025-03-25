@@ -9,6 +9,7 @@ import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.type.LapTop;
+import love.shop.domain.itemCart.ItemCart;
 import love.shop.web.item.saveDto.BookSaveReqDto;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.saveDto.LapTopSaveReqDto;
@@ -38,6 +39,9 @@ public abstract class Item {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<ItemCategory> itemCategories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<ItemCart> itemCarts = new ArrayList<>();
 
     // 연관관계 메서드
     // 아이템 - 아이템/카테고리 연결
