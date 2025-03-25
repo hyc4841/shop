@@ -3,10 +3,14 @@ package love.shop.service.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.ItemCategory.ItemCategory;
+import love.shop.domain.cart.Cart;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
+import love.shop.domain.itemCart.ItemCart;
+import love.shop.domain.member.Member;
 import love.shop.repository.item.ItemRepository;
+import love.shop.web.cart.dto.CartSaveReqDto;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.searchCond.SearchCond;
@@ -33,13 +37,13 @@ public class ItemService {
     }
 
     @Transactional
-    public Item saveItemWithCategory(ItemSaveReqDto itemDto) {
+    public Item saveItemWithCategory(ItemSaveReqDto saveReqDto) {
 
-        Item item = Item.createItem(itemDto);// 아이템 저장 요청으로 들어온 DTO를 각 데이터타입에 맞게 구분한 후 해당 데이터타입의
+        Item item = Item.createItem(saveReqDto);// 아이템 저장 요청으로 들어온 DTO를 각 데이터타입에 맞게 구분한 후 해당 데이터타입의
 
         if (item != null) {
             // 아이템에 카테고리 등록
-            for (Integer categoryId : itemDto.getCategoriesId()) {
+            for (Integer categoryId : saveReqDto.getCategoriesId()) {
                 Category category = itemRepository.findCategoryById(Long.valueOf(categoryId)).orElseThrow(() -> new RuntimeException("해당 카테고리가 없음"));
                 ItemCategory itemCategory = ItemCategory.createItemCategory(category);
                 item.addItemCategory(itemCategory);
@@ -53,6 +57,10 @@ public class ItemService {
     // 아이템 id로 조회
     public Item findOne(Long ItemId) {
         return itemRepository.findOne(ItemId).orElseThrow(() -> new RuntimeException("값이 없음"));
+    }
+
+    public List<Item> findItemsByItemId(List<Long> items) {
+        return itemRepository.findItemsByItemId(items);
     }
 
     // 모든 아이템 조회
@@ -113,4 +121,13 @@ public class ItemService {
         itemRepository.deleteItem(itemId);
     }
 
+    @Transactional
+    public void saveCart(CartSaveReqDto cartSaveReqDto, Member member) {
+        // itemCart 생성 및 설정
+        new ItemCart();
+
+        Cart cart = Cart.createCart();
+
+        itemRepository.saveCart(cart);
+    }
 }

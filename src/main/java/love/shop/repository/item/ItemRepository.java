@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.ItemCategory.QItemCategory;
+import love.shop.domain.cart.Cart;
 import love.shop.domain.category.Category;
 import love.shop.domain.category.QCategory;
 import love.shop.domain.item.*;
@@ -17,6 +18,8 @@ import love.shop.web.item.filter.lapTop.*;
 import love.shop.web.item.searchCond.*;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,6 +64,20 @@ public class ItemRepository {
     public List<Item> findAll() {
         return em.createQuery("select i from Item i", Item.class)
                 .getResultList();
+    }
+
+    // 2개 이상의 아이템 조회
+    public List<Item> findItemsByItemId(List<Long> items) {
+        List<Item> itemList = new ArrayList<>();
+
+        for (Long itemId : items) {
+            Optional<Item> item = findOne(itemId);
+            if (item.isPresent()) {
+                itemList.add(item.get());
+            }
+        }
+
+        return itemList;
     }
 
     // 카테고리명으로 카테고리 조회
@@ -381,6 +398,7 @@ public class ItemRepository {
                 .fetch();
     }
 
+    // 카테고리로 아이템 조회
     public List<Item> findItemsByCategoryId(Long categoryId) {
         return queryFactory.select(item)
                 .from(itemCategory)
@@ -388,6 +406,10 @@ public class ItemRepository {
                 .join(itemCategory.category)
                 .where(itemCategory.category.id.eq(categoryId))
                 .fetch();
+    }
+
+    public void saveCart(Cart cart) {
+        em.persist(cart);
     }
 
 }
