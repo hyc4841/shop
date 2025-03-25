@@ -271,6 +271,7 @@ public class MemberController {
         return ResponseEntity.ok(reAccessToken);
     }
 
+    /*
     @GetMapping("/test-v1")
     public TestResV1 testV1() {
         log.info("테스트");
@@ -337,4 +338,6 @@ public class MemberController {
         private int count;
         private String message;
     }
+
+     */
 }
