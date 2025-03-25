@@ -1,25 +1,22 @@
 package love.shop.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
-import love.shop.domain.item.type.LapTop;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
+import love.shop.web.cart.dto.CartSaveReqDto;
 import love.shop.web.category.dto.CategoryDto;
 import love.shop.web.item.dto.*;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
-import love.shop.web.item.searchCond.LapTopSearchCond;
 import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.item.searchFilter.LapTopSearchFilter;
 import love.shop.web.item.searchFilter.SearchFilter;
 import love.shop.web.item.searchFilter.TVSearchFilter;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,13 +24,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class ItemController {
 
     private final ItemService itemService;
     private final ItemRepository itemRepository;
 
+    // 아이템 저장.
     @PostMapping("/item")
     public ResponseEntity<ItemDto> saveItemWithCategory(@RequestBody @Validated ItemSaveReqDto itemDto) {
 
@@ -44,14 +42,11 @@ public class ItemController {
 
         ItemDto savedItemDto = ItemDto.createItemDto(savedItem);
 
-
         return ResponseEntity.ok(savedItemDto);
     }
 
-    // 카테고리별 아이템 리스트를 건네주는 컨트롤러가 따로 있어야할듯.
-    // 지금 이 메서드를 카테고리별 아이템 조회로 만들어야할듯
-
     // 카테고리 중분류 아이템 조건 검색
+    // 아이템 조회
     @GetMapping("/items")
     public ResponseEntity<?> items(@ModelAttribute SearchCond searchCond, // 중분류 카테고리로 뿌려주는걸로 만들자
                                     @RequestParam Map<String, String> checkedFilter,
@@ -63,7 +58,6 @@ public class ItemController {
         checkedFilter.remove("categories");
         checkedFilter.remove("type");
         checkedFilter.remove("lessPrice");
-
 
         // 1. 스트링으로 들어온 Map<String, String> filter 를 Map<String, List<String>> 으로 변환하기
         Map<String, List<String>> convertedFilter = new HashMap<>();
@@ -81,11 +75,8 @@ public class ItemController {
         Category findCategory = itemService.findCategoryType(searchCond.getCategories());
         String type = findCategory.getType();
 
-//        데이터 타입이 두가지 이상이라면?
-//        예를 들어서, 베어본, 맥미니pc 라면?
-
         // 클라이언트 쪽에서 보여줄 필터
-        SearchFilter filters = findFilter(type);
+        SearchFilter filters = SearchFilter.findFilter(type);
 
         List<Item> items = itemService.findItemsBySearchCond(searchCond, convertedFilter, offset, limit);
         log.info("조건으로 찾은 items={}", items);
@@ -98,61 +89,6 @@ public class ItemController {
         return ResponseEntity.ok(objectItemListPageResult);
     }
 
-    private SearchFilter findFilter(String type) {
-        if (type == null) {
-            return null;
-        }
-        switch (type) {
-            case "LapTop":
-                return LapTopSearchFilter.createLapTopFilter();
-            case "Book":
-                break;
-            case "TV":
-                return TVSearchFilter.createTVSearchFilter();
-            case "SmartPhone":
-                break;
-            case "Projector":
-                break;
-            case "BeamScreen":
-                break;
-            case "StreamingDongle":
-                break;
-            case "streamingMediaPlayer":
-                break;
-            case "DeskTop":
-                break;
-            case "Monitor":
-                break;
-            case "MFP":
-                break;
-            case "Printer":
-                break;
-            case "TonerCartridge":
-                break;
-            case "InkCartridge":
-                break;
-            case "Scanner":
-                break;
-            case "WirelessEarbuds":
-                break;
-            case "WirelessHeadphones":
-                break;
-            case "WiredEarbuds":
-                break;
-            case "WiredHeadphones":
-                break;
-            case "WirelessHeadset":
-                break;
-            case "WiredHeadset":
-                break;
-            default:
-                log.info("맞는 타입 없음");
-                return null;
-        }
-        return null;
-    }
-
-
     @Data
     @AllArgsConstructor
     static class ItemListPageResult<T> {
@@ -161,16 +97,17 @@ public class ItemController {
         private String type;
     }
 
-    // 아이템 상세 조회
+    // 아이템 상세 조회. 아이템 페이지에 뿌려줄 데이터
     @GetMapping("/item/{itemId}")
-    public ResponseEntity<String> findItemById(@PathVariable Long itemId) {
+    public ResponseEntity<?> findItemById(@PathVariable Long itemId) {
         Item item = itemService.findOne(itemId);
 
-        // 아이템 조회부터 다시 만들자
+        log.info("아이템 단건 조회={}", item);
 
-        return ResponseEntity.ok("ok");
+        ItemDto itemDto = ItemDto.createItemDto(item);
+
+        return ResponseEntity.ok(itemDto);
     }
-    //
 
     @PatchMapping("/item/book")
     public ResponseEntity<BookDto> updateBook(@RequestBody BookUpdateReqDto bookDto) {
@@ -213,17 +150,6 @@ public class ItemController {
         return ResponseEntity.ok(categoryDtoList);
     }
 
-
-//    @GetMapping("/items")
-    public ResponseEntity<List<ItemDto>> findItemsByCategories(@RequestParam("categoryId") Long categoryId) {
-        log.info("categoryId={}", categoryId);
-        // 아이템 조회
-        Category findCategory = itemService.findCategoryById(categoryId);
-        List<Item> items = itemService.findItemsByCategoryId(categoryId);
-        List<ItemDto> itemDtoList = ItemDto.createItemDtoList(items);
-        return ResponseEntity.ok(itemDtoList);
-    }
-
     @Data
     @AllArgsConstructor
     static class ItemListResult<T> {
@@ -231,9 +157,15 @@ public class ItemController {
         private T filterList;
     }
 
+    @PostMapping("/cart")
+    public ResponseEntity<?> saveCart(@RequestBody CartSaveReqDto cartSaveReqDto) {
+
+
+    }
+
 
     // 카테고리 테스트
-
+    /*
 
     @GetMapping("/test123")
     public ResponseEntity<?> test123(@RequestParam Map<String, String> test) {
@@ -250,5 +182,7 @@ public class ItemController {
 
         return ResponseEntity.ok(test);
     }
+
+     */
 
 }
