@@ -6,12 +6,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import love.shop.common.exception.UnauthorizedAccessException;
+import love.shop.domain.cart.Cart;
+import love.shop.domain.item.Item;
+import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
 import love.shop.repository.item.ItemRepository;
 import love.shop.repository.order.OrderRepository;
 import love.shop.service.member.MemberService;
 import love.shop.service.order.OrderService;
+import love.shop.web.cart.dto.CartSaveReqDto;
+import love.shop.web.item.dto.ItemDto;
 import love.shop.web.login.dto.CustomUser;
+import love.shop.web.login.dto.MemberDto;
 import love.shop.web.order.dto.OrderDto;
 import love.shop.web.order.dto.OrderReqDto;
 import org.springframework.http.ResponseEntity;
@@ -46,14 +52,50 @@ public class OrderController {
         return ResponseEntity.ok(new AllOrders<List<OrderDto>>(result, result.size()));
     }
 
+    // 주문 페이지에 필요한 정보
+    // 장바구니, 상품 페이지에서 다이렉트로 살때 모두 가능함. 구매 상품을 리스트로 받으니까 가능
+    @GetMapping("/orderInfo")
+    public ResponseEntity<?> orderInfo(@RequestParam List<Long> orderItems) {
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        Member orderMember = memberService.findMemberById(memberId);
+        MemberDto orderMemberDto = new MemberDto(orderMember);
+
+        // 구매하려는 아이템
+        List<Item> orderItemsList = itemRepository.findItemsByItemId(orderItems);
+        List<ItemDto> orderItemDtoList = ItemDto.createItemDtoList(orderItemsList);
+
+        orderInfoResult<Object> orderInfoResult = new orderInfoResult<>(orderMemberDto, orderItemDtoList);
+        // 주문 페이지에 뿌려줄 dto 필요
+        // 주문 멤버의 정보, 구매하려는 상품 정보
+        // 추후에는 멤버가 저장해둔 카드의 정보도 꺼내와서 결재를 편하게 해주는 것도 필요하다.
+
+        return ResponseEntity.ok(orderInfoResult);
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class orderInfoResult<T> {
+        private T member;
+        private T items;
+    }
+
+    // 주문 방식이 장바구니 구매가 있을 수도 있다.
+
     // 주문 저장
     @PostMapping("/order")
     public ResponseEntity<OrderDto> saveOrder(@RequestBody OrderReqDto orderReqDto) {
+        // 결재 방식, 결재 정보도 필요함
+
+        // 주문 완성 조건
+        // 배송 주소(멤버가 저장해놓은 주소 혹은 직접 입력한 주소), 주문 멤버, 주문 상품 + 수량,
 
         // 주문을 만들기 위해서 뭐가 필요하지? 멤버, 아이템, 배송정보가 필요함
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
+        // 주문한 멤버 정보는 해결
 
-        Long orderId = orderService.order(memberId, orderReqDto.getItemId(), orderReqDto.getCount(), orderReqDto.getAddressId());
+        // 배송 주소는 배송 id
+
+        Long orderId = orderService.order(memberId, orderReqDto.getOrderItemSets(), orderReqDto.getAddressId());
 
         Order order = orderService.findOrderById(orderId);
         OrderDto orderDto = new OrderDto(order);
@@ -89,9 +131,6 @@ public class OrderController {
 
         return ResponseEntity.ok(orderDto);
     }
-
-
-
 
 
     @GetMapping("/orders/test1")
@@ -138,8 +177,6 @@ public class OrderController {
 
         return ResponseEntity.ok(list);
     }
-
-
 
     // 이거 고급 기술임. 만약에 클라이언트에서 모든과 주문 개수를 요청했을 때 그냥 DTO로 넘기면 배열 값으로 바로 넘어가기 때문에 필드 확장이 불가능함.
     // 클레스로 컬렉션을 감싸면 나중에 필요한 필드를 추가할 수 있음
