@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import love.shop.common.exception.UnauthorizedAccessException;
-import love.shop.domain.cart.Cart;
 import love.shop.domain.item.Item;
 import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
@@ -14,7 +13,6 @@ import love.shop.repository.item.ItemRepository;
 import love.shop.repository.order.OrderRepository;
 import love.shop.service.member.MemberService;
 import love.shop.service.order.OrderService;
-import love.shop.web.cart.dto.CartSaveReqDto;
 import love.shop.web.item.dto.ItemDto;
 import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.dto.MemberDto;
