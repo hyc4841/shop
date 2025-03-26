@@ -2,29 +2,21 @@ package love.shop.controller;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.cart.Cart;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
-import love.shop.domain.member.Member;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
-import love.shop.web.cart.dto.CartSaveReqDto;
 import love.shop.web.category.dto.CategoryDto;
 import love.shop.web.item.dto.*;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.searchCond.SearchCond;
-import love.shop.web.item.searchFilter.LapTopSearchFilter;
 import love.shop.web.item.searchFilter.SearchFilter;
-import love.shop.web.item.searchFilter.TVSearchFilter;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
-import love.shop.web.login.dto.CustomUser;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import love.shop.web.cart.dto.CartDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -162,46 +154,6 @@ public class ItemController {
     static class ItemListResult<T> {
         private T itemList;
         private T filterList;
-    }
-
-    // 장바구니 생성
-
-    @PostMapping("/cart")
-    public ResponseEntity<?> createCart() {
-
-        return ResponseEntity.ok("ok");
-    }
-
-    // 장바구니 저장? 이건 수정이 필요함. 장바구니에 상품 추가?
-    @PatchMapping("/cart")
-    public ResponseEntity<?> addCart(@RequestBody CartSaveReqDto cartSaveReqDto) {
-
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
-        Member member = memberService.findMemberById(memberId);
-
-        itemService.saveCart(cartSaveReqDto, member);
-
-        return ResponseEntity.ok("ok");
-    }
-
-    // 장바구니에 상품 제거
-    @DeleteMapping("/cart")
-    public ResponseEntity<?> removeCartItem(@RequestParam Long itemCartId) {
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
-
-        itemService.removeCartItem(itemCartId, memberId);
-
-        return ResponseEntity.ok("ok");
-    }
-
-    @GetMapping("/cart")
-    public ResponseEntity<?> findMemberCart() {
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
-
-        Cart cart = itemService.findCartByMemberId(memberId);
-        CartDto cartDto = new CartDto(cart);
-
-        return ResponseEntity.ok(cartDto);
     }
 
 
