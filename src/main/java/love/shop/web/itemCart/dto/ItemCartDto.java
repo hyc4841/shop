@@ -13,7 +13,7 @@ public class ItemCartDto {
 
     public ItemCartDto(ItemCart itemCart) {
         this.id = itemCart.getId();
-        this.item = ItemDto.createItemDto(itemCart.getItem()); // 걸리는 부분은 이부분
+        this.item = itemCart.getItem() != null ? ItemDto.createItemDto(itemCart.getItem()) : null; // 걸리는 부분은 이부분
         this.itemCount = itemCart.getItemCount();
     }
 }
