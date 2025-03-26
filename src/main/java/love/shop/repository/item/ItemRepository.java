@@ -38,7 +38,6 @@ public class ItemRepository {
     QItemCategory itemCategory = QItemCategory.itemCategory;
     QBook book = QBook.book;
     QLapTop lapTop = QLapTop.lapTop;
-    QCart cart = QCart.cart;
 
 
     // 아이템 저장
@@ -410,19 +409,7 @@ public class ItemRepository {
                 .fetch();
     }
 
-    // 장바구니 저장. 장바구니는 최초로 해당 멤버걸로 저장하고 다음부터는 이걸 재활용 해야하지 않나?
-    public void saveCart(Cart cart) {
-        em.persist(cart);
-    }
 
-    // 장바구니 조회
-    public Optional<Cart> findCartByMemberId(Long memberId) {
-        return Optional.ofNullable(queryFactory.select(cart)
-                .from(cart)
-                .leftJoin(cart.itemCartList).fetchJoin()
-                .where(cart.member.id.eq(memberId))
-                .fetchOne());
-    }
 
 
 }
