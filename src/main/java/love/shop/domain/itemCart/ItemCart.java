@@ -17,27 +17,23 @@ public class ItemCart {
     @Column(name = "item_cart_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Column(name = "item_count")
     private Integer itemCount; // 장바구니에 있는 해당 아이템 수량
 
-
     public static ItemCart createItemCart(Item item, Integer itemCount) {
+        // item과 수량 설정된 itemCart 반환
         ItemCart itemCart = new ItemCart(item, itemCount);
-        item.setItemCarts(itemCart);
+        item.setItemCarts(itemCart); // item쪽에서도 itemCart 설정해주기
 
         return itemCart;
-    }
-
-    public void addItem(Item item) {
-        //이걸 아이템에서 해야돼 아님 여기서 해야돼.. 연관관계 맺는거 지금 헷갈림
-
     }
 
     public ItemCart(Item item, Integer itemCount) {
@@ -45,7 +41,16 @@ public class ItemCart {
         this.itemCount = itemCount;
     }
 
+    public void removeCartAndItem() {
+        setItem(null);
+        setCart(null);
+    }
+
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 }
