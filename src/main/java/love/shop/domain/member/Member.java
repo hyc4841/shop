@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.address.Address;
+import love.shop.domain.cart.Cart;
 import love.shop.domain.order.Order;
 
 import java.time.LocalDate;
@@ -40,22 +41,25 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Address> address = new ArrayList<>();
-
     @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
     private LocalDate joinDate;
 
+    @Column
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Address> address = new ArrayList<>(); // 회원 주소
+
     // 멤버 한명이 가질 수 있는 권한이 여러개일 수 있다면 이것은 말이 됨.
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<MemberRole> memberRole = new ArrayList<>();
+    private List<MemberRole> memberRole = new ArrayList<>(); // 회원 등급
 
     @OneToMany(mappedBy = "member")
-    private List<Order> orders = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();  // 주문
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Cart cart;  // 장바구니
 
     public Member(String loginId, String password, String name, String phoneNum, LocalDate birthDate, Gender gender, String email, LocalDate joinDate) {
         this.loginId = loginId;
