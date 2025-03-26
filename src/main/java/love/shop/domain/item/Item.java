@@ -40,7 +40,7 @@ public abstract class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<ItemCategory> itemCategories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<ItemCart> itemCarts = new ArrayList<>();
 
     // 연관관계 메서드
@@ -101,6 +101,12 @@ public abstract class Item {
         };
 
     }
+
+    public void deleteItemCart(ItemCart itemCart) {
+        this.itemCarts.remove(itemCart);
+    }
+
+
 
     public abstract String getType();
 
