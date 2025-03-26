@@ -21,35 +21,25 @@ public class Cart { // 장바구니
     @Column(name = "cart_id")
     private Long id;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private List<ItemCart> itemCartList = new ArrayList<>(); // 장바구니에 추가한 아이템들
-
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member; // 해당 장바구니 주인.
 
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemCart> itemCarts = new ArrayList<>(); // 장바구니에 추가한 아이템들
 
-
-
-
-
-
-    private void addItemCart(ItemCart itemCart) {
-        this.itemCartList.add(itemCart);
+    public void addItemCart(ItemCart itemCart) {
+        // 여기로 들어오는 itemCart는 item과 수량이 설정된 객체임(item 쪽에도 itemCart가 설정된 상태)
+        // cart쪽 itemCart 설정해주기, itemCart에도 cart 썰정해주기
+        this.itemCarts.add(itemCart);
         itemCart.setCart(this);
     }
 
-    public static Cart createCart(ItemCart itemCart, Member member) {
-        Cart cart = new Cart();
-        // itemCart 설정
-        cart.addItemCart(itemCart);
-        // member 설정
-        cart.setMember(member);
-        return cart;
-    }
-
-    protected void setMember(Member member) {
+    public Cart(Member member) {
         this.member = member;
     }
 
-
+    public void deleteItemCart(ItemCart itemCart) {
+        this.itemCarts.remove(itemCart);
+    }
 }
