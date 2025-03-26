@@ -10,6 +10,8 @@ import love.shop.domain.member.Role;
 import love.shop.repository.address.AddressRepository;
 import love.shop.repository.member.MemberRepository;
 import love.shop.repository.member.MemberRoleRepository;
+import love.shop.service.cart.CartService;
+import love.shop.service.item.ItemService;
 import love.shop.web.login.dto.MemberDto;
 import love.shop.web.member.dto.AddressUpdateReqDto;
 import love.shop.web.signup.dto.SignupRequestDto;
@@ -31,6 +33,9 @@ public class MemberService {
 
     private final AddressRepository addressRepository;
 
+    private final ItemService itemService;
+    private final CartService cartService;
+
     // 회원가입
     @Transactional
     public Long signUp(SignupRequestDto signupDto) {
@@ -49,8 +54,11 @@ public class MemberService {
 
         MemberRole memberRole = new MemberRole(Role.MEMBER, member);
         memberRoleRepository.save(memberRole);
+        Member signupMember = memberRepository.save(member);
 
-        return memberRepository.save(member);
+        cartService.createCart(signupMember);
+
+        return signupMember.getId();
     }
 
     private void duplicationValidation(SignupRequestDto signupDto) {
