@@ -12,16 +12,14 @@ import love.shop.common.exception.PasswordNotMatchException;
 import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
 import love.shop.repository.member.MemberRepository;
+import love.shop.service.item.ItemService;
 import love.shop.service.login.LoginService;
 import love.shop.service.member.MemberService;
-import love.shop.service.RedisService;
 import love.shop.web.login.dto.*;
-import love.shop.web.login.jwt.JwtTokenProvider;
 import love.shop.web.member.dto.*;
 import love.shop.web.signup.dto.SignupResponseDto;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.signup.dto.SignupRequestDto;
-import love.shop.web.test.TestResV1;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,9 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -40,8 +36,8 @@ public class MemberController {
 
     private final MemberService memberService;
     private final LoginService loginService;
-    private final RedisService redisService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final ItemService itemService;
+
     private final MemberRepository memberRepository;
 
     // 회원가입
