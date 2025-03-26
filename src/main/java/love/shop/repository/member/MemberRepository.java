@@ -22,10 +22,10 @@ public class MemberRepository {
 
 
 
-    public Long save(Member member) {
+    public Member save(Member member) {
         em.persist(member);
         Member saveMember = em.find(Member.class, member.getId());
-        return saveMember.getId();
+        return saveMember;
     }
 
     public List<Member> findAllMember() {
