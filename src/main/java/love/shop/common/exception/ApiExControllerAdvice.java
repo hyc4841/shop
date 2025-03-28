@@ -98,4 +98,11 @@ public class ApiExControllerAdvice {
         log.error("[exceptionHandle] ex", e);
         return new ErrorApi(403, "접근 권한이 없는 사용자입니다.");
     }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(OrderMemberNotMatchException.class)
+    public ErrorApi orderMemberNotMatchException(OrderMemberNotMatchException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorApi(401, "주문 취소는 주문 당사자가 해야합니다. 당신 누구야.");
+    }
 }
