@@ -93,6 +93,10 @@ public class Member {
         this.phoneNum = phoneNum;
     }
 
+    public void setAddress(Address address) {
+        this.address.add(address);
+    }
+
 
 
 
