@@ -17,13 +17,11 @@ public class OrderReqDto {
     private Long addressId;
 
 
+
     private List<OrderItemSet> orderItemSets;
 //    private List<Long> itemId;  // 주문 상품
 //    private Integer count;      // 주문 개수
     // 위 두 개가 한 묶음이어야 한다.
-
-
-
 
      // 결재 금액, 결재 방식
 }
