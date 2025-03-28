@@ -37,6 +37,73 @@ public class OrderController {
     private final MemberService memberService;
     private final ItemRepository itemRepository;
 
+    // 주문 저장
+    @PostMapping("/order")
+    public ResponseEntity<OrderDto> saveOrder(@RequestBody OrderReqDto orderReqDto) {
+        log.info("주문 요청 데이터={}", orderReqDto);
+        // 결재 방식, 결재 정보도 필요함
+
+        // 주문 완성 조건
+        // 배송 주소(멤버가 저장해놓은 주소 혹은 직접 입력한 주소), 주문 멤버, 주문 상품 + 수량
+
+        // 주문을 만들기 위해서 뭐가 필요하지? 멤버, 아이템, 배송정보가 필요함
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
+        // 주문한 멤버 정보는 해결
+
+        // 배송 주소는 배송 id
+
+        Long orderId = orderService.order(memberId, orderReqDto);
+
+        Order order = orderService.findOrderById(orderId);
+        OrderDto orderDto = new OrderDto(order);
+
+        return ResponseEntity.ok(orderDto);
+    }
+
+    // 주문 상세 조회 : 이건 추후에 PathVariable로 하지말고 그냥 body에 넣어서 처리하는 것도 방법일듯.
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<OrderDto> findOrderByOrderId(@PathVariable Long orderId) {
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
+        log.info("주문 단건 조회");
+        Order order = orderService.findOrderById(orderId);
+
+        // 1차로 멤버 권한이 없느 사용자는 스프링 필터에서 걸러지고
+        // 2차로 컨트롤러에 들어와서 해당 주문의 주문 멤버인지 확인
+        if (!Objects.equals(order.getMember().getId(), memberId)) {
+            throw new UnauthorizedAccessException("접근 권한이 없습니다.");
+        }
+        OrderDto orderDto = new OrderDto(order);
+
+        return ResponseEntity.ok(orderDto);
+    }
+
+    // 주문 취소
+    @DeleteMapping("/order/{orderId}")
+    public ResponseEntity<String> cancelOrder(@PathVariable Long orderId) {
+        // 이 자체로도 되긴 하는데, 해당 유저가 아닌데 주문취소 요청 일부러 보내서 망칠 수도 있잖아.
+        // 주문 id와 해당 주문이 지금 로그인중인 유저의 주문인지 확인 후 주문 취소하자.
+
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
+
+
+        orderService.cancelOrder(orderId, memberId);
+
+        // 주문을 찾은 다음에
+        // 주문의 상태를 취소 상태로 바꾼다
+
+        // 취소된 주문 정보 반환하는 걸로 바꿔야함.
+        return ResponseEntity.ok("취소 완료");
+    }
+
+    @PatchMapping("/order/{orderId}")
+    public ResponseEntity<?> updateOrder() {
+
+
+
+
+        return ResponseEntity.ok("ok");
+    }
+
     // 멤버 주문 조회
     @GetMapping("/orders")
     public ResponseEntity<AllOrders<List<OrderDto>>> findOrdersByMember(@RequestParam(value = "offset", defaultValue = "0") int offset,
@@ -79,57 +146,11 @@ public class OrderController {
 
     // 주문 방식이 장바구니 구매가 있을 수도 있다.
 
-    // 주문 저장
-    @PostMapping("/order")
-    public ResponseEntity<OrderDto> saveOrder(@RequestBody OrderReqDto orderReqDto) {
-        // 결재 방식, 결재 정보도 필요함
 
-        // 주문 완성 조건
-        // 배송 주소(멤버가 저장해놓은 주소 혹은 직접 입력한 주소), 주문 멤버, 주문 상품 + 수량,
 
-        // 주문을 만들기 위해서 뭐가 필요하지? 멤버, 아이템, 배송정보가 필요함
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
-        // 주문한 멤버 정보는 해결
 
-        // 배송 주소는 배송 id
 
-        Long orderId = orderService.order(memberId, orderReqDto.getOrderItemSets(), orderReqDto.getAddressId());
-
-        Order order = orderService.findOrderById(orderId);
-        OrderDto orderDto = new OrderDto(order);
-
-        return ResponseEntity.ok(orderDto);
-    }
-
-    // 주문 취소
-    @DeleteMapping("/order/{orderId}")
-    public ResponseEntity<String> cancelOrder(@PathVariable Long orderId) {
-        orderService.cancelOrder(orderId);
-
-        // 주문을 찾은 다음에
-        // 주문의 상태를 취소 상태로 바꾼다
-
-        // 취소된 주문 정보 반환하는 걸로 바꿔야함.
-        return ResponseEntity.ok("취소 완료");
-    }
-
-    // 주문 상세 조회 : 이건 추후에 PathVariable로 하지말고 그냥 body에 넣어서 처리하는 것도 방법일듯.
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<OrderDto> findOrderByOrderId(@PathVariable Long orderId) {
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
-        log.info("주문 단건 조회");
-        Order order = orderService.findOrderById(orderId);
-
-        // 1차로 멤버 권한이 없느 사용자는 스프링 필터에서 걸러지고
-        // 2차로 컨트롤러에 들어와서 해당 주문의 주문 멤버인지 확인
-        if (!Objects.equals(order.getMember().getId(), memberId)) {
-            throw new UnauthorizedAccessException("접근 권한이 없습니다.");
-        }
-        OrderDto orderDto = new OrderDto(order);
-
-        return ResponseEntity.ok(orderDto);
-    }
-
+    /*
 
     @GetMapping("/orders/test1")
     public ResponseEntity<List<OrderDto>> findOrdersByMemberId() {
@@ -184,12 +205,14 @@ public class OrderController {
         private T data; // 주문 컬렉션. 주문 리스트
         private int count; // 주문 개수
     }
-
+*/
     @Data
     @AllArgsConstructor
     static class AllOrders<T> {
         private T orders;
         private int count;
     }
+
+
 
 }
