@@ -18,6 +18,7 @@ import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.dto.MemberDto;
 import love.shop.web.order.dto.OrderDto;
 import love.shop.web.order.dto.OrderReqDto;
+import love.shop.web.order.dto.OrderUpdateDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,6 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderRepository orderRepository;
     private final MemberService memberService;
     private final ItemRepository itemRepository;
 
@@ -96,9 +96,10 @@ public class OrderController {
     }
 
     @PatchMapping("/order/{orderId}")
-    public ResponseEntity<?> updateOrder() {
+    public ResponseEntity<?> updateOrder(@RequestBody OrderUpdateDto orderUpdateDto) {
+        // 배송지 혹은 배송 상태 업데이트
 
-
+        orderService.
 
 
         return ResponseEntity.ok("ok");

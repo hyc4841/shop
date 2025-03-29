@@ -46,6 +46,10 @@ public class OrderRepository {
                 .getResultList();
     }
 
+    public void updateOrder() {
+
+    }
+
     // DTO로 바로 조회.
     /*
     public List<OrdersResponseDto> findOrdersDtos() {

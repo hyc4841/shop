@@ -16,6 +16,7 @@ import love.shop.repository.member.MemberRepository;
 import love.shop.repository.order.OrderRepository;
 import love.shop.web.order.dto.OrderItemSet;
 import love.shop.web.order.dto.OrderReqDto;
+import love.shop.web.order.dto.OrderUpdateDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,7 +83,12 @@ public class OrderService {
         } else {
             throw new OrderMemberNotMatchException();
         }
+    }
 
+    @Transactional
+    public Order updateOrder(OrderUpdateDto orderUpdateDto) {
+
+        orderRepository.
     }
 
     // 모든 주문 조회
