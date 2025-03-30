@@ -58,4 +58,8 @@ public class Address {
         this.member = member;
         member.setAddress(this);
     }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery.add(delivery);
+    }
 }
