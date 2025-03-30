@@ -4,6 +4,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.address.QAddress;
+import love.shop.domain.delivery.QDelivery;
 import love.shop.domain.order.Order;
 import love.shop.domain.order.QOrder;
 import org.springframework.stereotype.Repository;
@@ -21,6 +23,8 @@ public class OrderRepository {
     private final JPAQueryFactory queryFactory;
 
     QOrder order = QOrder.order;
+    QAddress address = QAddress.address;
+    QDelivery delivery = QDelivery.delivery;
 
     public void save(Order order) {
         em.persist(order);
@@ -46,8 +50,11 @@ public class OrderRepository {
                 .getResultList();
     }
 
-    public void updateOrder() {
-
+    public void updateOrderDeliveryAddress(Long deliveryId ,Long addressId) {
+        queryFactory.update(delivery)
+                .where(delivery.id.eq(deliveryId))
+                .set(delivery.address.id, addressId)
+                .execute();
     }
 
     // DTO로 바로 조회.

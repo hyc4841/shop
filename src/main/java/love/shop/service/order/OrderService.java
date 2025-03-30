@@ -16,7 +16,7 @@ import love.shop.repository.member.MemberRepository;
 import love.shop.repository.order.OrderRepository;
 import love.shop.web.order.dto.OrderItemSet;
 import love.shop.web.order.dto.OrderReqDto;
-import love.shop.web.order.dto.OrderUpdateDto;
+import love.shop.web.order.dto.OrderDeliveryAddressUpdateDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,10 +85,25 @@ public class OrderService {
         }
     }
 
+    // 주문 배송지 변경. 만약 아직 발송을 안했다면
     @Transactional
-    public Order updateOrder(OrderUpdateDto orderUpdateDto) {
+    public void updateOrderDeliveryAddressById(Delivery delivery, Long addressId) {
+        Address address = addressRepository.findAddressById(addressId); // 바꾸려고 하는 주소
+        delivery.updateAddress(address);
+    }
 
-        orderRepository.
+    @Transactional
+    public void updateOrderDeliveryAddressByNewAddress(Delivery delivery, OrderDeliveryAddressUpdateDto orderUpdateDto, Long memberId) {
+        Member member = memberRepository.findMemberById(memberId);
+
+        // 새로운 주소지 자체 생성
+        Address address = new Address(orderUpdateDto.getCity(), orderUpdateDto.getStreet(),
+                orderUpdateDto.getZipcode(), orderUpdateDto.getDetailedAddress(), member);
+        // 주소 저장
+        addressRepository.save(address);
+        log.info("새로 저장한 주소={}", address.getId());
+
+        delivery.updateAddress(address);
     }
 
     // 모든 주문 조회
