@@ -92,7 +92,7 @@ public class InitDb {
             orderItems.add(orderItem1);
             orderItems.add(orderItem2);
 
-            Address address = new Address("서울", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
+            Address address = new Address("강원도", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
 
             Delivery delivery = createDelivery(member, address);
 
@@ -106,7 +106,7 @@ public class InitDb {
             // 회원가입
             PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
             SignupRequestDto signupRequest = new SignupRequestDto("Hell5", passwordAndCheck,"가나다", "01099694841",
-                    "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
+                    "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "아몰랑", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
             Long signUpMemberId = memberService.signUp(signupRequest);
 
             // 아이템, 주문, 배달, 주문아이템
@@ -126,7 +126,7 @@ public class InitDb {
             orderItems.add(orderItem1);
             orderItems.add(orderItem2);
 
-            Address address = new Address("서울", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
+            Address address = new Address("호호", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
 
             Delivery delivery = createDelivery(member, address);
 
