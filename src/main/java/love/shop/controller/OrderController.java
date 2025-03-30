@@ -5,12 +5,12 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import love.shop.common.exception.OrderMemberNotMatchException;
 import love.shop.common.exception.UnauthorizedAccessException;
 import love.shop.domain.item.Item;
 import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
 import love.shop.repository.item.ItemRepository;
-import love.shop.repository.order.OrderRepository;
 import love.shop.service.member.MemberService;
 import love.shop.service.order.OrderService;
 import love.shop.web.item.dto.ItemDto;
@@ -18,12 +18,11 @@ import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.dto.MemberDto;
 import love.shop.web.order.dto.OrderDto;
 import love.shop.web.order.dto.OrderReqDto;
-import love.shop.web.order.dto.OrderUpdateDto;
+import love.shop.web.order.dto.OrderDeliveryAddressUpdateDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -85,7 +84,6 @@ public class OrderController {
 
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
 
-
         orderService.cancelOrder(orderId, memberId);
 
         // 주문을 찾은 다음에
@@ -95,19 +93,37 @@ public class OrderController {
         return ResponseEntity.ok("취소 완료");
     }
 
+    // 배송 주소 변경. 아직 배송준비중일때만 가능하도록
     @PatchMapping("/order/{orderId}")
-    public ResponseEntity<?> updateOrder(@RequestBody OrderUpdateDto orderUpdateDto) {
+    public ResponseEntity<?> updateOrder(@PathVariable Long orderId, @RequestBody OrderDeliveryAddressUpdateDto orderUpdateDto) {
         // 배송지 혹은 배송 상태 업데이트
+        log.info("주문 배송 주소 업데이트={}", orderUpdateDto);
 
-        orderService.
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
 
+        Order order = orderService.findOrderById(orderId);
 
-        return ResponseEntity.ok("ok");
+        // 현재 로그인 멤버와 주문 멤버가 같은지 확인
+        if (Objects.equals(memberId, order.getMember().getId())) {
+            if (orderUpdateDto.getAddressId() != null && orderUpdateDto.getZipcode() == null) {
+                // 배송지 변경을 기존에 저장된 주소로 하는 경우
+                log.info("기존 배송지로 변경");
+                orderService.updateOrderDeliveryAddressById(order.getDelivery(), orderUpdateDto.getAddressId());
+            } else if (orderUpdateDto.getAddressId() == null && orderUpdateDto.getZipcode() != null) {
+                // 배송지 변경을 새로 입력하는 경우
+                log.info("새로운 배송지 저장하기");
+                orderService.updateOrderDeliveryAddressByNewAddress(order.getDelivery(), orderUpdateDto, memberId);
+            }
+        } else {
+            throw new OrderMemberNotMatchException();
+        }
+
+        return ResponseEntity.ok(new OrderDto(order));
     }
 
     // 멤버 주문 조회
     @GetMapping("/orders")
-    public ResponseEntity<AllOrders<List<OrderDto>>> findOrdersByMember(@RequestParam(value = "offset", defaultValue = "0") int offset,
+    public ResponseEntity<?> findOrdersByMember(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                                                         @RequestParam(value = "limit", defaultValue = "100") int limit) {
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
 
