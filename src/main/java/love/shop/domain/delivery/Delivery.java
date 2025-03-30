@@ -49,4 +49,10 @@ public class Delivery {
         this.order = order;
     }
 
+    public void updateAddress(Address address) {
+        this.address.getDelivery().remove(this); // 기존 주소와 연관관계를 끊어준다.
+        this.address = address; // 새로운 주소와 연관관계를 맺는다.
+        address.setDelivery(this);
+    }
+
 }
