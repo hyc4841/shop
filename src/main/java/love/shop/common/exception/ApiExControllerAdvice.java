@@ -99,6 +99,7 @@ public class ApiExControllerAdvice {
         return new ErrorApi(403, "접근 권한이 없는 사용자입니다.");
     }
 
+    // 현재 로그인 중인 멤버와 주문 멤버가 다른 경우
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(OrderMemberNotMatchException.class)
     public ErrorApi orderMemberNotMatchException(OrderMemberNotMatchException e) {
