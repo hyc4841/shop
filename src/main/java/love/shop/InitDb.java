@@ -9,15 +9,19 @@ import love.shop.domain.address.Address;
 import love.shop.domain.category.Category;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.delivery.DeliveryStatus;
+import love.shop.domain.item.Item;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.type.LapTop;
+import love.shop.domain.itemPage.ItemPage;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.PasswordAndCheck;
 import love.shop.domain.order.Order;
 import love.shop.domain.orderItem.OrderItem;
+import love.shop.domain.page.Page;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
+import love.shop.service.page.PageService;
 import love.shop.web.item.filter.lapTop.*;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.stereotype.Component;
@@ -43,6 +47,7 @@ public class InitDb {
         service.dbInit1();
         service.dbInit2();
         service.initItem();
+        service.pageInit();
 
     }
 
@@ -54,6 +59,38 @@ public class InitDb {
         private final EntityManager em;
         private final MemberService memberService;
         private final ItemService itemService;
+        private final PageService pageService;
+
+        public void pageInit() {
+            // 먼저 페이지를 만들자
+            // 페이지 1
+            List<String> images = new ArrayList<>();
+            Page page = new Page("테스트 아이템 페이지", images, "이것은 테스트 입니다.");
+
+            List<Item> itemList = new ArrayList<>();
+
+            Item book = itemService.findOne(1L);
+            Item laptop = itemService.findOne(6L);
+
+            itemList.add(book);
+            itemList.add(laptop);
+
+            pageService.savePage(page, itemList);
+
+            // 페이지 2
+            List<String> images2 = new ArrayList<>();
+            Page page2 = new Page("테스트 아이템 페이지2", images2, "이것은 테스트 입니다2.");
+
+            List<Item> itemList2 = new ArrayList<>();
+
+            Item book2 = itemService.findOne(1L);
+            Item laptop2 = itemService.findOne(6L);
+
+            itemList2.add(book2);
+            itemList2.add(laptop2);
+
+            pageService.savePage(page2, itemList2);
+        }
 
 
         public void dbInit1() {
@@ -775,21 +812,6 @@ public class InitDb {
                 iterator32.remove();
                 sequence++;
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         }
