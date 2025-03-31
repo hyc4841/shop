@@ -5,29 +5,28 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.type.LapTop;
 import love.shop.domain.itemCart.ItemCart;
+import love.shop.domain.itemPage.ItemPage;
 import love.shop.web.item.saveDto.BookSaveReqDto;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.saveDto.LapTopSaveReqDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
 public abstract class Item {
 
-    private static final Logger log = LoggerFactory.getLogger(Item.class);
     @Id
     @GeneratedValue
     @Column(name = "item_id")
@@ -36,12 +35,16 @@ public abstract class Item {
     private String name;
     private int price;
     private int stockQuantity;
+    private String itemCode; // 아이템의 코드. 같은 제품이지만 색상 또는 사이즈가 다른 제품이 있을 수도 있기 때문.
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<ItemCategory> itemCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<ItemCart> itemCarts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<ItemPage> itemPages = new ArrayList<>();
 
     // 연관관계 메서드
     // 아이템 - 아이템/카테고리 연결
@@ -99,19 +102,20 @@ public abstract class Item {
                 yield null;
             }
         };
-
     }
 
     public void deleteItemCart(ItemCart itemCart) {
         this.itemCarts.remove(itemCart);
     }
 
-
-
     public abstract String getType();
 
     public void setItemCarts(ItemCart itemCart) {
         this.itemCarts.add(itemCart);
+    }
+
+    public void setItemPages(ItemPage itemPages) {
+        this.itemPages.add(itemPages);
     }
 
 }
