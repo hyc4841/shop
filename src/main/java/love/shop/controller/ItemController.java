@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
+import love.shop.domain.page.Page;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
@@ -14,6 +15,7 @@ import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.item.searchFilter.SearchFilter;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
+import love.shop.web.page.dto.PageDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,7 @@ public class ItemController {
     private final ItemService itemService;
     private final ItemRepository itemRepository;
     private final MemberService memberService;
+
 
     // 아이템 저장.
     @PostMapping("/item")
@@ -156,10 +159,24 @@ public class ItemController {
         private T filterList;
     }
 
+    // 해당 카테고리를 가진 아이템을 가진 페이지 조회
+    @GetMapping("/page")
+    public ResponseEntity<?> findItemPage(@RequestParam Long categoryId) {
+        log.info("페이지 아이템 카테고리 id로 조회하기 시작={}", categoryId);
+
+        List<Page> pageByItemCategory = itemRepository.findPageByItemCategory(categoryId);
+
+        log.info("없나?={}", pageByItemCategory);
+
+        List<PageDto> pageDtoList = PageDto.createPageDtoList(pageByItemCategory);
+
+        return ResponseEntity.ok(pageDtoList);
+    }
+
+
 
     // 카테고리 테스트
     /*
-
     @GetMapping("/test123")
     public ResponseEntity<?> test123(@RequestParam Map<String, String> test) {
 
@@ -175,7 +192,6 @@ public class ItemController {
 
         return ResponseEntity.ok(test);
     }
-
      */
 
 }
