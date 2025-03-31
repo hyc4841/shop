@@ -7,14 +7,14 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.ItemCategory.QItemCategory;
-import love.shop.domain.cart.Cart;
-import love.shop.domain.cart.QCart;
 import love.shop.domain.category.Category;
 import love.shop.domain.category.QCategory;
 import love.shop.domain.item.*;
-import love.shop.domain.item.type.LapTop;
 import love.shop.domain.item.type.QBook;
 import love.shop.domain.item.type.QLapTop;
+import love.shop.domain.itemPage.QItemPage;
+import love.shop.domain.page.Page;
+import love.shop.domain.page.QPage;
 import love.shop.web.item.filter.lapTop.*;
 import love.shop.web.item.searchCond.*;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
@@ -38,7 +38,8 @@ public class ItemRepository {
     QItemCategory itemCategory = QItemCategory.itemCategory;
     QBook book = QBook.book;
     QLapTop lapTop = QLapTop.lapTop;
-
+    QPage page = QPage.page;
+    QItemPage itemPage = QItemPage.itemPage;
 
     // 아이템 저장
     public void save(Item item) {
@@ -293,6 +294,7 @@ public class ItemRepository {
 
     }
 
+    /*
     private void bookScreenSearchCond(BookSearchCond searchCond, BooleanBuilder builder) {
 
     }
@@ -350,6 +352,7 @@ public class ItemRepository {
     private void wirelessHeadsetSearchCond(WirelessHeadsetSearchCond searchCond, BooleanBuilder builder) {
 
     }
+     */
 
     // 해당 카테고리의 데이터 타입 조회하기
     public Optional<Category> findCategoryType(Long categoryId) {
@@ -358,9 +361,6 @@ public class ItemRepository {
                 .where(category.id.eq(categoryId))
                 .fetchOne());
     }
-
-
-
 
     // 책 수정
     public void updateBook(BookUpdateReqDto bookDto) {
@@ -406,6 +406,19 @@ public class ItemRepository {
                 .join(itemCategory.item)
                 .join(itemCategory.category)
                 .where(itemCategory.category.id.eq(categoryId))
+                .fetch();
+    }
+
+    public List<Page> findPageByItemCategory(Long categoryId) {
+        log.info("제대로 들어온거 맞지?={}", categoryId);
+
+        return queryFactory.selectFrom(page)
+                .join(page.itemPages, itemPage)
+                .join(itemPage.item, item)
+                .join(item.itemCategories, itemCategory)
+                .join(itemCategory.category, category)
+                .where(itemCategory.category.id.eq(categoryId))
+                .distinct()
                 .fetch();
     }
 
