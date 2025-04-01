@@ -28,15 +28,36 @@ public class Page {
     private List<ItemPage> itemPages = new ArrayList<>();
 //    private String seller;          // 판매자
 
+    @Column
+    private Boolean pageIsActive;
 
     public Page(String pageName, List<String> images, String description) {
         this.pageName = pageName;
         this.images = images;
         this.description = description;
+        this.pageIsActive = true;
     }
-
 
     public void setItemPages(ItemPage itemPages) {
         this.itemPages.add(itemPages);
     }
+
+    // page 수정 메서드
+    public void modifyPage(String pageName, String description, List<String> images) {
+        if (pageName != null) {
+            this.pageName = pageName;
+        }
+        if (description != null) {
+            this.description = description;
+        }
+        if (images != null) {
+            this.images = images;
+        }
+    }
+
+    public void deletePage() {
+        this.pageIsActive = false;
+    }
+
+
 }
