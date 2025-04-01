@@ -409,18 +409,7 @@ public class ItemRepository {
                 .fetch();
     }
 
-    public List<Page> findPageByItemCategory(Long categoryId) {
-        log.info("제대로 들어온거 맞지?={}", categoryId);
 
-        return queryFactory.selectFrom(page)
-                .join(page.itemPages, itemPage)
-                .join(itemPage.item, item)
-                .join(item.itemCategories, itemCategory)
-                .join(itemCategory.category, category)
-                .where(itemCategory.category.id.eq(categoryId))
-                .distinct()
-                .fetch();
-    }
 
 
 
