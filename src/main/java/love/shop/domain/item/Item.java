@@ -24,6 +24,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+
 @Getter
 public abstract class Item {
 
@@ -45,6 +46,8 @@ public abstract class Item {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<ItemPage> itemPages = new ArrayList<>();
+
+//    private String seller; 판매자
 
     // 연관관계 메서드
     // 아이템 - 아이템/카테고리 연결
