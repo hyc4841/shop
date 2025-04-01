@@ -159,19 +159,7 @@ public class ItemController {
         private T filterList;
     }
 
-    // 해당 카테고리를 가진 아이템을 가진 페이지 조회
-    @GetMapping("/page")
-    public ResponseEntity<?> findItemPage(@RequestParam Long categoryId) {
-        log.info("페이지 아이템 카테고리 id로 조회하기 시작={}", categoryId);
 
-        List<Page> pageByItemCategory = itemRepository.findPageByItemCategory(categoryId);
-
-        log.info("없나?={}", pageByItemCategory);
-
-        List<PageDto> pageDtoList = PageDto.createPageDtoList(pageByItemCategory);
-
-        return ResponseEntity.ok(pageDtoList);
-    }
 
 
 
