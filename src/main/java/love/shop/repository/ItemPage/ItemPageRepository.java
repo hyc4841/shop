@@ -4,10 +4,18 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.ItemCategory.QItemCategory;
+import love.shop.domain.category.QCategory;
+import love.shop.domain.item.QItem;
+import love.shop.domain.item.type.QBook;
+import love.shop.domain.item.type.QLapTop;
+import love.shop.domain.itemPage.ItemPage;
+import love.shop.domain.itemPage.QItemPage;
 import love.shop.domain.page.Page;
 import love.shop.domain.page.QPage;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -19,6 +27,13 @@ public class ItemPageRepository {
     private final JPAQueryFactory queryFactory;
 
     QPage page = QPage.page;
+    QItemPage itemPage = QItemPage.itemPage;
+    QCategory category = QCategory.category;
+    QItem item = QItem.item;
+    QItemCategory itemCategory = QItemCategory.itemCategory;
+    QBook book = QBook.book;
+    QLapTop lapTop = QLapTop.lapTop;
+
 
     public void savePage(Page page) {
         em.persist(page);
@@ -29,6 +44,36 @@ public class ItemPageRepository {
                 .where(page.id.eq(pageId))
                 .fetchOne());
     }
+
+    public Optional<ItemPage> findItemPageByItemPageId(Long itemPageId) {
+        return Optional.ofNullable(queryFactory.selectFrom(itemPage)
+                .where(itemPage.id.eq(itemPageId))
+                .fetchOne());
+    }
+
+    public void deleteItemPage(Long itemPageId) {
+        queryFactory.delete(itemPage)
+                .where(itemPage.id.eq(itemPageId))
+                .execute();
+    }
+
+    public List<Page> findPageByItemCategory(Long categoryId, int offset, int limit) {
+
+        return queryFactory.selectFrom(page)
+                .join(page.itemPages, itemPage)
+                .join(itemPage.item, item)
+                .join(item.itemCategories, itemCategory)
+                .join(itemCategory.category, category)
+                .where(itemCategory.category.id.eq(categoryId))
+                .offset(offset)
+                .limit(limit)
+                .distinct()
+                .fetch();
+    }
+
+
+
+
 
     // 사용자가 어떤 아이템을 찾고 있을때
     // 해당 아이템을 가진 페이지를 찾아주면 된다.
