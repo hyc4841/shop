@@ -77,6 +77,9 @@ public class SalesPageController {
 
         SalesPageDto pageDto = itemPageService.findPageByPageId(pageId);
 
+        // 방안 1. 페이지와 리뷰를 따로 데이터베이스에 접근해서 가져온다. 리뷰는 페이징으로 가져온다.
+        // 방안 2. 페이지 가져올때
+
         // 페이징 구현하는거 자세히 알기
 
         PageResultWrapper<Object> result = new PageResultWrapper<>(pageDto, "ok");
