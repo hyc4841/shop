@@ -12,13 +12,12 @@ import love.shop.domain.delivery.DeliveryStatus;
 import love.shop.domain.item.Item;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.type.LapTop;
-import love.shop.domain.itemPage.ItemPage;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.PasswordAndCheck;
 import love.shop.domain.order.Order;
 import love.shop.domain.orderItem.OrderItem;
-import love.shop.domain.page.Page;
+import love.shop.domain.salesPage.SalesPage;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.service.page.PageService;
@@ -65,7 +64,7 @@ public class InitDb {
             // 먼저 페이지를 만들자
             // 페이지 1
             List<String> images = new ArrayList<>();
-            Page page = new Page("테스트 아이템 페이지", images, "이것은 테스트 입니다.");
+            SalesPage page = new SalesPage("테스트 아이템 페이지", images, "이것은 테스트 입니다.");
 
             List<Item> itemList = new ArrayList<>();
 
@@ -79,7 +78,7 @@ public class InitDb {
 
             // 페이지 2
             List<String> images2 = new ArrayList<>();
-            Page page2 = new Page("테스트 아이템 페이지2", images2, "이것은 테스트 입니다2.");
+            SalesPage page2 = new SalesPage("테스트 아이템 페이지2", images2, "이것은 테스트 입니다2.");
 
             List<Item> itemList2 = new ArrayList<>();
 

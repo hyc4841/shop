@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.page.Page;
+import love.shop.domain.salesPage.SalesPage;
 import love.shop.repository.ItemPage.ItemPageRepository;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
@@ -37,7 +37,7 @@ public class ItemPageController {
         // 1. 등록되어 있지 않은 itemPage를 삭제하려 할때,
         // 2. 이미 등록 되어 있는 아이템을 등록하려 할때
 
-        Page page = itemPageService.modifyItemPage(modifyPageReqDto.getPageId(), modifyPageReqDto.getDeleteItems(),
+        SalesPage page = itemPageService.modifyItemPage(modifyPageReqDto.getPageId(), modifyPageReqDto.getDeleteItems(),
                 modifyPageReqDto.getPageName(), modifyPageReqDto.getImages(), modifyPageReqDto.getDescription(),
                 modifyPageReqDto.getOptionAndItem());// 이렇게 dto를 넘기는건 다른 곳에선 사용 못한다. 이걸 좀 풀어줘야할듯
 
@@ -50,7 +50,7 @@ public class ItemPageController {
     public ResponseEntity<?> createItemPage(@RequestBody CreatePageReqDto pageReqDto) {
         log.info("아이템 판매 페이지 생성={}", pageReqDto);
 
-        Page page = itemPageService.createItemPage(pageReqDto);
+        SalesPage page = itemPageService.createItemPage(pageReqDto);
         PageDto pageDto = new PageDto(page);
 
         return ResponseEntity.ok(pageDto);

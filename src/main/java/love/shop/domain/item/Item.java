@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.type.LapTop;
 import love.shop.domain.itemCart.ItemCart;
-import love.shop.domain.itemPage.ItemPage;
+import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.web.item.saveDto.BookSaveReqDto;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.saveDto.LapTopSaveReqDto;
@@ -45,7 +44,7 @@ public abstract class Item {
     private List<ItemCart> itemCarts = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<ItemPage> itemPages = new ArrayList<>();
+    private List<ItemSalesPage> itemPages = new ArrayList<>();
 
 //    private String seller; 판매자
 
@@ -117,7 +116,7 @@ public abstract class Item {
         this.itemCarts.add(itemCart);
     }
 
-    public void setItemPages(ItemPage itemPages) {
+    public void setItemPages(ItemSalesPage itemPages) {
         this.itemPages.add(itemPages);
     }
 

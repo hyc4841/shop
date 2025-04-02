@@ -2,7 +2,7 @@ package love.shop.web.itemPage.dto;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.itemPage.ItemPage;
+import love.shop.domain.itemSalesPage.ItemSalesPage;
 
 @Slf4j
 @Data
@@ -17,7 +17,7 @@ public class ItemPageDto {
     private String optionName;
 
 
-    public ItemPageDto(ItemPage itemPage) {
+    public ItemPageDto(ItemSalesPage itemPage) {
         this.id = itemPage.getId();
         this.itemId = itemPage.getItem().getId();
         this.pageId = itemPage.getPage().getId();
