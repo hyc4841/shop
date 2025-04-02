@@ -30,7 +30,7 @@ public class SalesPageController {
     private final ItemService itemService;
 
     @PatchMapping("/page/{pageId}")
-    public ResponseEntity<?> modifyItemPage(@PathVariable Long PageID, @RequestBody ModifyPageReqDto modifyPageReqDto) {
+    public ResponseEntity<?> modifyItemPage(@PathVariable Long pageId, @RequestBody ModifyPageReqDto modifyPageReqDto) {
 
         // 기존에 등록 되어 있는 아이템을 다시 등록할려고하면 예외 처리 해야함.
         // 이 컨트롤러는 예외 처리가 전혀 되어 있지 않음
