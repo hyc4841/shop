@@ -49,6 +49,31 @@ public class Review {
     private Integer starRating; // 별점
 
 
+    public Review(String content, List<String> images, Integer starRating) {
+        this.content = content;
+        this.images = images;
+        this.createdAt = LocalDateTime.now();
+        this.starRating = starRating;
+    }
+
+    // 멤버 연결
+    public void setMember(Member member) {
+        this.member = member;
+        member.addReview(this);
+    }
+
+    // order 연결
+    public void setOrder(Order order) {
+        this.order = order;
+        order.setReview(this);
+    }
+
+    // salesPage 연결
+    public void setSalesPage(SalesPage salesPage) {
+        this.salesPage = salesPage;
+        salesPage.addReview(this);
+    }
+
 
     // 해당 판매 페이지에서 구매에 대한 리뷰를 남기는 것.
 
