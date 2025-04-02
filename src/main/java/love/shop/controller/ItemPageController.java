@@ -1,9 +1,9 @@
 package love.shop.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.item.Item;
-import love.shop.domain.itemPage.ItemPage;
 import love.shop.domain.page.Page;
 import love.shop.repository.ItemPage.ItemPageRepository;
 import love.shop.repository.item.ItemRepository;
@@ -15,18 +15,14 @@ import love.shop.web.page.dto.PageDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ItemPageController {
 
-
 //    이후에 페이지에 해당하는 리뷰 만들기
-
 
     private final ItemPageService itemPageService;
     private final ItemRepository itemRepository;
@@ -72,13 +68,26 @@ public class ItemPageController {
         return ResponseEntity.ok(pageDtoList);
     }
 
+    // 판매 페이지 조회
     @GetMapping("/page/{pageId}")
-    public ResponseEntity<?> findPageByPageId(@PathVariable Long pageId) {
+    public ResponseEntity<?> findPageByPageId(@PathVariable Long pageId,
+                                              @RequestParam(name = "reviewOffset", defaultValue = "0") int reviewOffset,
+                                              @RequestParam(name = "reviewLimit", defaultValue = "10") int reviewLimit) {
         log.info("페이지 id로 페이지 찾기={}", pageId);
 
         PageDto pageDto = itemPageService.findPageByPageId(pageId);
 
-        return ResponseEntity.ok(pageDto);
+        // 페이징 구현하는거 자세히 알기
+
+        PageResultWrapper<Object> result = new PageResultWrapper<>(pageDto, "ok");
+        return ResponseEntity.ok(result);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class PageResultWrapper<T> {
+        private T page;
+        private T review;
     }
 
     @DeleteMapping("/page/{pageId}")
