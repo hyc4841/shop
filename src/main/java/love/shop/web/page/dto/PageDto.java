@@ -2,7 +2,7 @@ package love.shop.web.page.dto;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.page.Page;
+import love.shop.domain.salesPage.SalesPage;
 import love.shop.web.itemPage.dto.ItemPageDto;
 import love.shop.web.reveiw.ReviewDto;
 
@@ -23,7 +23,7 @@ public class PageDto {
 
     private List<ReviewDto> reviews;
 
-    public PageDto(Page page) {
+    public PageDto(SalesPage page) {
         this.id = page.getId();
         this.pageName = page.getPageName();
         this.images = page.getImages();
@@ -37,10 +37,10 @@ public class PageDto {
                 .collect(Collectors.toList());
     }
 
-    public static List<PageDto> createPageDtoList(List<Page> pageList) {
+    public static List<PageDto> createPageDtoList(List<SalesPage> pageList) {
         List<PageDto> pageDtoList = new ArrayList<>();
 
-        for (Page page : pageList) {
+        for (SalesPage page : pageList) {
             log.info("지연조회 시점");
             pageDtoList.add(new PageDto(page));
         }

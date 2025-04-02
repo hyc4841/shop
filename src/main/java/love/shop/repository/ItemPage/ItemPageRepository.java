@@ -9,10 +9,10 @@ import love.shop.domain.category.QCategory;
 import love.shop.domain.item.QItem;
 import love.shop.domain.item.type.QBook;
 import love.shop.domain.item.type.QLapTop;
-import love.shop.domain.itemPage.ItemPage;
-import love.shop.domain.itemPage.QItemPage;
-import love.shop.domain.page.Page;
-import love.shop.domain.page.QPage;
+import love.shop.domain.itemSalesPage.ItemSalesPage;
+import love.shop.domain.itemSalesPage.QItemPage;
+import love.shop.domain.salesPage.SalesPage;
+import love.shop.domain.salesPage.QPage;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,17 +35,17 @@ public class ItemPageRepository {
     QLapTop lapTop = QLapTop.lapTop;
 
 
-    public void savePage(Page page) {
+    public void savePage(SalesPage page) {
         em.persist(page);
     }
 
-    public Optional<Page> findPageByPageId(Long pageId) {
+    public Optional<SalesPage> findPageByPageId(Long pageId) {
         return Optional.ofNullable(queryFactory.selectFrom(page)
                 .where(page.id.eq(pageId))
                 .fetchOne());
     }
 
-    public Optional<ItemPage> findItemPageByItemPageId(Long itemPageId) {
+    public Optional<ItemSalesPage> findItemPageByItemPageId(Long itemPageId) {
         return Optional.ofNullable(queryFactory.selectFrom(itemPage)
                 .where(itemPage.id.eq(itemPageId))
                 .fetchOne());
@@ -57,7 +57,7 @@ public class ItemPageRepository {
                 .execute();
     }
 
-    public List<Page> findPageByItemCategory(Long categoryId, int offset, int limit) {
+    public List<SalesPage> findPageByItemCategory(Long categoryId, int offset, int limit) {
 
         return queryFactory.selectFrom(page)
                 .join(page.itemPages, itemPage)

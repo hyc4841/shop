@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
-import love.shop.domain.page.Page;
+import love.shop.domain.salesPage.SalesPage;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +31,7 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "page_id")
-    private Page page; // 구매 페이지
+    private SalesPage page; // 구매 페이지
 
     @Column
     private String content; // 리뷰 내용
