@@ -7,6 +7,8 @@ import java.util.List;
 @Data
 public class OrderReqDto {
 
+    private Long salesPageId;
+
     // 배송 주소. 유저가 직접 입력한 경우
     private String city;
     private String street;
