@@ -17,18 +17,18 @@ public class SalesPage {
 
     @Id
     @GeneratedValue
-    @Column(name = "page_id")
+    @Column(name = "sales_page_id")
     private Long id;
 
     private String pageName;        // 상품 페이지 이름
     private List<String> images;    // 상품 페이지 이미지
     private String description;     // 상품 페이지 설명
 
-    @OneToMany(mappedBy = "page")
-    private List<ItemSalesPage> itemPages = new ArrayList<>();
+    @OneToMany(mappedBy = "salesPage")
+    private List<ItemSalesPage> itemSalesPages = new ArrayList<>();
 //    private String seller;          // 판매자
 
-    @OneToMany(mappedBy = "page")
+    @OneToMany(mappedBy = "salesPage")
     private List<Review> reviews = new ArrayList<>();
 
     @Column
@@ -41,8 +41,8 @@ public class SalesPage {
         this.pageIsActive = true;
     }
 
-    public void setItemPages(ItemSalesPage itemPages) {
-        this.itemPages.add(itemPages);
+    public void setItemSalesPages(ItemSalesPage itemSalesPages) {
+        this.itemSalesPages.add(itemSalesPages);
     }
 
     // page 수정 메서드

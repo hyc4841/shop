@@ -5,13 +5,13 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.repository.ItemPage.ItemPageRepository;
+import love.shop.repository.ItemPage.SalesPageRepository;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
-import love.shop.service.itemPage.ItemPageService;
+import love.shop.service.itemPage.SalesPageService;
 import love.shop.web.itemPage.dto.CreatePageReqDto;
 import love.shop.web.itemPage.dto.ModifyPageReqDto;
-import love.shop.web.page.dto.PageDto;
+import love.shop.web.page.dto.SalesPageDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +20,13 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class ItemPageController {
+public class SalesPageController {
 
 //    이후에 페이지에 해당하는 리뷰 만들기
 
-    private final ItemPageService itemPageService;
+    private final SalesPageService itemPageService;
     private final ItemRepository itemRepository;
-    private final ItemPageRepository itemPageRepository;
+    private final SalesPageRepository itemPageRepository;
     private final ItemService itemService;
 
     @PatchMapping("/page/{pageId}")
@@ -41,7 +41,7 @@ public class ItemPageController {
                 modifyPageReqDto.getPageName(), modifyPageReqDto.getImages(), modifyPageReqDto.getDescription(),
                 modifyPageReqDto.getOptionAndItem());// 이렇게 dto를 넘기는건 다른 곳에선 사용 못한다. 이걸 좀 풀어줘야할듯
 
-        PageDto pageDto = new PageDto(page);
+        SalesPageDto pageDto = new SalesPageDto(page);
 
         return ResponseEntity.ok(pageDto);
     }
@@ -51,7 +51,7 @@ public class ItemPageController {
         log.info("아이템 판매 페이지 생성={}", pageReqDto);
 
         SalesPage page = itemPageService.createItemPage(pageReqDto);
-        PageDto pageDto = new PageDto(page);
+        SalesPageDto pageDto = new SalesPageDto(page);
 
         return ResponseEntity.ok(pageDto);
     }
@@ -63,7 +63,7 @@ public class ItemPageController {
                                           @RequestParam(value = "limit", defaultValue = "100") int limit) {
         log.info("페이지 아이템 카테고리 id로 조회하기 시작={}", categoryId);
 
-        List<PageDto> pageDtoList = itemPageService.findItemPageWithItemCategory(categoryId, offset, limit);
+        List<SalesPageDto> pageDtoList = itemPageService.findItemPageWithItemCategory(categoryId, offset, limit);
 
         return ResponseEntity.ok(pageDtoList);
     }
@@ -75,7 +75,7 @@ public class ItemPageController {
                                               @RequestParam(name = "reviewLimit", defaultValue = "10") int reviewLimit) {
         log.info("페이지 id로 페이지 찾기={}", pageId);
 
-        PageDto pageDto = itemPageService.findPageByPageId(pageId);
+        SalesPageDto pageDto = itemPageService.findPageByPageId(pageId);
 
         // 페이징 구현하는거 자세히 알기
 

@@ -20,7 +20,7 @@ public class ItemPageDto {
     public ItemPageDto(ItemSalesPage itemPage) {
         this.id = itemPage.getId();
         this.itemId = itemPage.getItem().getId();
-        this.pageId = itemPage.getPage().getId();
+        this.pageId = itemPage.getSalesPage().getId();
         this.optionName = itemPage.getOptionName();
     }
 }

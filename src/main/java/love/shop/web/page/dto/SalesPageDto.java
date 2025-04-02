@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Data
-public class PageDto {
+public class SalesPageDto {
 
     private Long id;
     private String pageName;
@@ -23,28 +23,28 @@ public class PageDto {
 
     private List<ReviewDto> reviews;
 
-    public PageDto(SalesPage page) {
-        this.id = page.getId();
-        this.pageName = page.getPageName();
-        this.images = page.getImages();
-        this.description = page.getDescription();
-        this.itemPages = page.getItemPages().stream()
+    public SalesPageDto(SalesPage salesPage) {
+        this.id = salesPage.getId();
+        this.pageName = salesPage.getPageName();
+        this.images = salesPage.getImages();
+        this.description = salesPage.getDescription();
+        this.itemPages = salesPage.getItemSalesPages().stream()
                 .map(itemPage -> new ItemPageDto(itemPage))
                 .collect(Collectors.toList());
 
-        this.reviews = page.getReviews().stream()
+        this.reviews = salesPage.getReviews().stream()
                 .map(review -> new ReviewDto(review))
                 .collect(Collectors.toList());
     }
 
-    public static List<PageDto> createPageDtoList(List<SalesPage> pageList) {
-        List<PageDto> pageDtoList = new ArrayList<>();
+    public static List<SalesPageDto> createPageDtoList(List<SalesPage> pageList) {
+        List<SalesPageDto> salesPageDtoList = new ArrayList<>();
 
-        for (SalesPage page : pageList) {
+        for (SalesPage salesPage : pageList) {
             log.info("지연조회 시점");
-            pageDtoList.add(new PageDto(page));
+            salesPageDtoList.add(new SalesPageDto(salesPage));
         }
 
-        return pageDtoList;
+        return salesPageDtoList;
     }
 }

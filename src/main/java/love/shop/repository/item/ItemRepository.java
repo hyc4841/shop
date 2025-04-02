@@ -12,8 +12,6 @@ import love.shop.domain.category.QCategory;
 import love.shop.domain.item.*;
 import love.shop.domain.item.type.QBook;
 import love.shop.domain.item.type.QLapTop;
-import love.shop.domain.itemSalesPage.QItemPage;
-import love.shop.domain.salesPage.QPage;
 import love.shop.web.item.filter.lapTop.*;
 import love.shop.web.item.searchCond.*;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
@@ -37,8 +35,6 @@ public class ItemRepository {
     QItemCategory itemCategory = QItemCategory.itemCategory;
     QBook book = QBook.book;
     QLapTop lapTop = QLapTop.lapTop;
-    QPage page = QPage.page;
-    QItemPage itemPage = QItemPage.itemPage;
 
     // 아이템 저장
     public void save(Item item) {
