@@ -42,11 +42,14 @@ public class InitDb {
 
     @PostConstruct
     public void init() {
+        /*
         service.initCategories();
         service.dbInit1();
         service.dbInit2();
         service.initItem();
         service.pageInit();
+
+         */
 
     }
 
