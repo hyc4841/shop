@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import love.shop.domain.address.Address;
 import love.shop.domain.cart.Cart;
 import love.shop.domain.order.Order;
+import love.shop.domain.review.Review;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -57,6 +58,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();  // 주문
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>(); // 리뷰
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;  // 장바구니
