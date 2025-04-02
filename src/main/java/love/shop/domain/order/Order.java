@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.delivery.DeliveryStatus;
 import love.shop.domain.member.Member;
 import love.shop.domain.orderItem.OrderItem;
+import love.shop.domain.review.Review;
+import love.shop.domain.salesPage.SalesPage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,6 +45,13 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문 상태
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.PERSIST, fetch = LAZY)
+    private Review review;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "sales_page_id")
+    private SalesPage salesPage;
+
     // 연관관계 메서드. 양방향 연관관계의 경우 이런 식으로 양쪽에 한번에 값을 넣어주는 메서드를 작성해주면 편리하다.
     // 연관관계 메서드는 값을 많이 컨트롤? 하는 쪽이 좋다고 함.
     public void setMember(Member member) {
@@ -68,6 +76,10 @@ public class Order {
 
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
     }
 
     // 주문 생성 메서드
