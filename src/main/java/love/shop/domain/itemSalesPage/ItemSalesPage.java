@@ -14,7 +14,7 @@ public class ItemSalesPage {
 
     @Id
     @GeneratedValue
-    @Column(name = "item_page")
+    @Column(name = "item_sales_page_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,8 +22,8 @@ public class ItemSalesPage {
     private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "page_id")
-    private SalesPage page;
+    @JoinColumn(name = "sales_page_id")
+    private SalesPage salesPage;
 
     @Column
     private String optionName; // 해당 페이지에 어떤 옵션의 이름으로 들어 갈건지
@@ -45,15 +45,15 @@ public class ItemSalesPage {
         item.setItemPages(this);
     }
     // page 연결
-    public void setPage(SalesPage page) {
-        this.page = page;
-        page.setItemPages(this);
+    public void setSalesPage(SalesPage salesPage) {
+        this.salesPage = salesPage;
+        salesPage.setItemSalesPages(this);
     }
 
     // page와 item 연관관계 끊어주기
     public void deleteItemPage() {
-        this.page.getItemPages().remove(this);
-        this.page = null;
+        this.salesPage.getItemSalesPages().remove(this);
+        this.salesPage = null;
         this.item.getItemPages().remove(this);
         this.item = null;
     }

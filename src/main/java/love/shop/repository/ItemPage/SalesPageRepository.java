@@ -10,9 +10,9 @@ import love.shop.domain.item.QItem;
 import love.shop.domain.item.type.QBook;
 import love.shop.domain.item.type.QLapTop;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
-import love.shop.domain.itemSalesPage.QItemPage;
+import love.shop.domain.itemSalesPage.QItemSalesPage;
+import love.shop.domain.salesPage.QSalesPage;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.domain.salesPage.QPage;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,13 +21,13 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class ItemPageRepository {
+public class SalesPageRepository {
 
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
 
-    QPage page = QPage.page;
-    QItemPage itemPage = QItemPage.itemPage;
+    QSalesPage salesPage = QSalesPage.salesPage;
+    QItemSalesPage itemSalesPage = QItemSalesPage.itemSalesPage;
     QCategory category = QCategory.category;
     QItem item = QItem.item;
     QItemCategory itemCategory = QItemCategory.itemCategory;
@@ -40,28 +40,28 @@ public class ItemPageRepository {
     }
 
     public Optional<SalesPage> findPageByPageId(Long pageId) {
-        return Optional.ofNullable(queryFactory.selectFrom(page)
-                .where(page.id.eq(pageId))
+        return Optional.ofNullable(queryFactory.selectFrom(salesPage)
+                .where(salesPage.id.eq(pageId))
                 .fetchOne());
     }
 
     public Optional<ItemSalesPage> findItemPageByItemPageId(Long itemPageId) {
-        return Optional.ofNullable(queryFactory.selectFrom(itemPage)
-                .where(itemPage.id.eq(itemPageId))
+        return Optional.ofNullable(queryFactory.selectFrom(itemSalesPage)
+                .where(itemSalesPage.id.eq(itemPageId))
                 .fetchOne());
     }
 
     public void deleteItemPage(Long itemPageId) {
-        queryFactory.delete(itemPage)
-                .where(itemPage.id.eq(itemPageId))
+        queryFactory.delete(itemSalesPage)
+                .where(itemSalesPage.id.eq(itemPageId))
                 .execute();
     }
 
     public List<SalesPage> findPageByItemCategory(Long categoryId, int offset, int limit) {
 
-        return queryFactory.selectFrom(page)
-                .join(page.itemPages, itemPage)
-                .join(itemPage.item, item)
+        return queryFactory.selectFrom(salesPage)
+                .join(salesPage.itemSalesPages, itemSalesPage)
+                .join(itemSalesPage.item, item)
                 .join(item.itemCategories, itemCategory)
                 .join(itemCategory.category, category)
                 .where(itemCategory.category.id.eq(categoryId))

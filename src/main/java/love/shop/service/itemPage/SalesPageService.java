@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.item.Item;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.repository.ItemPage.ItemPageRepository;
+import love.shop.repository.ItemPage.SalesPageRepository;
 import love.shop.repository.item.ItemRepository;
 import love.shop.web.itemPage.dto.CreatePageReqDto;
-import love.shop.web.page.dto.PageDto;
+import love.shop.web.page.dto.SalesPageDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +19,9 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ItemPageService {
+public class SalesPageService {
 
-    private final ItemPageRepository itemPageRepository;
+    private final SalesPageRepository itemPageRepository;
     private final ItemRepository itemRepository;
 
     @Transactional
@@ -63,17 +63,17 @@ public class ItemPageService {
     }
 
     // 아이템의 카테고리로 아이템 페이지 찾기
-    public List<PageDto> findItemPageWithItemCategory(Long categoryId, int offset, int limit) {
+    public List<SalesPageDto> findItemPageWithItemCategory(Long categoryId, int offset, int limit) {
 
         List<SalesPage> pageByItemCategory = itemPageRepository.findPageByItemCategory(categoryId, offset, limit);
 
-        return PageDto.createPageDtoList(pageByItemCategory);
+        return SalesPageDto.createPageDtoList(pageByItemCategory);
     }
 
     // 페이지 단건 조회
-    public PageDto findPageByPageId(Long pageId) {
+    public SalesPageDto findPageByPageId(Long pageId) {
         SalesPage page = itemPageRepository.findPageByPageId(pageId).orElseThrow(() -> new RuntimeException());
-        return new PageDto(page);
+        return new SalesPageDto(page);
     }
 
     private void itemPageReg(SalesPage page, Map<String, List<Long>> optionAndItem) {
@@ -83,7 +83,7 @@ public class ItemPageService {
                 ItemSalesPage itemPage = new ItemSalesPage(key);
                 Item item = itemRepository.findOne(itemId).orElseThrow(() -> new RuntimeException());
                 itemPage.setItem(item);
-                itemPage.setPage(page);
+                itemPage.setSalesPage(page);
             }
         });
     }

@@ -24,7 +24,7 @@ public class ReviewDto {
         this.id = review.getId();
         this.memberId = review.getMember().getId();
         this.orderId = review.getOrder().getId();
-        this.pageId = review.getPage().getId();
+        this.pageId = review.getSalesPage().getId();
         this.content = review.getContent();
         this.images = review.getImages();
         this.createAt = review.getCreatedAt();

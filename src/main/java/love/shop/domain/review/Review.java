@@ -30,8 +30,8 @@ public class Review {
     private Order order; // 구매내역
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "page_id")
-    private SalesPage page; // 구매 페이지
+    @JoinColumn(name = "sales_page_id")
+    private SalesPage salesPage; // 구매 페이지
 
     @Column
     private String content; // 리뷰 내용
