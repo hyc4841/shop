@@ -39,21 +39,12 @@ public class OrderController {
     // 주문 저장
     @PostMapping("/order")
     public ResponseEntity<OrderDto> saveOrder(@RequestBody OrderReqDto orderReqDto) {
+        // 아이템 id 가져오는건 그대로
         log.info("주문 요청 데이터={}", orderReqDto);
         // 결재 방식, 결재 정보도 필요함
-
-        // 주문 완성 조건
-        // 배송 주소(멤버가 저장해놓은 주소 혹은 직접 입력한 주소), 주문 멤버, 주문 상품 + 수량
-
-        // 주문을 만들기 위해서 뭐가 필요하지? 멤버, 아이템, 배송정보가 필요함
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
-        // 주문한 멤버 정보는 해결
 
-        // 배송 주소는 배송 id
-
-        Long orderId = orderService.order(memberId, orderReqDto);
-
-        Order order = orderService.findOrderById(orderId);
+        Order order = orderService.order(memberId, orderReqDto);
         OrderDto orderDto = new OrderDto(order);
 
         return ResponseEntity.ok(orderDto);

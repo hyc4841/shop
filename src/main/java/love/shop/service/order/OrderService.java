@@ -37,7 +37,7 @@ public class OrderService {
 
     // 주문
     @Transactional
-    public Long order(Long memberId, OrderReqDto orderReqDto) {
+    public Order order(Long memberId, OrderReqDto orderReqDto) {
         // 주문한 멤버 조회
         Member member = memberRepository.findMemberById(memberId);
 
@@ -68,7 +68,7 @@ public class OrderService {
         Order order = Order.createOrder(member, delivery, orderItems); // 현재 로직은 주문 아이템이 하나만 들어간다.
 
         orderRepository.save(order); // order를 persist하게 되면 order에 id가 생긴다.
-        return order.getId();
+        return order;
     }
 
     // 주문 취소
