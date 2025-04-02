@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import love.shop.domain.itemPage.ItemPage;
+import love.shop.domain.review.Review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,9 @@ public class Page {
     @OneToMany(mappedBy = "page")
     private List<ItemPage> itemPages = new ArrayList<>();
 //    private String seller;          // 판매자
+
+    @OneToMany(mappedBy = "page")
+    private List<Review> reviews = new ArrayList<>();
 
     @Column
     private Boolean pageIsActive;
