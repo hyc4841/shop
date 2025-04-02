@@ -97,8 +97,12 @@ public class Member {
         this.phoneNum = phoneNum;
     }
 
-    public void setAddress(Address address) {
+    public void addAddress(Address address) {
         this.address.add(address);
+    }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
     }
 
 
