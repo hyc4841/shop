@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
+import love.shop.domain.order.Order;
 import love.shop.domain.review.Review;
 
 import java.util.ArrayList;
@@ -31,6 +32,9 @@ public class SalesPage {
     @OneToMany(mappedBy = "salesPage")
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "salesPage")
+    private List<Order> orders = new ArrayList<>();
+
     @Column
     private Boolean pageIsActive;
 
@@ -43,6 +47,10 @@ public class SalesPage {
 
     public void setItemSalesPages(ItemSalesPage itemSalesPages) {
         this.itemSalesPages.add(itemSalesPages);
+    }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
     }
 
     // page 수정 메서드
