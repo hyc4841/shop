@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.member.Member;
-import love.shop.web.address.dto.AddressDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +55,7 @@ public class Address {
 
     public void setMember(Member member) {
         this.member = member;
-        member.setAddress(this);
+        member.addAddress(this);
     }
 
     public void setDelivery(Delivery delivery) {
