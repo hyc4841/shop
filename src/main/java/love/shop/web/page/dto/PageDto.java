@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.page.Page;
 import love.shop.web.itemPage.dto.ItemPageDto;
+import love.shop.web.reveiw.ReviewDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +21,19 @@ public class PageDto {
 
     private List<ItemPageDto> itemPages;
 
+    private List<ReviewDto> reviews;
+
     public PageDto(Page page) {
         this.id = page.getId();
         this.pageName = page.getPageName();
         this.images = page.getImages();
         this.description = page.getDescription();
-
         this.itemPages = page.getItemPages().stream()
                 .map(itemPage -> new ItemPageDto(itemPage))
+                .collect(Collectors.toList());
+
+        this.reviews = page.getReviews().stream()
+                .map(review -> new ReviewDto(review))
                 .collect(Collectors.toList());
     }
 
