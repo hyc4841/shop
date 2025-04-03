@@ -4,6 +4,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.member.QMember;
+import love.shop.domain.order.QOrder;
 import love.shop.domain.review.QReview;
 import love.shop.domain.review.Review;
 import love.shop.domain.salesPage.QSalesPage;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -25,6 +28,8 @@ public class ReviewRepository {
 
     QReview review = QReview.review;
     QSalesPage salesPage = QSalesPage.salesPage;
+    QMember member = QMember.member;
+    QOrder order = QOrder.order;
 
     // 리뷰 저장
     public void saveReview(Review review) {
@@ -47,6 +52,15 @@ public class ReviewRepository {
                 .fetchOne();
 
         return new PageImpl<>(reviews, pageable, total);
+    }
+
+    public Optional<Review> findReviewByReviewId(Long reviewId) {
+        return Optional.ofNullable(queryFactory.selectFrom(review)
+                .leftJoin(review.member).fetchJoin()
+                .leftJoin(review.order).fetchJoin()
+                .leftJoin(review.salesPage).fetchJoin()
+                .where(review.id.eq(reviewId))
+                .fetchOne());
     }
 
 

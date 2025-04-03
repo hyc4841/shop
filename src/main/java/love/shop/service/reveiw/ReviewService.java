@@ -2,6 +2,7 @@ package love.shop.service.reveiw;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.OrderMemberNotMatchException;
 import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
 import love.shop.domain.review.Review;
@@ -10,9 +11,12 @@ import love.shop.repository.ItemPage.SalesPageRepository;
 import love.shop.repository.member.MemberRepository;
 import love.shop.repository.order.OrderRepository;
 import love.shop.repository.review.ReviewRepository;
+import love.shop.web.reveiw.ModifyReviewReqDto;
 import love.shop.web.reveiw.SaveReviewReqDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -26,7 +30,13 @@ public class ReviewService {
     private final SalesPageRepository salesPageRepository;
 
     @Transactional
-    public Review saveReview(SaveReviewReqDto saveReviewDto) {
+    public Review saveReview(SaveReviewReqDto saveReviewDto, Long memberId) {
+
+        // 현재 로그인중인 유저와 리뷰를 달려는 주문건의 멤버 id가 다르면 리뷰를 달 수 없음.
+        if (!Objects.equals(saveReviewDto.getOrderId(), memberId)) {
+            throw new OrderMemberNotMatchException();
+        }
+
         Member member = memberRepository.findMemberById(saveReviewDto.getMemberId()); // 작성자
         Order order = orderRepository.findOne(saveReviewDto.getOrderId());
         SalesPage salesPage = salesPageRepository.findPageByPageId(saveReviewDto.getSalesPageId()).orElseThrow(() -> new RuntimeException());
@@ -42,4 +52,29 @@ public class ReviewService {
 
         return review;
     }
+
+    @Transactional
+    public Review modifyReview(ModifyReviewReqDto modifyDto, Long memberId) {
+
+        Review review = reviewRepository.findReviewByReviewId(modifyDto.getReviewId()).orElseThrow(() -> new RuntimeException());
+
+        if (!Objects.equals(review.getMember().getId(), memberId)) {
+            throw new OrderMemberNotMatchException(); // 이 오류는 지금 주문멤버하고 현재 로그인 멤버가 다를때임. 하나 더 만들까?
+        }
+
+        review.modifyReview(modifyDto.getContent(), modifyDto.getImages(), modifyDto.getStarRating());
+
+        return review;
+    }
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -42,6 +42,9 @@ public class Review {
     @Column(name = "created_at")
     private LocalDateTime createdAt; // 작성 날짜와 시간
 
+    @Column(name = "modify_at")
+    private LocalDateTime modifyAt; // 수정 시간
+
     @Column
     private Integer likes; // 리뷰 좋아요?
 
@@ -73,8 +76,16 @@ public class Review {
         this.salesPage = salesPage;
         salesPage.addReview(this);
     }
-
-
     // 해당 판매 페이지에서 구매에 대한 리뷰를 남기는 것.
+
+
+    public void modifyReview(String content, List<String> images, Integer starRating) {
+        if (content != null) this.content = content;
+        if (images != null) this.images = images;
+        if (starRating != null) this.starRating = starRating;
+    }
+
+
+
 
 }

@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.review.Review;
 import love.shop.service.reveiw.ReviewService;
+import love.shop.web.login.dto.CustomUser;
+import love.shop.web.reveiw.ModifyReviewReqDto;
 import love.shop.web.reveiw.ReviewDto;
 import love.shop.web.reveiw.SaveReviewReqDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -21,14 +22,39 @@ public class ReviewController {
     @PostMapping("/review")
     public ResponseEntity<?> saveReview(@RequestBody SaveReviewReqDto saveDto) {
 
-        // 주문 내역쪽에서 데이터를 가져온다. 해당 주문 멤버 id와 order의 멤버 id가 다르면 리뷰를 달 수 없음
-        //
+        // 로그인한 유저만 가능
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
 
-        Review review = reviewService.saveReview(saveDto);
+        Review review = reviewService.saveReview(saveDto, memberId);
         ReviewDto reviewDto = new ReviewDto(review);
 
         return ResponseEntity.ok(reviewDto);
     }
+
+    // 리뷰를 수정할 수 있게 해야하나?
+    @PatchMapping("/review")
+    public ResponseEntity<?> modifyReview(@RequestBody ModifyReviewReqDto modifyDto) {
+
+        // 작성후 30분 안에 수정하면 가능하게?
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
+
+        Review review = reviewService.modifyReview(modifyDto, memberId);
+        ReviewDto reviewDto = new ReviewDto(review);
+
+        return ResponseEntity.ok(reviewDto);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
