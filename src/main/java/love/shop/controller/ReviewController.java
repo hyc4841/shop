@@ -1,5 +1,7 @@
 package love.shop.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.review.Review;
@@ -8,9 +10,13 @@ import love.shop.web.login.dto.CustomUser;
 import love.shop.web.reveiw.ModifyReviewReqDto;
 import love.shop.web.reveiw.ReviewDto;
 import love.shop.web.reveiw.SaveReviewReqDto;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -42,6 +48,35 @@ public class ReviewController {
         ReviewDto reviewDto = new ReviewDto(review);
 
         return ResponseEntity.ok(reviewDto);
+    }
+
+    // 해당 페이지 리뷰 페이징
+    @GetMapping("/review/{salesPageId}")
+    public ResponseEntity<?> getReviews(@PathVariable Long salesPageId,
+                                        @RequestParam(name = "offset", defaultValue = "0") int offset,
+                                        @RequestParam(name = "limit", defaultValue = "10") int limit) {
+
+        // 일단 간단하게 구현 성공, 더미데이터 가득 넣어서 실험해봐야할듯.
+
+        Page<Review> reviews = reviewService.findReviewsBySalesPageId(salesPageId, offset, limit);
+
+        List<ReviewDto> reviewList = reviews.stream()
+                                    .map(review -> new ReviewDto(review))
+                                    .collect(Collectors.toList());
+
+        ReviewResultWrapper<Object> result = new ReviewResultWrapper<>(reviewList, reviews.getTotalPages(), reviews.getPageable().getPageNumber(),
+                reviews.getPageable().getPageSize());
+
+        return ResponseEntity.ok(result);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class ReviewResultWrapper<T> {
+        private T reviews;
+        private T totalPage;
+        private T page;
+        private T size;
     }
 
 

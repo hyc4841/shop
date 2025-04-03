@@ -40,14 +40,16 @@ public class ReviewRepository {
 
         Pageable pageable = PageRequest.of(page, size);
         List<Review> reviews = queryFactory.select(review)
-                .from(salesPage)
+                .from(review)
+                .join(review.salesPage, salesPage)
                 .where(salesPage.id.eq(salesPageId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = queryFactory.select(review.count())
-                .from(salesPage)
+                .from(review)
+                .join(review.salesPage, salesPage)
                 .where(salesPage.id.eq(salesPageId))
                 .fetchOne();
 
