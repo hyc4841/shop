@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class SaveReviewReqDto {
 
-    private Long memberId;
+//    private Long memberId;
     private Long orderId;
     private Long salesPageId;
     private String content;
