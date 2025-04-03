@@ -48,9 +48,7 @@ public class InitDb {
         service.dbInit2();
         service.initItem();
         service.pageInit();
-
          */
-
     }
 
     @Component
