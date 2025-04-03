@@ -14,6 +14,7 @@ import love.shop.repository.order.OrderRepository;
 import love.shop.repository.review.ReviewRepository;
 import love.shop.web.reveiw.ModifyReviewReqDto;
 import love.shop.web.reveiw.SaveReviewReqDto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,7 @@ public class ReviewService {
             throw new OrderMemberNotMatchException();
         }
 
-        Member member = memberRepository.findMemberById(saveReviewDto.getMemberId()); // 작성자
+        Member member = memberRepository.findMemberById(memberId); // 작성자
         Order order = orderRepository.findOne(saveReviewDto.getOrderId());
         SalesPage salesPage = salesPageRepository.findPageByPageId(saveReviewDto.getSalesPageId()).orElseThrow(() -> new RuntimeException());
 
@@ -77,6 +78,11 @@ public class ReviewService {
         review.modifyReview(modifyDto.getContent(), modifyDto.getImages(), modifyDto.getStarRating());
 
         return review;
+    }
+
+    // 리뷰 페이징으로 가져오기
+    public Page<Review> findReviewsBySalesPageId(Long salesPageId, int page, int size) {
+        return reviewRepository.findReviewsBySalesPageId(salesPageId, page, size);
     }
 
 
