@@ -35,7 +35,7 @@ public class ReviewController {
     @PatchMapping("/review")
     public ResponseEntity<?> modifyReview(@RequestBody ModifyReviewReqDto modifyDto) {
 
-        // 작성후 30분 안에 수정하면 가능하게?
+        // 리뷰는 작성 후 30분이 지나면 못바꾼다. 이건 나중에 리뷰 수정 규칙을 더 자세히 알아보자
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
 
         Review review = reviewService.modifyReview(modifyDto, memberId);
