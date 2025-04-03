@@ -49,7 +49,7 @@ public class SpringSecurityConfig {
                 // 이 부분이 권한 관리 부분
                 .authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/signup", "/login").anonymous() // /signup과 /login은 인증이 되지 않은 사용자의 접근을 허용한다는 의미. 즉 인증 없이 경로에 접근할 수 있음
-                                .requestMatchers("/member/**", "/order/**", "/orders").hasRole("MEMBER") // /member/**로 들어오는 모든 요청은 MEMBER 권한이 있어야함
+                                .requestMatchers("/member/**", "/order/**", "/orders", "/review/**").hasRole("MEMBER") // /member/**로 들어오는 모든 요청은 MEMBER 권한이 있어야함
                                 .anyRequest().permitAll()
                 )
 
