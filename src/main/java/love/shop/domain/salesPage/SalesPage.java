@@ -27,7 +27,6 @@ public class SalesPage {
 
     @OneToMany(mappedBy = "salesPage")
     private List<ItemSalesPage> itemSalesPages = new ArrayList<>();
-//    private String seller;          // 판매자
 
     @OneToMany(mappedBy = "salesPage")
     private List<Review> reviews = new ArrayList<>();
@@ -37,6 +36,9 @@ public class SalesPage {
 
     @Column
     private Boolean pageIsActive;
+
+    //    private String seller;          // 판매자 나중에 연관관계 연결해야함.
+
 
     public SalesPage(String pageName, List<String> images, String description) {
         this.pageName = pageName;
