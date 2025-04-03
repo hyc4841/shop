@@ -3,6 +3,7 @@ package love.shop.service.reveiw;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.OrderMemberNotMatchException;
+import love.shop.common.exception.ReviewModifyTimeOutException;
 import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
 import love.shop.domain.review.Review;
@@ -16,6 +17,8 @@ import love.shop.web.reveiw.SaveReviewReqDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Slf4j
@@ -60,6 +63,15 @@ public class ReviewService {
 
         if (!Objects.equals(review.getMember().getId(), memberId)) {
             throw new OrderMemberNotMatchException(); // 이 오류는 지금 주문멤버하고 현재 로그인 멤버가 다를때임. 하나 더 만들까?
+        }
+
+        LocalDateTime createdAt = review.getCreatedAt();
+        LocalDateTime now = LocalDateTime.now();
+        Duration between = Duration.between(createdAt, now);
+
+        if (between.toMinutes() > 30) {
+            // 작성한지 30분 넘어가면 수정 못함.
+            throw new ReviewModifyTimeOutException();
         }
 
         review.modifyReview(modifyDto.getContent(), modifyDto.getImages(), modifyDto.getStarRating());
