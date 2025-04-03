@@ -106,4 +106,11 @@ public class ApiExControllerAdvice {
         log.error("[exceptionHandle] ex", e);
         return new ErrorApi(401, "주문 취소는 주문 당사자가 해야합니다. 당신 누구야.");
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ReviewModifyTimeOutException.class)
+    public ErrorApi reviewModifyTimeOutException(ReviewModifyTimeOutException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorApi(400, "리뷰 작성 후 30분이 지나 수정할 수 없습니다.");
+    }
 }
