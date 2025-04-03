@@ -31,9 +31,6 @@ public class SalesPageRepository {
     QCategory category = QCategory.category;
     QItem item = QItem.item;
     QItemCategory itemCategory = QItemCategory.itemCategory;
-    QBook book = QBook.book;
-    QLapTop lapTop = QLapTop.lapTop;
-
 
     public void savePage(SalesPage page) {
         em.persist(page);
