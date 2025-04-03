@@ -13,10 +13,11 @@ public class ReviewDto {
 
     private Long memberId;
     private Long orderId;
-    private Long pageId;
+    private Long salesPageId;
     private String content;
     private List<String> images;
     private LocalDateTime createAt;
+    private LocalDateTime modifyAt;
     private Integer likes;
     private Integer starRating;
 
@@ -24,10 +25,11 @@ public class ReviewDto {
         this.id = review.getId();
         this.memberId = review.getMember().getId();
         this.orderId = review.getOrder().getId();
-        this.pageId = review.getSalesPage().getId();
+        this.salesPageId = review.getSalesPage().getId();
         this.content = review.getContent();
         this.images = review.getImages();
         this.createAt = review.getCreatedAt();
+        this.modifyAt = review.getModifyAt();
         this.likes = review.getLikes();
         this.starRating = review.getStarRating();
 
