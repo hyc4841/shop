@@ -72,8 +72,8 @@ public class ItemController {
         log.info("searchCond={}", searchCond);
 
         // 타입이 없고 카테고리 id만 넘어온다면
-        Category findCategory = itemService.findCategoryType(searchCond.getCategories());
-        String type = findCategory.getType();
+        Category category = itemService.findCategoryById(searchCond.getCategories());
+        String type = category.getType(); // 해당 카테고리의 데이터 타입 확인
 
         // 클라이언트 쪽에서 보여줄 필터
         SearchFilter filters = SearchFilter.findFilter(type);

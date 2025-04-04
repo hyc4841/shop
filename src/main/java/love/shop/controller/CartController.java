@@ -31,11 +31,9 @@ public class CartController {
         // 추후에 현재 아이템 수량보다 담는 수량이 많으면 안된다는 로직도 만들기
         log.info("장바구니 추가 아이템={}", addItemToCartDto);
 
-        // 현재 로그인 중인 멤버
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
-        Member member = memberService.findMemberById(memberId);
 
-        Cart cart = cartService.addItem(addItemToCartDto, member);
+        Cart cart = cartService.addItem(addItemToCartDto, memberId);
         CartDto cartDto = new CartDto(cart);
 
         return ResponseEntity.ok(cartDto);

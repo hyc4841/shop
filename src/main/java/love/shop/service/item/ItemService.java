@@ -2,6 +2,7 @@ package love.shop.service.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.CategoryNotExistException;
 import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.type.Book;
@@ -84,7 +85,7 @@ public class ItemService {
     }
 
     public Category findCategoryById(Long categoryId) {
-        return itemRepository.findCategoryById(categoryId).orElseThrow(() -> new RuntimeException("값이 없음"));
+        return itemRepository.findCategoryById(categoryId).orElseThrow(() -> new CategoryNotExistException("해당 카테고리는 존재하지 않습니다."));
     }
 
     // 아이템 조건 검색
@@ -98,10 +99,6 @@ public class ItemService {
 
     public List<Item> findItemsByCategoryId(Long categoryId) {
         return itemRepository.findItemsByCategoryId(categoryId);
-    }
-
-    public Category findCategoryType(Long categoryId) {
-        return itemRepository.findCategoryType(categoryId).orElseThrow(() -> new RuntimeException("해당 카테고리는 존재하지 않습니다."));
     }
 
     // 책 수정A

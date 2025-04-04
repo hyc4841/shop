@@ -19,12 +19,8 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
         // 바꾸려는 이메일이 중복인지 아닌지 확인
-        List<Member> memberByEmail = memberService.findMemberByEmail(email);
+        Member member = memberService.findMemberByEmail(email).orElse(null);
 
-        if (memberByEmail.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        return member != null;
     }
 }

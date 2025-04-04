@@ -40,12 +40,12 @@ public class MemberServiceTest {
         SignupRequestDto signupRequest = new SignupRequestDto("Hell5", passwordAndCheck, "황윤철", "01099694841",
                 "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
         // when
-        Long signUpMemberId = memberService.signUp(signupRequest);
+        Member signUpMember = memberService.signUp(signupRequest);
 
         // then
-        Member member = em.find(Member.class, signUpMemberId);
+        Member member = em.find(Member.class, signUpMember.getId());
 
-        assertEquals(signUpMemberId, member.getId());
+        assertEquals(signUpMember.getId(), member.getId());
     }
 
     @Test(expected = UserDuplicationException.class)
@@ -57,8 +57,9 @@ public class MemberServiceTest {
         SignupRequestDto signupRequest2 = new SignupRequestDto("Hell6", passwordAndCheck, "황윤철", "01099694841",
                 "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
         // when
-        Long member2 = memberService.signUp(signupRequest2);
-        Long member1 = memberService.signUp(signupRequest1);
+        Member member1 = memberService.signUp(signupRequest2);
+        Member member2 = memberService.signUp(signupRequest1);
+
         // then
         fail("회원 중복 예외가 발생해야 한다.");
     }

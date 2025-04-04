@@ -100,10 +100,11 @@ public class InitDb {
             // 회원가입
             SignupRequestDto signupRequest = new SignupRequestDto("Hell4", passwordAndCheck,"황윤철", "01099694841",
                     "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
-            Long signUpMemberId = memberService.signUp(signupRequest);
+
+            Member member = memberService.signUp(signupRequest);
+
 
             // 아이템, 주문, 배달, 주문아이템
-            Member member = memberService.findMemberById(signUpMemberId);
 
             // 1. 카테고리 조회
             Category categoryToy = itemService.findCategoryByName("반려동물/취미/사무");
@@ -144,10 +145,10 @@ public class InitDb {
             PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
             SignupRequestDto signupRequest = new SignupRequestDto("Hell5", passwordAndCheck,"가나다", "01099694841",
                     "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "아몰랑", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
-            Long signUpMemberId = memberService.signUp(signupRequest);
+
+            Member member = memberService.signUp(signupRequest);
 
             // 아이템, 주문, 배달, 주문아이템
-            Member member = memberService.findMemberById(signUpMemberId);
 
             Book book1 = createBook("저자1", "41541", "JPA2 BOOK", 10000, 100);
             em.persist(book1);

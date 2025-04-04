@@ -3,12 +3,14 @@ package love.shop.service.cart;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.UnauthorizedAccessException;
+import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.cart.Cart;
 import love.shop.domain.item.Item;
 import love.shop.domain.itemCart.ItemCart;
 import love.shop.domain.member.Member;
 import love.shop.repository.cart.CartRepository;
 import love.shop.repository.item.ItemRepository;
+import love.shop.repository.member.MemberRepository;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.web.cart.dto.AddItemToCartDto;
@@ -26,6 +28,7 @@ public class CartService {
     private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
     private final ItemService itemService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public void saveCart(Cart cart) {
@@ -49,7 +52,9 @@ public class CartService {
 
 
     @Transactional
-    public Cart addItem(AddItemToCartDto addItemToCartDto, Member member) {
+    public Cart addItem(AddItemToCartDto addItemToCartDto, Long memberId) {
+
+        Member member = memberRepository.findMemberById(memberId).orElseThrow(() -> new UserNotExistException());
 
         // 멤버의 장바구니 가져오기
         Cart cart = member.getCart();
