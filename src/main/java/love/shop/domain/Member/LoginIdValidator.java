@@ -8,6 +8,7 @@ import love.shop.service.member.MemberService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -19,9 +20,9 @@ public class LoginIdValidator implements ConstraintValidator<ValidLoginId, Strin
     @Override
     public boolean isValid(String loginId, ConstraintValidatorContext constraintValidatorContext) {
         // 1. 아이디 중복 검증
-        List<Member> members = memberService.findMemberByLoginId(loginId);
+        Member member = memberService.findMemberByLoginId(loginId).orElse(null);
 
-        if (!members.isEmpty()) {
+        if (member == null) {
             // members가 비어 있어야 해당 아이디를 쓰고 있는 유저가 없다는 뜻.
             return false;
         }

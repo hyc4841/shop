@@ -36,17 +36,12 @@ public class MemberController {
 
     private final MemberService memberService;
     private final LoginService loginService;
-    private final MemberRepository memberRepository;
 
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(@RequestBody @Valid SignupRequestDto signupDto) {
         log.info("회원가입 시작={}", signupDto);
-        Long memberId = memberService.signUp(signupDto);
-
-        // 회원가입 성공한 멤버 데이터베이스에서 다시 꺼내서 확인
-        Member member = memberService.findMemberById(memberId);
-
+        Member member = memberService.signUp(signupDto);
         log.info("회원가입 성공={}", member);
 
         return ResponseEntity.ok(new SignupResponseDto(200, "회원가입 성공", member));
@@ -54,9 +49,9 @@ public class MemberController {
 
     // 로그인 검사에 통과하면 토큰을 발급해준다.
     @PostMapping("/login")
-    public ResponseEntity<LoginResult<JwtToken>> login(@Validated @RequestBody LoginReqDto loginDto, HttpServletResponse response) {
-        log.info("로그인 시도={}", loginDto);
+    public ResponseEntity<?> login(@Validated @RequestBody LoginReqDto loginDto, HttpServletResponse response) {
 
+        log.info("로그인 시도={}", loginDto);
         JwtToken tokenInfo = loginService.login(loginDto.getLoginId(), loginDto.getPassword(), response);
 
         // 로그인 아이디로 회원 찾기
@@ -75,7 +70,7 @@ public class MemberController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<LogoutResDto> logout(HttpServletResponse response) {
+    public ResponseEntity<?> logout(HttpServletResponse response) {
         // http 헤더와 쿠키에서 각각 엑세스 토큰과 리프레시 토큰을 꺼내와야함.
         // 컨트롤러에서 http 헤더와 쿠키 뽑는 방법은?
 
@@ -92,7 +87,7 @@ public class MemberController {
     }
 
     @PostMapping("/member/info/login")
-    public ResponseEntity<Void> memberInfoLogin(@Validated @RequestBody MemberInfoLoginReqDto loginDto) {
+    public ResponseEntity<?> memberInfoLogin(@Validated @RequestBody MemberInfoLoginReqDto loginDto) {
         // 멤버 정보 수정 화면 전 유저 확인용 로그인 창
         // 비밀번호만 확인하고 들어가는 느낌
         // 비밀번호 확인은 필드 검증으로 위임
@@ -103,23 +98,20 @@ public class MemberController {
 
     // 멤버 정보 조회 정보 조회
     @GetMapping("/member/info")
-    public ResponseEntity<MemberDto> memberInfo() {
+    public ResponseEntity<?> memberInfo() {
+        log.info("memberInfo 실행");
+
         // 토큰 안에 있는 memberId로 멤버 조회. 엑세스 토큰에 아예 memberId가 박혀 있다
         // 토큰 정보는 SecurityContextHolder에 있다. 이것 안에 memberId를 가져온다.
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
-
-        log.info("memberId={}", memberId);
-
-        log.info("memberInfo 실행");
         MemberDto memberInfo = memberService.memberInfo(memberId);
 
-        log.info(String.valueOf(memberInfo));
         return ResponseEntity.ok(memberInfo);
     }
 
     // 비밀번호 변경
     @PostMapping("/member/password")
-    public ResponseEntity<MemberInfoResult<MemberDto>> passwordUpdate(@Validated @RequestBody PasswordUpdateReqDto passwordDto) {
+    public ResponseEntity<?> passwordUpdate(@Validated @RequestBody PasswordUpdateReqDto passwordDto) {
         log.info("비밀번호 변경 시작");
         log.info("passwordDto={}", passwordDto);
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
@@ -142,7 +134,7 @@ public class MemberController {
 
     // 아이디 변경
     @PostMapping("/member/id")
-    public ResponseEntity<MemberInfoResult<MemberDto>> loginIdUpdate(@Validated @RequestBody LoginIdUpdateReqDto loginIdDto) {
+    public ResponseEntity<?> loginIdUpdate(@Validated @RequestBody LoginIdUpdateReqDto loginIdDto) {
         // 1. 유저가 입력한 아이디가 기존 유저 아이디 중에 중복되는 것이 있는지 확인.
         // 1번은 필드 검증으로 위임
         // 2. 중복 확인이 되면 변경
@@ -170,7 +162,7 @@ public class MemberController {
     }
 
     @PostMapping("/member/name")
-    public ResponseEntity<MemberInfoResult<MemberDto>> nameUpdate(@Validated @RequestBody NameUpdateReqDto nameDto) {
+    public ResponseEntity<?> nameUpdate(@Validated @RequestBody NameUpdateReqDto nameDto) {
 
         // 1. 본인인증??
         // 2. 별도의 검증 과정 없이 일단 이름은 변경시키는 걸로
@@ -212,44 +204,23 @@ public class MemberController {
     }
 
 
+    // 회원 정보 반환 데이터
     @Data
     @AllArgsConstructor
     static class MemberInfoResult<T> {
         private T memberInfo;
     }
 
-    // 현재 로그인 중인지. 그런데 여기서 문제는 페이지를 이동할 때마다 유저 정보를 계속해서 줘야한다는건데.. 이건 나중에 차차 생각하고 일단 구현에 집중하자.
     @GetMapping("/member/islogin")
-    public ResponseEntity<IsLoginUserDto> memberIdLogin() {
-
+    public ResponseEntity<?> memberIdLogin() {
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
-
-        log.info("memberId값={}", memberId);
-
         Member member = memberService.findMemberById(memberId);
         log.info("현재 로그인 중인 유저={}", member.getName());
 
-        IsLoginUserDto loginMember = new IsLoginUserDto();
-        loginMember.setUserName(member.getName());
+        IsLoginUserDto loginMember = new IsLoginUserDto(member.getName());
 
         return ResponseEntity.ok(loginMember);
     }
-
-    @GetMapping("/members/test")
-    public ResponseEntity<List<MemberDto>> querydslTest() {
-        String name = "황윤철";
-        List<Member> members = memberRepository.findMembersBySearch(name); // Querydsl로 찾아온 데이터임
-
-        List<MemberDto> memberDtos = new ArrayList<>();
-
-        for (Member member : members) {
-            MemberDto memberDto = new MemberDto(member);
-            memberDtos.add(memberDto);
-        }
-
-        return ResponseEntity.ok(memberDtos);
-    }
-
 
     // 리프레시 토큰으로 엑세스 토큰 재발급 받는 테스트
     @CrossOrigin(exposedHeaders = "Access-Token")

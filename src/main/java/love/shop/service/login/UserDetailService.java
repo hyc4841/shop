@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 public class UserDetailService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
 
     // 로그인시 실행되는 부분
     // 이 부분이 실제로 데이터베이스에 접근해서 해당 userId를 갖고 있는
@@ -33,7 +32,7 @@ public class UserDetailService implements UserDetailsService {
         log.info("유저 찾기 실행");
         Member member = memberRepository.findMemberByLoginId(loginId).orElseThrow(() -> new UserNotExistException());
         log.info("loadUserByUsername={}", member);
-        
+
         return createUserDetails(member);
     }
 

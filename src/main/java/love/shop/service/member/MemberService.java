@@ -40,7 +40,7 @@ public class MemberService {
 
     // 회원가입
     @Transactional
-    public Long signUp(SignupRequestDto signupDto) {
+    public Member signUp(SignupRequestDto signupDto) {
         // 중복 검사
         duplicationValidation(signupDto);
 
@@ -49,7 +49,7 @@ public class MemberService {
         String password = passwordEncoder.encode(signupDto.getPasswordAndCheck().getPassword());
 
         // dto 엔티티로 변환
-        Member member = signupDto.toMemberEntity(password); //
+        Member member = signupDto.toMemberEntity(password);
 
         Address address = new Address(signupDto.getCity(), signupDto.getStreet(), signupDto.getZipcode(), signupDto.getDetailedAddress(), member);
         addressRepository.save(address);
@@ -60,7 +60,7 @@ public class MemberService {
 
         cartService.createCart(signupMember);
 
-        return signupMember.getId();
+        return member;
     }
 
     // 중복 확인 예외 처리 확인하기
