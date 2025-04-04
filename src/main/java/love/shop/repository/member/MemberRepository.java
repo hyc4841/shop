@@ -9,6 +9,7 @@ import love.shop.domain.member.QMember;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -33,8 +34,8 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public Member findMemberById(Long memberId) {
-        return em.find(Member.class, memberId);
+    public Optional<Member> findMemberById(Long memberId) {
+        return Optional.ofNullable(em.find(Member.class, memberId));
     }
 
     // 이름으로 멤버 찾기
@@ -45,16 +46,16 @@ public class MemberRepository {
     }
 
     // 굳이 이렇게 try catch 문으로 안해도 될거같음 고쳐보자
-    public List<Member> findMemberByLoginId(String loginId) {
-        return em.createQuery("select m from Member m where m.loginId = :login_id", Member.class)
+    public Optional<Member> findMemberByLoginId(String loginId) {
+        return Optional.ofNullable(em.createQuery("select m from Member m where m.loginId = :login_id", Member.class)
                 .setParameter("login_id", loginId)
-                .getResultList();
+                .getSingleResult());
     }
 
-    public List<Member> findMemberByEmail(String email) {
-        return em.createQuery("select m from Member m where m.email = :email", Member.class)
+    public Optional<Member> findMemberByEmail(String email) {
+        return Optional.ofNullable(em.createQuery("select m from Member m where m.email = :email", Member.class)
                 .setParameter("email", email)
-                .getResultList();
+                .getSingleResult());
     }
 
     public List<Member> findMembersBySearch(String keyword) {

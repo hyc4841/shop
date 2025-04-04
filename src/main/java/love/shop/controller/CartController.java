@@ -24,7 +24,6 @@ public class CartController {
 
     private final CartService cartService;
     private final MemberService memberService;
-    private final ItemService itemService;
 
     // 장바구니에 상품 추가
     @PostMapping("/cart")

@@ -3,6 +3,7 @@ package love.shop.service.member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.UserDuplicationException;
+import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.address.Address;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -61,15 +63,16 @@ public class MemberService {
         return signupMember.getId();
     }
 
+    // 중복 확인 예외 처리 확인하기
     private void duplicationValidation(SignupRequestDto signupDto) {
-        List<Member> findMember = memberRepository.findMemberByLoginId(signupDto.getLoginId());
-        if (!findMember.isEmpty()) {
+        Member member = memberRepository.findMemberByLoginId(signupDto.getLoginId()).orElseThrow(() -> new RuntimeException());
+        if (member != null) {
             throw new UserDuplicationException("이미 등록한 ID가 있습니다");
         }
     }
 
     public MemberDto memberInfo(Long memberId) {
-        Member member = memberRepository.findMemberById(memberId);
+        Member member = findOne(memberId);
         return new MemberDto(member);
     }
 
@@ -81,21 +84,21 @@ public class MemberService {
         return memberRepository.findMemberByName(memberId);
     }
 
-    public List<Member> findMemberByLoginId(String loginId) {
+    public Optional<Member> findMemberByLoginId(String loginId) {
         return memberRepository.findMemberByLoginId(loginId);
     }
 
     // 멤버 pk로 조회
     public Member findMemberById(Long memberId) {
-        return memberRepository.findMemberById(memberId);
+        return findOne(memberId);
     }
 
-    public List<Member> findMemberByEmail(String email) {
+    public Optional<Member> findMemberByEmail(String email) {
         return memberRepository.findMemberByEmail(email);
     }
 
     public boolean curPasswordCheck(String curPwd, Long memberId) {
-        Member member = memberRepository.findMemberById(memberId);
+        Member member = findOne(memberId);
         return passwordEncoder.matches(curPwd, member.getPassword());
     }
 
@@ -118,7 +121,7 @@ public class MemberService {
 
     @Transactional
     public Member updateEmail(String email, Long memberId) {
-        Member member = memberRepository.findMemberById(memberId);
+        Member member = findOne(memberId);
         member.setEmail(email);
 
         return member;
@@ -126,7 +129,7 @@ public class MemberService {
 
     @Transactional
     public Member updateName(String name, Long memberId) {
-        Member member = memberRepository.findMemberById(memberId);
+        Member member = findOne(memberId);
         member.setName(name);
 
         return member;
@@ -134,7 +137,7 @@ public class MemberService {
 
     @Transactional
     public Member updatePhoneNum(String phoneNum, Long memberId) {
-        Member member = memberRepository.findMemberById(memberId);
+        Member member = findOne(memberId);
         member.setPhoneNum(phoneNum);
 
         return member;
@@ -142,10 +145,14 @@ public class MemberService {
 
     @Transactional
     public Member updateAddress(AddressUpdateReqDto addressDto, Long memberId) {
-        Member member = memberRepository.findMemberById(memberId);
+        Member member = findOne(memberId);
         Address address = new Address(addressDto.getNewCity(), addressDto.getNewStreet(), addressDto.getNewZipcode(), addressDto.getNewDetailedAddress(), member);
 
         return member;
+    }
+
+    private Member findOne(Long memberId) {
+        return memberRepository.findMemberById(memberId).orElseThrow(() -> new UserNotExistException());
     }
 
 }

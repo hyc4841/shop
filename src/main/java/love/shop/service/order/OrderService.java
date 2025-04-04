@@ -3,6 +3,7 @@ package love.shop.service.order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.OrderMemberNotMatchException;
+import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.address.Address;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.delivery.DeliveryStatus;
@@ -39,7 +40,7 @@ public class OrderService {
     @Transactional
     public Order order(Long memberId, OrderReqDto orderReqDto) {
         // 주문한 멤버 조회
-        Member member = memberRepository.findMemberById(memberId);
+        Member member = memberRepository.findMemberById(memberId).orElseThrow(() -> new UserNotExistException());
 
         List<OrderItem> orderItems = new ArrayList<>();
 
@@ -94,7 +95,7 @@ public class OrderService {
 
     @Transactional
     public void updateOrderDeliveryAddressByNewAddress(Delivery delivery, OrderDeliveryAddressUpdateDto orderUpdateDto, Long memberId) {
-        Member member = memberRepository.findMemberById(memberId);
+        Member member = memberRepository.findMemberById(memberId).orElseThrow(() -> new UserNotExistException());
 
         // 새로운 주소지 자체 생성
         Address address = new Address(orderUpdateDto.getCity(), orderUpdateDto.getStreet(),

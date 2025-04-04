@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.OrderMemberNotMatchException;
 import love.shop.common.exception.ReviewModifyTimeOutException;
+import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
 import love.shop.domain.review.Review;
@@ -41,7 +42,7 @@ public class ReviewService {
             throw new OrderMemberNotMatchException();
         }
 
-        Member member = memberRepository.findMemberById(memberId); // 작성자
+        Member member = memberRepository.findMemberById(memberId).orElseThrow(() -> new UserNotExistException()); // 작성자
         Order order = orderRepository.findOne(saveReviewDto.getOrderId());
         SalesPage salesPage = salesPageRepository.findPageByPageId(saveReviewDto.getSalesPageId()).orElseThrow(() -> new RuntimeException());
 

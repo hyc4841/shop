@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class LoginService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -28,6 +28,7 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
 
     // 로그인
+    @Transactional
     public JwtToken login(String loginId, String password, HttpServletResponse response) {
         try {
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
@@ -60,6 +61,15 @@ public class LoginService {
         }
 
     }
+
+    public void logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+
 
 
 
