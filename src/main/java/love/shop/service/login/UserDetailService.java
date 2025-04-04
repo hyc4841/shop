@@ -3,6 +3,7 @@ package love.shop.service.login;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
 import love.shop.repository.member.MemberRepository;
 import love.shop.web.login.dto.CustomUser;
@@ -29,16 +30,11 @@ public class UserDetailService implements UserDetailsService {
     // 이 부분이 실제로 데이터베이스에 접근해서 해당 userId를 갖고 있는
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-            log.info("유저 찾기 실행");
-            List<Member> findMember = memberRepository.findMemberByLoginId(loginId);
-
-            log.info("findMember={}", findMember);
-        if (!findMember.isEmpty()) { // findMember != null. 이런식으로 하면 안된다.
-            return createUserDetails(findMember.get(0));
-        } else {
-            log.info("유저를 찾을 수 없음");
-            throw new UsernameNotFoundException("유저를 찾을 수 없습니다.");
-        }
+        log.info("유저 찾기 실행");
+        Member member = memberRepository.findMemberByLoginId(loginId).orElseThrow(() -> new UserNotExistException());
+        log.info("loadUserByUsername={}", member);
+        
+        return createUserDetails(member);
     }
 
     private UserDetails createUserDetails(Member member) {
