@@ -113,4 +113,13 @@ public class ApiExControllerAdvice {
         log.error("[exceptionHandle] ex", e);
         return new ErrorApi(400, "리뷰 작성 후 30분이 지나 수정할 수 없습니다.");
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CategoryNotExistException.class)
+    public ErrorApi categoryNotExistException(CategoryNotExistException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorApi(400, "해당 카테고리는 존재하지 않습니다.");
+    }
+
+
 }
