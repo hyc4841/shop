@@ -1,12 +1,16 @@
 package love.shop.web.category.dto;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
 import love.shop.web.itemCategory.dto.ItemCategoryDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Data
 public class CategoryDto {
 
@@ -14,7 +18,7 @@ public class CategoryDto {
     private String categoryName;
     private Long parent;
     private String parentName;
-    private List<ItemCategoryDto> itemCategories;
+//    private List<ItemCategoryDto> itemCategories;
     private String type;
     private List<CategoryDto> children;
     private String subCategoryName;
@@ -28,16 +32,28 @@ public class CategoryDto {
             this.categoryName = category.getCategoryName();
             this.parent = category.getParent() == null ? null : category.getParent().getId();
             this.parentName = category.getParent() == null ? null : category.getParent().getCategoryName();
+
+            /*
             this.itemCategories = category.getItemCategories().stream()
                     .map(itemCategory -> new ItemCategoryDto(itemCategory))
                     .collect(Collectors.toList());
+             */
+
+            /*
             this.children = category.getChildren().stream()
                     .map(child -> new CategoryDto(child))
                     .collect(Collectors.toList());
+
+             */
+
             this.type = category.getType();
             this.subCategoryName = category.getSubCategoryName();
             this.sequence = category.getSequence();
 
         }
+    }
+
+    public void addChildren(Category child) {
+        children.add(new CategoryDto(child));
     }
 }
