@@ -111,14 +111,15 @@ public class ItemRepository {
     public List<Category> findAllCategory() {
         return queryFactory.select(category)
                 .from(category)
-                .leftJoin(category.parent).fetchJoin()
+//                .leftJoin(category.parent).fetchJoin()
                 .fetch();
     }
 
     public List<Category> findMajorCategory() {
         return queryFactory.select(category)
                 .from(category)
-                .leftJoin(category.parent).fetchJoin()
+//                .leftJoin(category.parent).fetchJoin()
+                .leftJoin(category.children).fetchJoin()
                 .where(category.subCategoryName.eq("Major Category"))
                 .fetch();
     }
