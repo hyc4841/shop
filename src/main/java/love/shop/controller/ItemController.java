@@ -14,6 +14,7 @@ import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.item.searchFilter.SearchFilter;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -139,15 +140,53 @@ public class ItemController {
 
     // 대분류 카테고리 조회
     @GetMapping("/category/major")
-    public ResponseEntity<List<CategoryDto>> findMajorCategory() {
+    public ResponseEntity<?> findMajorCategory() {
         log.info("대분류 카테고리 조회");
 
-        List<Category> majorCategory = itemRepository.findMajorCategory();
+//        List<Category> majorCategory = itemRepository.findMajorCategory();
 
+        List<Category> categories = itemRepository.findAllCategory();
+
+        List<Category> parents = categories.stream().filter(category -> ObjectUtils.isEmpty(category.getParent()))
+                .collect(Collectors.toList());
+
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+
+        for (Category parent : parents) {
+            CategoryDto categoryDto = toCategoryDto(categories, parent);
+            categoryDtoList.add(categoryDto);
+        }
+
+
+        // 이거 모든 카테고리 다 땡겨온다음에 계층형으로 다시 재구성하자. 재귀함수 사용하면 될듯'
+
+        /*
         List<CategoryDto> categoryDtoList = majorCategory.stream().map(category -> new CategoryDto(category))
                 .collect(Collectors.toList());
 
+         */
+
         return ResponseEntity.ok(categoryDtoList);
+    }
+
+    private CategoryDto toCategoryDto(List<Category> categories, Category parent) {
+        List<CategoryDto> childrenDtoList = new ArrayList<>();
+
+        CategoryDto categoryDto = new CategoryDto(parent);
+        // 여기서 넘어온 parent
+
+        List<Category> children = categories.stream().filter(category -> ObjectUtils.isNotEmpty(category.getParent()) &&
+                                                                        category.getParent().getId().equals(parent.getId()))
+                .collect(Collectors.toList());
+
+        for (Category child : children) {
+            CategoryDto childCategoryDto = toCategoryDto(categories, child);
+            childrenDtoList.add(childCategoryDto);
+        }
+
+        categoryDto.setChildren(childrenDtoList);
+
+        return categoryDto;
     }
 
     @Data
@@ -158,6 +197,7 @@ public class ItemController {
     }
 
 
+    // 아이템하고 카테고리 분리할까...
 
 
 
