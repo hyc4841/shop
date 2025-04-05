@@ -1,7 +1,5 @@
 package love.shop.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -11,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.PasswordNotMatchException;
 import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
-import love.shop.repository.member.MemberRepository;
-import love.shop.service.item.ItemService;
 import love.shop.service.login.LoginService;
 import love.shop.service.member.MemberService;
 import love.shop.web.login.dto.*;
@@ -25,9 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RestController

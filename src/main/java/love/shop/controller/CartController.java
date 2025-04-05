@@ -3,9 +3,7 @@ package love.shop.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.cart.Cart;
-import love.shop.domain.member.Member;
 import love.shop.service.cart.CartService;
-import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.web.cart.dto.AddItemToCartDto;
 import love.shop.web.cart.dto.CartDto;
@@ -14,16 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
-    private final MemberService memberService;
 
     // 장바구니에 상품 추가
     @PostMapping("/cart")
