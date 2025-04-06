@@ -127,7 +127,7 @@ public class MemberController {
 
     // 아이디 변경
     @PostMapping("/member/id")
-    public ResponseEntity<?> loginIdUpdate(@Validated @RequestBody LoginIdUpdateReqDto loginIdDto) {
+    public ResponseEntity<?> loginIdUpdate(@RequestBody @Validated LoginIdUpdateReqDto loginIdDto) {
         // 1. 유저가 입력한 아이디가 기존 유저 아이디 중에 중복되는 것이 있는지 확인.
         // 1번은 필드 검증으로 위임
         // 2. 중복 확인이 되면 변경
@@ -141,7 +141,7 @@ public class MemberController {
 
     // 이메일 변경
     @PostMapping("/member/email")
-    public ResponseEntity<MemberInfoResult<MemberDto>> emailUpdate(@Validated @RequestBody EmailUpdateReqDto emailDto) {
+    public ResponseEntity<?> emailUpdate(@RequestBody @Validated EmailUpdateReqDto emailDto) {
         // 0. 이메일 인증. 이메일 인증은 클라이언트 쪽에서 진행해야 할듯? 아니면 서버쪽에서 인증 이메일 보내는거 해줘도 되고?
         // 1. 이메일 형식 검사 (필드 검증으로 위임)
         // 2. 이메일 중복 검사 (필드 검증으로 위임)
@@ -204,7 +204,7 @@ public class MemberController {
         private T memberInfo;
     }
 
-    @GetMapping("/member/islogin")
+    @GetMapping("/member/isLogin")
     public ResponseEntity<?> memberIdLogin() {
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
         Member member = memberService.findMemberById(memberId);
