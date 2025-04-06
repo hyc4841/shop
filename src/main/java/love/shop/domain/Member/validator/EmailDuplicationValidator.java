@@ -1,18 +1,17 @@
-package love.shop.domain.member;
+package love.shop.domain.member.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.member.Member;
 import love.shop.service.member.MemberService;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
+public class EmailDuplicationValidator implements ConstraintValidator<ValidEmailDuplication, String> {
 
     private final MemberService memberService;
 
@@ -21,6 +20,8 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
         // 바꾸려는 이메일이 중복인지 아닌지 확인
         Member member = memberService.findMemberByEmail(email).orElse(null);
 
-        return member != null;
+        log.info("이메일 중복 여부={}", member);
+
+        return member == null;
     }
 }

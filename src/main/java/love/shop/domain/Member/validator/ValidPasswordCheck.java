@@ -1,4 +1,4 @@
-package love.shop.domain.member;
+package love.shop.domain.member.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = GenderValidator.class)
-public @interface ValidGender {
-    String message() default "성별을 선택해주세요.";
+@Constraint(validatedBy = PasswordCheckValidator.class)
+public @interface ValidPasswordCheck {
+    String message() default "비밀번호가 일치하지 않습니다.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
