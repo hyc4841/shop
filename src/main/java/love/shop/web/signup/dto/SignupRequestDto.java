@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import love.shop.domain.member.*;
+import love.shop.domain.member.validator.*;
 
 import java.time.LocalDate;
 
@@ -11,6 +12,8 @@ import java.time.LocalDate;
 public class SignupRequestDto {
 
     @NotBlank(message = "아이디는 꼭 필요합니다")
+    @ValidLoginId
+    @ValidLoginIdBlank
     private String loginId;
     // 만약 검증에 개입하는 어노테이션이 두 개 이상이면 메시지 우선순위 어떻게 되는거지?. 지금은 시스템에 먼저 입력되는 애가 걸림.
     // 두 어노테이션에 해당하는 필드 오류가 모두 잡히고. 마지막으로 잡힌 애가 응답 데이터에 실리게 됨.
