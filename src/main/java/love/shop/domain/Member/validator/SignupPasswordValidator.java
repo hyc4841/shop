@@ -1,7 +1,8 @@
-package love.shop.domain.member;
+package love.shop.domain.member.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import love.shop.domain.member.PasswordAndCheck;
 
 import java.util.Objects;
 

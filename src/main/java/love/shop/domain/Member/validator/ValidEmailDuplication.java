@@ -1,4 +1,4 @@
-package love.shop.domain.member;
+package love.shop.domain.member.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = LoginIdValidator.class)
-public @interface ValidLoginId {
-    String message() default "해당 아이디는 누군가 사용중입니다.";
+@Constraint(validatedBy = EmailDuplicationValidator.class)
+public @interface ValidEmailDuplication {
+    String message() default "해당 이메일은 이미 가입이 되어 있습니다.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
