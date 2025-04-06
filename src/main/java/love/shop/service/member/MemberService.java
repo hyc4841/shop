@@ -56,9 +56,9 @@ public class MemberService {
 
         MemberRole memberRole = new MemberRole(Role.MEMBER, member);
         memberRoleRepository.save(memberRole);
-        Member signupMember = memberRepository.save(member);
+        memberRepository.save(member);
 
-        cartService.createCart(signupMember);
+        cartService.createCart(member);
 
         return member;
     }
