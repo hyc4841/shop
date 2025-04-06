@@ -1,15 +1,15 @@
 package love.shop.web.member.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import love.shop.domain.member.ValidLoginId;
+import love.shop.domain.member.validator.ValidLoginId;
+import love.shop.domain.member.validator.ValidLoginIdBlank;
 
 @Data
-@AllArgsConstructor
 public class LoginIdUpdateReqDto {
 
     @NotBlank
     @ValidLoginId
+    @ValidLoginIdBlank
     private String newLoginId;
 }

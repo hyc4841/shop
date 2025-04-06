@@ -2,16 +2,16 @@ package love.shop.web.member.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import love.shop.domain.member.ValidEmail;
+import love.shop.domain.member.validator.ValidEmailBlank;
+import love.shop.domain.member.validator.ValidEmailDuplication;
 
 @Data
-@AllArgsConstructor
 public class EmailUpdateReqDto {
 
     @NotBlank
     @Email(message = "이메일 형식에 맞게 입력해주세요.")
-    @ValidEmail
+    @ValidEmailDuplication
+    @ValidEmailBlank
     private String newEmail;
 }
