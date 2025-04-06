@@ -40,7 +40,7 @@ public class ApiExControllerAdvice {
 
     // 이게 지금 회원가입 필드 검증할때 뿐만 아니라 다른 곳에서 필드 검증할때도 사용되기 때문에 약간의 수정이 필요함.
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, List<ErrorMessages>>> fieldValidationExHandler(MethodArgumentNotValidException e, WebRequest request) {
+    public ResponseEntity<?> fieldValidationExHandler(MethodArgumentNotValidException e, WebRequest request) {
         log.info("데이터 검증 실패");
         AtomicInteger i = new AtomicInteger(0); // 동시성 제어할 때 사용한다는데 잘 모르겠음
         Map<String, List<ErrorMessages>> errors = new HashMap<>();
