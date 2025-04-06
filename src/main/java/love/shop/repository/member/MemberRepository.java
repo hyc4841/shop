@@ -21,12 +21,8 @@ public class MemberRepository {
 
     QMember member = QMember.member;
 
-
-
-    public Member save(Member member) {
+    public void save(Member member) {
         em.persist(member);
-        Member saveMember = em.find(Member.class, member.getId());
-        return saveMember;
     }
 
     public List<Member> findAllMember() {
@@ -35,7 +31,10 @@ public class MemberRepository {
     }
 
     public Optional<Member> findMemberById(Long memberId) {
-        return Optional.ofNullable(em.find(Member.class, memberId));
+        return Optional.ofNullable(queryFactory.selectFrom(member)
+                .leftJoin(member.cart).fetchJoin()
+                .where(member.id.eq(memberId))
+                .fetchOne());
     }
 
     // 이름으로 멤버 찾기
@@ -47,15 +46,17 @@ public class MemberRepository {
 
     // 굳이 이렇게 try catch 문으로 안해도 될거같음 고쳐보자
     public Optional<Member> findMemberByLoginId(String loginId) {
-        return Optional.ofNullable(em.createQuery("select m from Member m where m.loginId = :login_id", Member.class)
-                .setParameter("login_id", loginId)
-                .getSingleResult());
+        return Optional.ofNullable(queryFactory.selectFrom(member)
+                .leftJoin(member.cart).fetchJoin()
+                .where(member.loginId.eq(loginId))
+                .fetchOne());
     }
 
     public Optional<Member> findMemberByEmail(String email) {
-        return Optional.ofNullable(em.createQuery("select m from Member m where m.email = :email", Member.class)
-                .setParameter("email", email)
-                .getSingleResult());
+        return Optional.ofNullable(queryFactory.selectFrom(member)
+                .leftJoin(member.cart).fetchJoin()
+                .where(member.email.eq(email))
+                .fetchOne());
     }
 
     public List<Member> findMembersBySearch(String keyword) {
