@@ -1,5 +1,6 @@
 package love.shop.controller;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -16,9 +17,11 @@ import love.shop.web.member.dto.*;
 import love.shop.web.signup.dto.SignupResponseDto;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.signup.dto.SignupRequestDto;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +33,9 @@ public class MemberController {
     private final MemberService memberService;
     private final LoginService loginService;
 
+    private final StringRedisTemplate stringRedisTemplate;
+
+
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(@RequestBody @Valid SignupRequestDto signupDto) {
@@ -40,10 +46,29 @@ public class MemberController {
         return ResponseEntity.ok(new SignupResponseDto(200, "회원가입 성공", member));
     }
 
+    // 이메일 인증 요청
+    @PostMapping("/auth/email")
+    public ResponseEntity<?> sendEmailCertification(@RequestBody EmailCertificationDto emailDto) throws MessagingException {
+
+        memberService.sendEmailCertification(emailDto.getEmail());
+
+        return ResponseEntity.ok("ok");
+    }
+
+    @PostMapping("/auth/email/confirm")
+    public ResponseEntity<?> ConfirmEmailCertification(@RequestBody EmailCertificationConfirmDto confirmDto, BindingResult bindingResult) {
+
+        memberService.confirmEmailCertification(confirmDto.getEmail(), confirmDto.getCode(), bindingResult);
+
+        return ResponseEntity.ok("ok");
+    }
+
+
+
+
     // 로그인 검사에 통과하면 토큰을 발급해준다.
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginReqDto loginDto, HttpServletResponse response) {
-
         log.info("로그인 시도={}", loginDto);
         JwtToken tokenInfo = loginService.login(loginDto.getLoginId(), loginDto.getPassword(), response);
 
