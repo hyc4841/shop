@@ -8,43 +8,46 @@ import love.shop.common.exception.RefreshTokenNotExistException;
 import love.shop.service.member.MemberService;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.login.jwt.JwtTokenProvider;
-import love.shop.web.login.jwt.repository.TokenRepository;
+import org.hibernate.result.UpdateCountOutput;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RedisService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private MemberService memberService;
-    private final StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate redisTemplate;
     private final FilterExApi filterExApi;
 
     // 리프레시 토큰 저장
+    @Transactional
     public void saveRefreshToken(String userId, String refreshToken) {
-        stringRedisTemplate.opsForValue().set(userId, refreshToken); // userId가 key임
+        redisTemplate.opsForValue().set(userId, refreshToken); // userId가 key임
     }
 
     public String getRefreshToken(String userId) {
-        return stringRedisTemplate.opsForValue().get(userId);
+        return redisTemplate.opsForValue().get(userId);
     }
 
     // redis에 저장된 리프레시 토큰과 요청 쿠키에 들어있는 리프레시 토큰을 비교해서
+    @Transactional
     public JwtToken refreshAccessToken(String refreshToken, HttpServletResponse response) throws IOException {
 
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
 
         String userName = authentication.getName();
         log.info("username={}", userName);
-        String redisRefreshToken = stringRedisTemplate.opsForValue().get(userName); // redis에서 리프레시 토큰 가져오기
+        String redisRefreshToken = redisTemplate.opsForValue().get(userName); // redis에서 리프레시 토큰 가져오기
         log.info("redis에 저장된 리프레시 토큰={}", redisRefreshToken);
 
         if (redisRefreshToken != null) { // 리프레시 토큰이 있으면 새로운 토큰 발급
@@ -76,10 +79,12 @@ public class RedisService {
         }
     }
 
+    @Transactional
     public void deleteRefreshToken(String userId) {
-        stringRedisTemplate.delete(userId);
+        redisTemplate.delete(userId);
     }
 
+    @Transactional
     public void addTokenBlackList(String Token) {
         long expiration = jwtTokenProvider.getExpiration(Token); // 엑세스 토큰 만료시간 추출
 
@@ -92,12 +97,44 @@ public class RedisService {
 
         // 만료 시간 동안만 유효
         // expiration은 토큰이 블랙리스트에 남아 있을 시간임, TimeUnit.MILLISECONDS는 시간 단위임
-        stringRedisTemplate.opsForValue().set(Token, "blacklist", expiration, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(Token, "blacklist", expiration, TimeUnit.MILLISECONDS);
         // 토큰을 블랙리스트 시킬 때, 키값은 토큰이 되고, value는 BlackList라고 해야하지 않을까?
     }
 
     public Boolean isBlackList(String token) {
-        return stringRedisTemplate.hasKey(token);// redis에서 키값 검색할 때 사용하는 구문.
+        return redisTemplate.hasKey(token);// redis에서 키값 검색할 때 사용하는 구문.
+    }
+
+    @Transactional
+    public void saveDataWithExpire(String value, String key, Long duration) {
+        redisTemplate.opsForValue().set(key, value, duration, TimeUnit.SECONDS);
+    }
+
+    public String getData(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    public Boolean checkData(String key) {
+        return redisTemplate.hasKey(key);
+    }
+
+    @Transactional
+    public void removeData(String key) {
+        redisTemplate.delete(key);
+    }
+
+    // 중복되지 않은 코드 생성
+    public String generateCode(String email) {
+        String code;
+
+        do {
+            code = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+        } while (Boolean.TRUE.equals(redisTemplate.hasKey(code)));
+        //       stringRedisTemplate.hasKey(String.valueOf(code));
+
+        saveDataWithExpire(email, code, 60 * 5L); // redis에 저장
+
+        return code;
     }
 
 }

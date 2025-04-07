@@ -1,5 +1,7 @@
 package love.shop.service.member;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.UserDuplicationException;
@@ -11,16 +13,20 @@ import love.shop.domain.member.Role;
 import love.shop.repository.address.AddressRepository;
 import love.shop.repository.member.MemberRepository;
 import love.shop.repository.member.MemberRoleRepository;
+import love.shop.service.RedisService;
 import love.shop.service.cart.CartService;
-import love.shop.service.item.ItemService;
 import love.shop.web.login.dto.MemberDto;
 import love.shop.web.member.dto.AddressUpdateReqDto;
 import love.shop.web.signup.dto.SignupRequestDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -32,11 +38,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberRoleRepository memberRoleRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final AddressRepository addressRepository;
-
-    private final ItemService itemService;
     private final CartService cartService;
+
+    private final JavaMailSender javaMailSender;
+    private final RedisService redisService;
+
 
     // 회원가입
     @Transactional
@@ -62,6 +69,43 @@ public class MemberService {
 
         return member;
     }
+
+    @Transactional
+    public void sendEmailCertification(String email) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        message.addRecipients(MimeMessage.RecipientType.TO, email);
+        message.setFrom("hyc4841@gmail.com");
+        message.setSubject("이메일 인증");
+        String code = redisService.generateCode(email);
+        log.info("이메일 인증 코드={}", code);
+        message.setText(code);
+
+        javaMailSender.send(message);
+    }
+
+    @Transactional
+    public void confirmEmailCertification(String email, String code, BindingResult bindingResult) {
+
+        String matchingEmail = redisService.getData(code);
+
+
+        if (Objects.equals(matchingEmail, email)) {
+            // 인증 코드가 맞으면 redis에서 해당 인증 코드를 삭제
+            redisService.removeData(code);
+            // 이메일 인증은 redis에 ok 처리하자 그냥. 그리고 이메일 인증 후 30분까지 가입을 완료하지 않으면 인증 기록 삭제. 즉 다시 해야함.
+            redisService.saveDataWithExpire("ok", email, 60 * 30L);
+        } else {
+            bindingResult.rejectValue("code", String.valueOf(HttpStatus.BAD_REQUEST), "잘못된 인증 코드입니다");
+        }
+
+
+    }
+
+
+
+
+
+
 
     // 중복 확인 예외 처리 확인하기
     private void duplicationValidation(SignupRequestDto signupDto) {
@@ -154,5 +198,6 @@ public class MemberService {
     private Member findOne(Long memberId) {
         return memberRepository.findMemberById(memberId).orElseThrow(() -> new UserNotExistException());
     }
+
 
 }
