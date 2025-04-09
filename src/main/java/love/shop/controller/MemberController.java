@@ -39,12 +39,14 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDto> signup(@RequestBody @Valid SignupRequestDto signupDto) {
+    public ResponseEntity<?> signup(@RequestBody @Valid SignupRequestDto signupDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
         log.info("회원가입 시작={}", signupDto);
-        Member member = memberService.signUp(signupDto);
+        Member member = memberService.signUp(signupDto, bindingResult);
         log.info("회원가입 성공={}", member);
 
-        return ResponseEntity.ok(new SignupResponseDto(200, "회원가입 성공", member));
+        MemberDto memberDto = new MemberDto(member);
+
+        return ResponseEntity.ok(memberDto);
     }
 
     // 이메일 인증 요청

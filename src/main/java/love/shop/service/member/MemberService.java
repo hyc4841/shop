@@ -49,10 +49,18 @@ public class MemberService {
 
     // 회원가입
     @Transactional
-    public Member signUp(SignupRequestDto signupDto) {
+    public Member signUp(SignupRequestDto signupDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
 
         // 여기서도 최종적으로 redis에서 이메일 인증 확인, 에메일 일치 여부를 확인해야함
 
+        String email = signupDto.getEmail();
+        String certificationStatus = redisService.getValue(email);
+        if (!Objects.equals(certificationStatus, "ok")) {
+            FieldError error = new FieldError("emailCertificationConfirmDto", "email",
+                    "해당 이메일로 인증 코드가 전송된 적이 없습니다. 먼저 인증 요청을 해주세요");
+            bindingResult.addError(error);
+            throw new MethodArgumentNotValidException(null, bindingResult);
+        }
 
         // 중복 검사
         duplicationValidation(signupDto);
@@ -73,9 +81,12 @@ public class MemberService {
 
         cartService.createCart(member);
 
+        redisService.removeData(email);
+
         return member;
     }
 
+    // 이메일 인증코드 요청
     @Transactional
     public void sendEmailCertification(String email) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -89,6 +100,7 @@ public class MemberService {
         javaMailSender.send(message);
     }
 
+    // 이메일 인증 코드 확인
     @Transactional
     public void confirmEmailCertification(String email, String code, BindingResult bindingResult) throws MethodArgumentNotValidException {
 
@@ -103,17 +115,18 @@ public class MemberService {
             FieldError error = new FieldError("emailCertificationConfirmDto", "email",
                     "해당 이메일로 인증 코드가 전송된 적이 없습니다. 먼저 인증 요청을 해주세요");
             bindingResult.addError(error);
-
             throw new MethodArgumentNotValidException(null, bindingResult);
-
         }
 
         // 해당 코드의 이메일이 맞는지 확인
         if (Objects.equals(matchingEmail, email)) {
             // 인증 코드가 맞으면 redis에서 해당 인증 코드를 삭제
             redisService.removeData(code);
+//            redisService.removeData(email); // 이과정이 필요가 있나? 밑에 그냥 해당 키로 데이터 저장하면 덮어 써지나?
             // 이메일 인증은 redis에 ok 처리하자 그냥. 그리고 이메일 인증 후 30분까지 가입을 완료하지 않으면 인증 기록 삭제. 즉 다시 해야함.
             redisService.saveDataWithExpire(email,"ok",  60 * 30L);
+            log.info("데이터 어떻게 되는 지 확인={}", redisService.getValue(email));
+
         } else {
             // 아니면 오류를 뱉는다.
             FieldError error = new FieldError("emailCertificationConfirmDto", "code", "잘못된 인증 코드입니다.");
@@ -129,7 +142,7 @@ public class MemberService {
 
     // 중복 확인 예외 처리 확인하기
     private void duplicationValidation(SignupRequestDto signupDto) {
-        Member member = memberRepository.findMemberByLoginId(signupDto.getLoginId()).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findMemberByLoginId(signupDto.getLoginId()).orElse(null);
         if (member != null) {
             throw new UserDuplicationException("이미 등록한 ID가 있습니다");
         }
