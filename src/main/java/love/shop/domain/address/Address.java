@@ -19,7 +19,7 @@ public class Address {
     @Column(name = "address_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -52,6 +52,15 @@ public class Address {
         this.detailedAddress = detailedAddress;
         this.member = member;
     }
+
+    public Address(String city, String street, String zipcode, String detailedAddress) {
+        this.city = city;
+        this.street = street;
+        this.zipcode = zipcode;
+        this.detailedAddress = detailedAddress;
+    }
+
+
 
     public void setMember(Member member) {
         this.member = member;
