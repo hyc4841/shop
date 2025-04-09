@@ -97,8 +97,16 @@ public class Member {
         this.phoneNum = phoneNum;
     }
 
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
     public void addAddress(Address address) {
         this.address.add(address);
+    }
+
+    public void addMemberRole(MemberRole memberRole) {
+        this.memberRole.add(memberRole);
     }
 
     public void addReview(Review review) {
