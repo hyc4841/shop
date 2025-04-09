@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -56,7 +57,10 @@ public class MemberController {
     }
 
     @PostMapping("/auth/email/confirm")
-    public ResponseEntity<?> ConfirmEmailCertification(@RequestBody EmailCertificationConfirmDto confirmDto, BindingResult bindingResult) {
+    public ResponseEntity<?> ConfirmEmailCertification(@RequestBody EmailCertificationConfirmDto confirmDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
+
+        // 만약 해당 이메일로 인증 코드를 보낸적도 없는데 누군가가 계속해서 요청한다면 어떻게 막을 것인가?
+        log.info("이메일 인증 실행");
 
         memberService.confirmEmailCertification(confirmDto.getEmail(), confirmDto.getCode(), bindingResult);
 
