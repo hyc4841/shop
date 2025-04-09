@@ -27,4 +27,9 @@ public class MemberRole {
         this.role = role;
         this.member = member;
     }
+
+    public void setMember(Member member) {
+        this.member = member;
+        member.addMemberRole(this);
+    }
 }
