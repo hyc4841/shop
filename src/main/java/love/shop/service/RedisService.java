@@ -8,7 +8,6 @@ import love.shop.common.exception.RefreshTokenNotExistException;
 import love.shop.service.member.MemberService;
 import love.shop.web.login.jwt.JwtToken;
 import love.shop.web.login.jwt.JwtTokenProvider;
-import org.hibernate.result.UpdateCountOutput;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -106,11 +105,11 @@ public class RedisService {
     }
 
     @Transactional
-    public void saveDataWithExpire(String value, String key, Long duration) {
+    public void saveDataWithExpire(String key, String value, Long duration) {
         redisTemplate.opsForValue().set(key, value, duration, TimeUnit.SECONDS);
     }
 
-    public String getData(String key) {
+    public String getValue(String key) {
         return redisTemplate.opsForValue().get(key);
     }
 
@@ -123,16 +122,17 @@ public class RedisService {
         redisTemplate.delete(key);
     }
 
+
     // 중복되지 않은 코드 생성
     public String generateCode(String email) {
         String code;
-
         do {
             code = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
         } while (Boolean.TRUE.equals(redisTemplate.hasKey(code)));
         //       stringRedisTemplate.hasKey(String.valueOf(code));
 
-        saveDataWithExpire(email, code, 60 * 5L); // redis에 저장
+        saveDataWithExpire(code, email, 60 * 5L); // redis에 저장
+        saveDataWithExpire(email, "sent", 60 * 5L);
 
         return code;
     }

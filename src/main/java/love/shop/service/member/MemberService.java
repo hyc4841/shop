@@ -24,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +50,10 @@ public class MemberService {
     // 회원가입
     @Transactional
     public Member signUp(SignupRequestDto signupDto) {
+
+        // 여기서도 최종적으로 redis에서 이메일 인증 확인, 에메일 일치 여부를 확인해야함
+
+
         // 중복 검사
         duplicationValidation(signupDto);
 
@@ -84,27 +90,41 @@ public class MemberService {
     }
 
     @Transactional
-    public void confirmEmailCertification(String email, String code, BindingResult bindingResult) {
+    public void confirmEmailCertification(String email, String code, BindingResult bindingResult) throws MethodArgumentNotValidException {
 
-        String matchingEmail = redisService.getData(code);
+        String matchingEmail = redisService.getValue(code);
+        String isSent = redisService.getValue(email);
 
+        log.info("입력한 코드={}", code);
+        log.info("이메일 맞나?={}", matchingEmail);
+        log.info("해당 이메일로 인증 코드를 보낸적이 있나?={}", isSent);
 
+        if (isSent == null) {
+            FieldError error = new FieldError("emailCertificationConfirmDto", "email",
+                    "해당 이메일로 인증 코드가 전송된 적이 없습니다. 먼저 인증 요청을 해주세요");
+            bindingResult.addError(error);
+
+            throw new MethodArgumentNotValidException(null, bindingResult);
+
+        }
+
+        // 해당 코드의 이메일이 맞는지 확인
         if (Objects.equals(matchingEmail, email)) {
             // 인증 코드가 맞으면 redis에서 해당 인증 코드를 삭제
             redisService.removeData(code);
             // 이메일 인증은 redis에 ok 처리하자 그냥. 그리고 이메일 인증 후 30분까지 가입을 완료하지 않으면 인증 기록 삭제. 즉 다시 해야함.
-            redisService.saveDataWithExpire("ok", email, 60 * 30L);
+            redisService.saveDataWithExpire(email,"ok",  60 * 30L);
         } else {
-            bindingResult.rejectValue("code", String.valueOf(HttpStatus.BAD_REQUEST), "잘못된 인증 코드입니다");
+            // 아니면 오류를 뱉는다.
+            FieldError error = new FieldError("emailCertificationConfirmDto", "code", "잘못된 인증 코드입니다.");
+            bindingResult.addError(error);
+//            bindingResult.rejectValue("code", String.valueOf(HttpStatus.BAD_REQUEST), "잘못된 인증 코드입니다");
+
+            throw new MethodArgumentNotValidException(null, bindingResult);
         }
 
 
     }
-
-
-
-
-
 
 
     // 중복 확인 예외 처리 확인하기
