@@ -92,7 +92,7 @@ public class InitDb {
             pageService.savePage(page2, itemList2);
         }
 
-
+/*
         public void dbInit1() {
 
             PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
@@ -139,7 +139,8 @@ public class InitDb {
             em.persist(order);
 
         }
-
+ */
+        /*
         public void dbInit2() {
             // 회원가입
             PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
@@ -172,6 +173,8 @@ public class InitDb {
 
             em.persist(order);
         }
+
+         */
 
         public void initItem() {
             // 노트북. 보통 사용자에게 보이는 상품 이름은 "제조사 + 브랜드 + 모델명" 이렇게 이루어져 있음.
