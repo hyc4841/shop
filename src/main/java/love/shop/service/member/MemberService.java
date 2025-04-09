@@ -4,9 +4,9 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.common.exception.UserDuplicationException;
 import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.address.Address;
+import love.shop.domain.cart.Cart;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
 import love.shop.domain.member.Role;
@@ -18,7 +18,6 @@ import love.shop.service.cart.CartService;
 import love.shop.web.login.dto.MemberDto;
 import love.shop.web.member.dto.AddressUpdateReqDto;
 import love.shop.web.signup.dto.SignupRequestDto;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,50 +37,49 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final MemberRoleRepository memberRoleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AddressRepository addressRepository;
-    private final CartService cartService;
-
     private final JavaMailSender javaMailSender;
     private final RedisService redisService;
 
+    private void makeBindingError(BindingResult bindingResult, String field, String message) throws MethodArgumentNotValidException {
+        bindingResult.rejectValue(field, null, message);
+        throw new MethodArgumentNotValidException(null, bindingResult);
+    }
+
+    public void checkEmailCertification(String email, BindingResult bindingResult) throws MethodArgumentNotValidException {
+
+        // 이메일 인증에 성공하면 redis 안에선 email - "ok" 형태로 있을 것임 그것을 확인
+        // 이메일 인증 요청만 한 상태면 email - "sent"
+        String certificationStatus = redisService.getValue(email);
+        if (!Objects.equals(certificationStatus, "ok")) {
+            makeBindingError(bindingResult, "email", "이메일 인증을 먼저 해주세요.");
+        }
+
+        // 인증 확인이 되면 해당 이메일 인증 상태를 삭제한다.
+        redisService.removeData(email);
+    }
 
     // 회원가입
     @Transactional
-    public Member signUp(SignupRequestDto signupDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
-
-        // 여기서도 최종적으로 redis에서 이메일 인증 확인, 에메일 일치 여부를 확인해야함
-
-        String email = signupDto.getEmail();
-        String certificationStatus = redisService.getValue(email);
-        if (!Objects.equals(certificationStatus, "ok")) {
-            FieldError error = new FieldError("emailCertificationConfirmDto", "email",
-                    "해당 이메일로 인증 코드가 전송된 적이 없습니다. 먼저 인증 요청을 해주세요");
-            bindingResult.addError(error);
-            throw new MethodArgumentNotValidException(null, bindingResult);
-        }
-
-        // 중복 검사
-        duplicationValidation(signupDto);
-
-        // 회원가입 시작
+    public Member signUp(SignupRequestDto signupDto) {
+        // 아이디 중복, 이메일 인증은 다른 메서드에서 진행
         // 비밀번호 암호화
         String password = passwordEncoder.encode(signupDto.getPasswordAndCheck().getPassword());
 
         // dto 엔티티로 변환
         Member member = signupDto.toMemberEntity(password);
 
-        Address address = new Address(signupDto.getCity(), signupDto.getStreet(), signupDto.getZipcode(), signupDto.getDetailedAddress(), member);
-        addressRepository.save(address);
+        Address address = new Address(signupDto.getCity(), signupDto.getStreet(), signupDto.getZipcode(), signupDto.getDetailedAddress());
+        address.setMember(member);
 
         MemberRole memberRole = new MemberRole(Role.MEMBER, member);
-        memberRoleRepository.save(memberRole);
+        memberRole.setMember(member);
+
+        Cart cart = new Cart(member);
+
+        // 양방향 연관관계는 무조건 양쪽 다 연결해주어야 한다.
+        // 멤버 쪽
         memberRepository.save(member);
-
-        cartService.createCart(member);
-
-        redisService.removeData(email);
 
         return member;
     }
@@ -104,12 +102,8 @@ public class MemberService {
     @Transactional
     public void confirmEmailCertification(String email, String code, BindingResult bindingResult) throws MethodArgumentNotValidException {
 
-        String matchingEmail = redisService.getValue(code);
-        String isSent = redisService.getValue(email);
-
-        log.info("입력한 코드={}", code);
-        log.info("이메일 맞나?={}", matchingEmail);
-        log.info("해당 이메일로 인증 코드를 보낸적이 있나?={}", isSent);
+        String matchingEmail = redisService.getValue(code); // 해당 코드에 발급된 인증 코드가 있는지 확인
+        String isSent = redisService.getValue(email);       // 인증 코드 이메일 전송 여부 확인
 
         if (isSent == null) {
             FieldError error = new FieldError("emailCertificationConfirmDto", "email",
@@ -125,8 +119,6 @@ public class MemberService {
 //            redisService.removeData(email); // 이과정이 필요가 있나? 밑에 그냥 해당 키로 데이터 저장하면 덮어 써지나?
             // 이메일 인증은 redis에 ok 처리하자 그냥. 그리고 이메일 인증 후 30분까지 가입을 완료하지 않으면 인증 기록 삭제. 즉 다시 해야함.
             redisService.saveDataWithExpire(email,"ok",  60 * 30L);
-            log.info("데이터 어떻게 되는 지 확인={}", redisService.getValue(email));
-
         } else {
             // 아니면 오류를 뱉는다.
             FieldError error = new FieldError("emailCertificationConfirmDto", "code", "잘못된 인증 코드입니다.");
@@ -140,13 +132,13 @@ public class MemberService {
     }
 
 
-    // 중복 확인 예외 처리 확인하기
-    private void duplicationValidation(SignupRequestDto signupDto) {
-        Member member = memberRepository.findMemberByLoginId(signupDto.getLoginId()).orElse(null);
+    public void loginIdDuplicationValidation(String loginId, BindingResult bindingResult) throws MethodArgumentNotValidException {
+        Member member = memberRepository.findMemberByLoginId(loginId).orElse(null);
         if (member != null) {
-            throw new UserDuplicationException("이미 등록한 ID가 있습니다");
+            makeBindingError(bindingResult, "loginId", "이미 등록된 ID 입니다.");
         }
     }
+
 
     public MemberDto memberInfo(Long memberId) {
         Member member = findOne(memberId);
