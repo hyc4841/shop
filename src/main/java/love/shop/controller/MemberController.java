@@ -14,10 +14,8 @@ import love.shop.service.login.LoginService;
 import love.shop.service.member.MemberService;
 import love.shop.web.login.dto.*;
 import love.shop.web.member.dto.*;
-import love.shop.web.signup.dto.SignupResponseDto;
+import love.shop.web.signup.dto.*;
 import love.shop.web.login.jwt.JwtToken;
-import love.shop.web.signup.dto.SignupRequestDto;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,43 +32,47 @@ public class MemberController {
     private final MemberService memberService;
     private final LoginService loginService;
 
-    private final StringRedisTemplate stringRedisTemplate;
-
-
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid SignupRequestDto signupDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
         log.info("회원가입 시작={}", signupDto);
-        Member member = memberService.signUp(signupDto, bindingResult);
-        log.info("회원가입 성공={}", member);
+        // 이메일 인증 확인
+        memberService.checkEmailCertification(signupDto.getEmail(), bindingResult);
+        // 아이디 중복 확인
+        memberService.loginIdDuplicationValidation(signupDto.getLoginId(), bindingResult);
+        // 회원가입 진행
+        Member member = memberService.signUp(signupDto);
 
-        MemberDto memberDto = new MemberDto(member);
-
-        return ResponseEntity.ok(memberDto);
+        return ResponseEntity.ok(new MemberDto(member));
     }
 
-    // 이메일 인증 요청
-    @PostMapping("/auth/email")
-    public ResponseEntity<?> sendEmailCertification(@RequestBody EmailCertificationDto emailDto) throws MessagingException {
+    @PostMapping("/signup/auth/loginId")
+    public ResponseEntity<?> checkLoginId(@RequestBody @Valid LoginIdCheckReqDto loginIdDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
+        log.info("아이디 중복 확인");
+        memberService.loginIdDuplicationValidation(loginIdDto.getLoginId(), bindingResult);
 
+        LoginIdCheckResDto response = new LoginIdCheckResDto(loginIdDto.getLoginId(), "사용 가능한 아이디입니다", 200);
+        return ResponseEntity.ok(response);
+    }
+
+
+    // 이메일 인증 요청
+    @PostMapping("/signup/auth/email")
+    public ResponseEntity<?> sendEmailCertification(@RequestBody EmailCertificationDto emailDto) throws MessagingException {
         memberService.sendEmailCertification(emailDto.getEmail());
 
         return ResponseEntity.ok("ok");
     }
 
-    @PostMapping("/auth/email/confirm")
-    public ResponseEntity<?> ConfirmEmailCertification(@RequestBody EmailCertificationConfirmDto confirmDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
-
+    @PostMapping("/signup/auth/email/confirm")
+    public ResponseEntity<?> ConfirmEmailCertification(@RequestBody EmailCertificationConfirmReqDto confirmDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
         // 만약 해당 이메일로 인증 코드를 보낸적도 없는데 누군가가 계속해서 요청한다면 어떻게 막을 것인가?
         log.info("이메일 인증 실행");
-
         memberService.confirmEmailCertification(confirmDto.getEmail(), confirmDto.getCode(), bindingResult);
+        EmailCertificationConfirmResDto response = new EmailCertificationConfirmResDto(confirmDto.getEmail(), "이메일 인증에 성공했습니다.", 200);
 
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok(response);
     }
-
-
-
 
     // 로그인 검사에 통과하면 토큰을 발급해준다.
     @PostMapping("/login")
@@ -105,7 +107,6 @@ public class MemberController {
 
         log.info("리프레시 토큰 없애주기 실행");
         loginService.logout(response);
-        log.info("로그아웃 성공");
 
         return ResponseEntity.ok(new LogoutResDto("로그아웃 성공"));
     }
