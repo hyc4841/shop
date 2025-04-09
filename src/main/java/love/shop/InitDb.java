@@ -4,33 +4,26 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.address.Address;
 import love.shop.domain.category.Category;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.delivery.DeliveryStatus;
 import love.shop.domain.item.Item;
 import love.shop.domain.item.type.Book;
-import love.shop.domain.item.type.LapTop;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.PasswordAndCheck;
-import love.shop.domain.order.Order;
-import love.shop.domain.orderItem.OrderItem;
 import love.shop.domain.salesPage.SalesPage;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.service.page.PageService;
-import love.shop.web.item.filter.lapTop.*;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -41,14 +34,11 @@ public class InitDb {
 
 
     @PostConstruct
-    public void init() {
-        /*
+    public void init() throws MethodArgumentNotValidException {
         service.initCategories();
-        service.dbInit1();
-        service.dbInit2();
-        service.initItem();
-        service.pageInit();
-         */
+        service.initMember();
+//        service.pageInit();
+
     }
 
     @Component
@@ -57,9 +47,20 @@ public class InitDb {
     static class InitService {
 
         private final EntityManager em;
-        private final MemberService memberService;
         private final ItemService itemService;
         private final PageService pageService;
+        private final MemberService memberService;
+
+        public void initMember() throws MethodArgumentNotValidException {
+            PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
+
+            SignupRequestDto signupRequestDto = new SignupRequestDto("hyc4841", passwordAndCheck, "황윤철", "01099694841",
+                    "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "백련산로 6",
+                    "34334", "대주아파트 101동 1103호");
+
+            Member member = memberService.signUp(signupRequestDto);
+            log.info("회원가입 멤버={}", member);
+        }
 
         public void pageInit() {
             // 먼저 페이지를 만들자
@@ -92,129 +93,8 @@ public class InitDb {
             pageService.savePage(page2, itemList2);
         }
 
-/*
-        public void dbInit1() {
-
-            PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
-
-            // 회원가입
-            SignupRequestDto signupRequest = new SignupRequestDto("Hell4", passwordAndCheck,"황윤철", "01099694841",
-                    "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
-
-            Member member = memberService.signUp(signupRequest);
-
-
-            // 아이템, 주문, 배달, 주문아이템
-
-            // 1. 카테고리 조회
-            Category categoryToy = itemService.findCategoryByName("반려동물/취미/사무");
-            Category categoryBook = itemService.findCategoryByName("식품/유아/완구");
-
-            // 2. 아이템 카테고리 생성(카테고리만 넣은 아이템-카테고리)
-            ItemCategory itemCategoryBook = ItemCategory.createItemCategory(categoryBook);
-            ItemCategory itemCategoryToy = ItemCategory.createItemCategory(categoryToy);
-
-            // 3. 아이템 생성(아이템-카테고리를 넣어서 완성 시킨다.)
-            Book book = Book.createBook("저자1", "41541", "JPA1 BOOK", 10000, 100, itemCategoryBook, itemCategoryToy);
-            itemService.save(book);
-
-            // 어떻게 만들든 연관관계 이어주고 저장만 제대로 하면 되는듯.
-            Book book1 = createBook("저자1", "41541", "JPA1 BOOK", 10000, 100);
-            em.persist(book1);
-            Book book2 = createBook("저자2", "5461654", "JPA4 BOOK", 20000, 200);
-            em.persist(book2);
-
-            OrderItem orderItem1 = OrderItem.createOrderItem(book1, 10000, 1);
-            OrderItem orderItem2 = OrderItem.createOrderItem(book2, 20000, 2);
-            List<OrderItem> orderItems = new ArrayList<>();
-            orderItems.add(orderItem1);
-            orderItems.add(orderItem2);
-
-            Address address = new Address("강원도", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
-
-            Delivery delivery = createDelivery(member, address);
-
-            Order order = Order.createOrder(member, delivery, orderItems);
-
-            em.persist(order);
-
-        }
- */
-        /*
-        public void dbInit2() {
-            // 회원가입
-            PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
-            SignupRequestDto signupRequest = new SignupRequestDto("Hell5", passwordAndCheck,"가나다", "01099694841",
-                    "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "아몰랑", "서울시 은평구 백련산로 6 (응암동, 대주피오레아파트)", "33333", "101동 1103호");
-
-            Member member = memberService.signUp(signupRequest);
-
-            // 아이템, 주문, 배달, 주문아이템
-
-            Book book1 = createBook("저자1", "41541", "JPA2 BOOK", 10000, 100);
-            em.persist(book1);
-            Book book2 = createBook("저자2", "5461654", "JPA3 BOOK", 20000, 200);
-            em.persist(book2);
-
-            // 아이템에 카테고리 설정해주는건 저장할 때 해주면 제일 베스트인듯?
-
-            OrderItem orderItem1 = OrderItem.createOrderItem(book1, 10000, 1);
-            OrderItem orderItem2 = OrderItem.createOrderItem(book2, 20000, 2);
-
-            List<OrderItem> orderItems = new ArrayList<>();
-            orderItems.add(orderItem1);
-            orderItems.add(orderItem2);
-
-            Address address = new Address("호호", "백련산로 6 대주피오레아파트", "33433", "101동 1103호", member);
-
-            Delivery delivery = createDelivery(member, address);
-
-            Order order = Order.createOrder(member, delivery, orderItems);
-
-            em.persist(order);
-        }
-
-         */
-
-        public void initItem() {
-            // 노트북. 보통 사용자에게 보이는 상품 이름은 "제조사 + 브랜드 + 모델명" 이렇게 이루어져 있음.
-            // 즉, 아이템 이름에는 모델명이 들어가야한다.
-
-            // 아이템 생성
-            LapTop lapTop = new LapTop("15Z90N-VA7CL", 1800000, 9999, LapTopBrand.그램15, LapTopCpu.코어i7, LapTopStorage.TB_1, LapTopScreenSize.Inch_15, LapTopManufactureBrand.LG전자);
-            // 카테고리 조회
-            List<Category> gamingLapTop = itemService.findCategoryListByName("게이밍 노트북");
-            Category categorylaptop = itemService.findCategoryByName("노트북");
-            Category intel = itemService.findCategoryByName("인텔 CPU 노트북");
-            Category lapTopAll = itemService.findCategoryByName("노트북 전체");
-
-            // 아이템-카테고리 생성
-            List<ItemCategory> itemCategories = new ArrayList<>();
-
-            // 아이템 카테고리를 생성할 떄 먼저 카테고리를 설정해두고 시작한다.
-            for (Category c : gamingLapTop) {
-                ItemCategory itemCategory = ItemCategory.createItemCategory(c);
-                itemCategories.add(itemCategory);
-            }
-            ItemCategory laptopItemCategory = ItemCategory.createItemCategory(categorylaptop);
-            ItemCategory intelItemCategory = ItemCategory.createItemCategory(intel);
-            ItemCategory allItemCategory = ItemCategory.createItemCategory(lapTopAll);
-
-            itemCategories.add(laptopItemCategory);
-            itemCategories.add(intelItemCategory);
-            itemCategories.add(allItemCategory);
-
-            // 아이템에 아이템-카테고리 연결
-
-            for (ItemCategory i : itemCategories) {
-                lapTop.addItemCategory(i);
-            }
-
-            itemService.save(lapTop); // persist
-        }
 
         public void initCategories() {
-
             // 1차 대분류
             Category ai = new Category("Ai", "Major category");
             Category toy = new Category("가전/TV", "Major category");
