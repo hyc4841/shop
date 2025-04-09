@@ -21,7 +21,7 @@ public class Cart { // 장바구니
     @Column(name = "cart_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member; // 해당 장바구니 주인.
 
@@ -37,9 +37,11 @@ public class Cart { // 장바구니
 
     public Cart(Member member) {
         this.member = member;
+        member.setCart(this);
     }
 
     public void deleteItemCart(ItemCart itemCart) {
         this.itemCarts.remove(itemCart);
     }
+
 }
