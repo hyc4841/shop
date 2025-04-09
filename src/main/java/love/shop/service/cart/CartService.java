@@ -9,10 +9,8 @@ import love.shop.domain.item.Item;
 import love.shop.domain.itemCart.ItemCart;
 import love.shop.domain.member.Member;
 import love.shop.repository.cart.CartRepository;
-import love.shop.repository.item.ItemRepository;
 import love.shop.repository.member.MemberRepository;
 import love.shop.service.item.ItemService;
-import love.shop.service.member.MemberService;
 import love.shop.web.cart.dto.AddItemToCartDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,6 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class CartService {
 
-    private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
     private final ItemService itemService;
     private final MemberRepository memberRepository;
@@ -39,6 +36,7 @@ public class CartService {
     @Transactional
     public Long createCart(Member member) {
         cartRepository.saveCart(new Cart(member));
+
         Cart cart = cartRepository.findCartByMemberId(member.getId()).orElseThrow(
                 () -> new RuntimeException("해당 멤버의 바구니가 존재하지 않음."));
 
