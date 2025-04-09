@@ -12,8 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static love.shop.domain.member.QMember.member;
-
 @Slf4j
 @Repository
 @RequiredArgsConstructor

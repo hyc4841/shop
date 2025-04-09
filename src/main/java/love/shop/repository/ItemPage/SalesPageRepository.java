@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.ItemCategory.QItemCategory;
 import love.shop.domain.category.QCategory;
 import love.shop.domain.item.QItem;
-import love.shop.domain.item.type.QBook;
-import love.shop.domain.item.type.QLapTop;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.itemSalesPage.QItemSalesPage;
 import love.shop.domain.salesPage.QSalesPage;
