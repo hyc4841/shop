@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.salesPage.SalesPage;
 import love.shop.web.itemPage.dto.ItemPageDto;
-import love.shop.web.reveiw.ReviewDto;
 
 import java.util.ArrayList;
 import java.util.List;

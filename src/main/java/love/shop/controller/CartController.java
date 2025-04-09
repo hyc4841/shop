@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.cart.Cart;
 import love.shop.service.cart.CartService;
-import love.shop.service.member.MemberService;
 import love.shop.web.cart.dto.AddItemToCartDto;
 import love.shop.web.cart.dto.CartDto;
 import love.shop.web.login.dto.CustomUser;
