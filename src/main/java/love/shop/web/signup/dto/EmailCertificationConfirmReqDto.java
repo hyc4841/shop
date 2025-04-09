@@ -1,10 +1,10 @@
-package love.shop.web.member.dto;
+package love.shop.web.signup.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class EmailCertificationConfirmDto {
+public class EmailCertificationConfirmReqDto {
 
     @NotBlank
     private String email;
