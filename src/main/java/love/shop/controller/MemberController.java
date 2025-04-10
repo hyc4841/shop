@@ -58,17 +58,18 @@ public class MemberController {
 
     // 이메일 인증 요청
     @PostMapping("/signup/auth/email")
-    public ResponseEntity<?> sendEmailCertification(@RequestBody EmailCertificationDto emailDto) throws MessagingException {
-        memberService.sendEmailCertification(emailDto.getEmail());
+    public ResponseEntity<?> sendEmailCertification(@RequestBody @Valid EmailCertificationDto emailDto) throws MessagingException, MethodArgumentNotValidException {
+        memberService.sendEmailCertification(emailDto.getEmail()); // 인증 코드 전송
 
         return ResponseEntity.ok("ok");
     }
 
     @PostMapping("/signup/auth/email/confirm")
-    public ResponseEntity<?> ConfirmEmailCertification(@RequestBody EmailCertificationConfirmReqDto confirmDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
+    public ResponseEntity<?> ConfirmEmailCertification(@RequestBody @Valid EmailCertificationConfirmReqDto confirmDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
         // 만약 해당 이메일로 인증 코드를 보낸적도 없는데 누군가가 계속해서 요청한다면 어떻게 막을 것인가?
         log.info("이메일 인증 실행");
         memberService.confirmEmailCertification(confirmDto.getEmail(), confirmDto.getCode(), bindingResult);
+
         EmailCertificationConfirmResDto response = new EmailCertificationConfirmResDto(confirmDto.getEmail(), "이메일 인증에 성공했습니다.", 200);
 
         return ResponseEntity.ok(response);
