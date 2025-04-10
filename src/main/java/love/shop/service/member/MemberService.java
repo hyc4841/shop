@@ -66,6 +66,7 @@ public class MemberService {
         // dto 엔티티로 변환
         Member member = signupDto.toMemberEntity(password);
 
+        // 꼭 회원가입할 때 주소를 입력해야 하나?
         Address address = new Address(signupDto.getCity(), signupDto.getStreet(), signupDto.getZipcode(), signupDto.getDetailedAddress());
         address.setMember(member);
 
