@@ -51,16 +51,31 @@ public class InitDb {
         private final PageService pageService;
         private final MemberService memberService;
 
-        public void initMember() throws MethodArgumentNotValidException {
+        public void initMember() {
             PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
 
-            SignupRequestDto signupRequestDto = new SignupRequestDto("hyc4841", passwordAndCheck, "황윤철", "01099694841",
+            SignupRequestDto signupMember1 = new SignupRequestDto("hyc4841", passwordAndCheck, "황윤철", "01099694841",
                     "dbscjf4841@naver.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "백련산로 6",
                     "34334", "대주아파트 101동 1103호");
 
-            Member member = memberService.signUp(signupRequestDto);
-            log.info("회원가입 멤버={}", member);
+            Member member1 = memberService.signUp(signupMember1);
+            log.info("회원가입 멤버={}", member1);
+
+            SignupRequestDto signupMember2 = new SignupRequestDto("hyc48412", passwordAndCheck, "황윤철", "01099694841",
+                    "hyc4841@gmail.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "백련산로 6",
+                    "34334", "대주아파트 101동 1103호");
+
+            Member member2 = memberService.signUp(signupMember2);
+            log.info("회원가입 멤버={}", member2);
+
+            SignupRequestDto signupMember3 = new SignupRequestDto("hyc48413", passwordAndCheck, "황윤철", "01099694841",
+                    "hyc4841@nate.com", LocalDate.of(1997, 6, 3), Gender.MAN, "서울", "백련산로 6",
+                    "34334", "대주아파트 101동 1103호");
+
+            Member member3 = memberService.signUp(signupMember3);
+            log.info("회원가입 멤버={}", member3);
         }
+
 
         public void pageInit() {
             // 먼저 페이지를 만들자
@@ -93,6 +108,27 @@ public class InitDb {
             pageService.savePage(page2, itemList2);
         }
 
+        private void saveCategories(List<String> itemList, String subCategory, Long parentId, String type) {
+            Category parent = itemService.findCategoryById(parentId);
+            int sequence = 0;
+            if (type != null) {
+                for (String categoryName : itemList) {
+                    Category child = new Category(categoryName, subCategory, type, sequence);
+                    parent.addChild(child);
+                    em.persist(child);
+                    sequence++;
+                }
+            } else {
+                for (String categoryName : itemList) {
+                    Category child = new Category(categoryName, subCategory, sequence);
+                    parent.addChild(child);
+                    em.persist(child);
+                    sequence++;
+                }
+            }
+
+            itemList.clear();
+        }
 
         public void initCategories() {
             // 1차 대분류
@@ -145,8 +181,13 @@ public class InitDb {
                 sequence++;
             }
 
-            // 가전/TV
+            // 가전/TV -> 서브 카테고리가 있는 카테고리
             // 영상/음향가전
+
+            Category subcategory1 = new Category("영상/음향가전", null, sequence);
+            toy.addChild(subcategory1);
+            em.persist(subcategory1);
+
             list.add("영상가전");
             list.add("음향가전");
             Iterator<String> iterator = list.iterator();
@@ -154,16 +195,21 @@ public class InitDb {
             while (iterator.hasNext()) {
                 String categoryName = iterator.next();
                 Category category = new Category(categoryName, "영상/음향가전", sequence);
-                toy.addChild(category);
+                subcategory1.addChild(category);
                 em.persist(category);
                 iterator.remove();
                 sequence++;
             }
             // tv 따로 저장
             Category tv_2 = new Category("TV", "영상/음향가전", "TV", 0);
-            toy.addChild(tv_2);
+            subcategory1.addChild(tv_2);
             em.persist(tv_2);
 
+
+            // 생활/계절가전
+            Category subcategory2 = new Category("생활/계절가전", null, sequence);
+            toy.addChild(subcategory2);
+            em.persist(subcategory2);
 
             // 생활 계절 가전
             list.add("세탁기/건조기");
@@ -174,16 +220,20 @@ public class InitDb {
             while (iterator1.hasNext()) {
                 String categoryName = iterator1.next();
                 Category category = new Category(categoryName, "생활/계절가전", sequence);
-                toy.addChild(category);
+                subcategory2.addChild(category);
                 em.persist(category);
                 iterator1.remove();
                 sequence++;
             }
             // 청소기 따로 저장
             Category vacuum = new Category("청소기", "생활/계절가전", "VacuumCleaner", 0);
-            toy.addChild(vacuum);
+            subcategory2.addChild(vacuum);
             em.persist(vacuum);
 
+
+            Category subcategory3 = new Category("주방가전", null, sequence);
+            toy.addChild(subcategory3);
+            em.persist(subcategory3);
 
             // 주방가전
             list.add("냉장고/김치냉장고");
@@ -196,11 +246,17 @@ public class InitDb {
             while (iterator2.hasNext()) {
                 String categoryName = iterator2.next();
                 Category category = new Category(categoryName, "주방가전", sequence);
-                toy.addChild(category);
+                subcategory3.addChild(category);
                 em.persist(category);
                 iterator2.remove();
                 sequence++;
             }
+
+            /// 컴퓨터/노트북/조립pc
+            // 노트북/데스크탑
+            Category subcategory4 = new Category("노트북/데스크탑", null, sequence);
+            pc.addChild(subcategory4);
+            em.persist(subcategory4);
 
             // 컴퓨터/노트북/조립PC
             list.add("노트북");
@@ -217,12 +273,16 @@ public class InitDb {
                 } else {
                     category = new Category(categoryName, "노트북/데스크탑", sequence);
                 }
-                pc.addChild(category);
+                subcategory4.addChild(category);
                 em.persist(category);
                 iterator3.remove();
                 sequence++;
-
             }
+
+            // 모니터/복합기
+            Category subcategory5 = new Category("모니터/복합기", null, sequence);
+            pc.addChild(subcategory5);
+            em.persist(subcategory5);
 
             list.add("모니터");
             list.add("게이밍 모니터");
@@ -232,11 +292,16 @@ public class InitDb {
             while (iterator4.hasNext()) {
                 String categoryName = iterator4.next();
                 Category category = new Category(categoryName, "모니터/복합기", sequence);
-                pc.addChild(category);
+                subcategory5.addChild(category);
                 em.persist(category);
                 iterator4.remove();
                 sequence++;
             }
+
+            // pc부품
+            Category subcategory6 = new Category("pc부품", null, sequence);
+            pc.addChild(subcategory6);
+            em.persist(subcategory6);
 
             list.add("주요부품");
             list.add("저장장치");
@@ -247,11 +312,16 @@ public class InitDb {
             while (iterator5.hasNext()) {
                 String categoryName = iterator5.next();
                 Category category = new Category(categoryName, "PC부품", sequence);
-                pc.addChild(category);
+                subcategory6.addChild(category);
                 em.persist(category);
                 iterator5.remove();
                 sequence++;
             }
+
+            // 게임/사운드
+            Category subcategory7 = new Category("게임/사운드", null, sequence);
+            pc.addChild(subcategory7);
+            em.persist(subcategory7);
 
             list.add("게임기/게이밍가구");
             list.add("사운드/스피커");
@@ -260,13 +330,19 @@ public class InitDb {
             while (iterator6.hasNext()) {
                 String categoryName = iterator6.next();
                 Category category = new Category(categoryName, "게임/사운드", sequence);
-                pc.addChild(category);
+                subcategory7.addChild(category);
                 em.persist(category);
                 iterator6.remove();
                 sequence++;
             }
 
-            // 태블릿/모바일/디카
+
+            /// 태블릿/모바일/디카 -> mobile
+            // 신제품 바로가기
+            Category subcategory8 = new Category("신제품 바로가기", null, sequence);
+            mobile.addChild(subcategory8);
+            em.persist(subcategory8);
+
             list.add("갤럭시 최신형");
             list.add("애플 최신형");
             Iterator<String> iterator7 = list.iterator();
@@ -274,11 +350,16 @@ public class InitDb {
             while (iterator7.hasNext()) {
                 String categoryName = iterator7.next();
                 Category category = new Category(categoryName, "신제품 바로가기", sequence);
-                mobile.addChild(category);
+                subcategory8.addChild(category);
                 em.persist(category);
                 iterator7.remove();
                 sequence++;
             }
+
+            // 태블릿/스마트폰
+            Category subcategory9 = new Category("태블릿/스마트폰", null, sequence);
+            mobile.addChild(subcategory9);
+            em.persist(subcategory9);
 
             list.add("휴대폰/스마트폰");
             list.add("태블릿/전자책");
@@ -290,11 +371,16 @@ public class InitDb {
             while (iterator8.hasNext()) {
                 String categoryName = iterator8.next();
                 Category category = new Category(categoryName, "태블릿/스마트폰", sequence);
-                mobile.addChild(category);
+                subcategory9.addChild(category);
                 em.persist(category);
                 iterator8.remove();
                 sequence++;
             }
+
+            // 포터블/음향
+            Category subcategory10  = new Category("포터블/음향", null, sequence);
+            mobile.addChild(subcategory10);
+            em.persist(subcategory10);
 
             list.add("이어폰/헤드폰");
             list.add("블루투스/Ai스피커");
@@ -303,12 +389,17 @@ public class InitDb {
             sequence = 0;
             while (iterator9.hasNext()) {
                 String categoryName = iterator9.next();
-                Category category = new Category(categoryName, "포터블 음향", sequence);
-                mobile.addChild(category);
+                Category category = new Category(categoryName, "포터블/음향", sequence);
+                subcategory10.addChild(category);
                 em.persist(category);
                 iterator9.remove();
                 sequence++;
             }
+
+            // 디카
+            Category subcategory11  = new Category("디카", null, sequence);
+            mobile.addChild(subcategory11);
+            em.persist(subcategory11);
 
             list.add("카메라/렌즈/캠코더");
             list.add("플래시/액세서리");
@@ -318,11 +409,17 @@ public class InitDb {
             while (iterator10.hasNext()) {
                 String categoryName = iterator10.next();
                 Category category = new Category(categoryName, "디카", sequence);
-                mobile.addChild(category);
+                subcategory11.addChild(category);
                 em.persist(category);
                 iterator10.remove();
                 sequence++;
             }
+
+
+            // 아웃도어/스포츠
+            Category subcategory12  = new Category("아웃도어/스포츠", null, sequence);
+            golf.addChild(subcategory12);
+            em.persist(subcategory12);
 
             // 골프/스포츠
             list.add("스포츠화");
@@ -343,11 +440,15 @@ public class InitDb {
             while (iterator11.hasNext()) {
                 String categoryName = iterator11.next();
                 Category category = new Category(categoryName, "아웃도어/스포츠", sequence);
-                golf.addChild(category);
+                subcategory12.addChild(category);
                 em.persist(category);
                 iterator11.remove();
                 sequence++;
             }
+            // 골프
+            Category subcategory13  = new Category("골프", null, sequence);
+            golf.addChild(subcategory13);
+            em.persist(subcategory13);
 
             list.add("라운딩갈때");
             list.add("골프클럽");
@@ -359,13 +460,20 @@ public class InitDb {
             while (iterator12.hasNext()) {
                 String categoryName = iterator12.next();
                 Category category = new Category(categoryName, "골프", sequence);
-                golf.addChild(category);
+                subcategory13.addChild(category);
                 em.persist(category);
                 iterator12.remove();
                 sequence++;
             }
 
+
+
             // 자동차/용품/공구
+            // 자동차용품
+            Category subcategory14  = new Category("자동차용품", null, sequence);
+            car.addChild(subcategory14);
+            em.persist(subcategory14);
+
             list.add("타이어/휠/배터리");
             list.add("오일/첨가제/필터");
             list.add("블박/충전/전자제품");
@@ -378,11 +486,16 @@ public class InitDb {
             while (iterator13.hasNext()) {
                 String categoryName = iterator13.next();
                 Category category = new Category(categoryName, "자동차용품", sequence);
-                car.addChild(category);
+                subcategory14.addChild(category);
                 em.persist(category);
                 iterator13.remove();
                 sequence++;
             }
+
+            // 공구/산업용품
+            Category subcategory15  = new Category("공구/산업용품", null, sequence);
+            car.addChild(subcategory15);
+            em.persist(subcategory15);
 
             list.add("전동드릴/드라이버");
             list.add("절삭/연마공구");
@@ -397,13 +510,19 @@ public class InitDb {
             while (iterator14.hasNext()) {
                 String categoryName = iterator14.next();
                 Category category = new Category(categoryName, "공구/산업용품", sequence);
-                car.addChild(category);
+                subcategory15.addChild(category);
                 em.persist(category);
                 iterator14.remove();
                 sequence++;
             }
 
-            // 가구/조명
+
+            // 가구/조명 furniture
+            // 가구/조명/시공
+            Category subcategory16  = new Category("가구/조명/시공", null, sequence);
+            furniture.addChild(subcategory16);
+            em.persist(subcategory16);
+
             list.add("침대/매트리스");
             list.add("소파/거실가구");
             list.add("의자");
@@ -420,11 +539,15 @@ public class InitDb {
             while (iterator15.hasNext()) {
                 String categoryName = iterator15.next();
                 Category category = new Category(categoryName, "가구/조명/시공", sequence);
-                furniture.addChild(category);
+                subcategory16.addChild(category);
                 em.persist(category);
                 iterator15.remove();
                 sequence++;
             }
+
+            Category subcategory17  = new Category("가구/조명-브랜드관", null, sequence);
+            furniture.addChild(subcategory17);
+            em.persist(subcategory17);
 
             list.add("오늘의집");
             list.add("GS SHOP");
@@ -433,13 +556,19 @@ public class InitDb {
             while (iterator16.hasNext()) {
                 String categoryName = iterator16.next();
                 Category category = new Category(categoryName, "가구/조명-브랜드관", sequence);
-                furniture.addChild(category);
+                subcategory17.addChild(category);
                 em.persist(category);
                 iterator16.remove();
                 sequence++;
             }
 
-            // 식품/유아/완구
+
+            // 식품/유아/완구 food
+            // 식품
+            Category subcategory18  = new Category("식품", null, sequence);
+            food.addChild(subcategory18);
+            em.persist(subcategory18);
+
             list.add("건강식품/홍삼");
             list.add("헬스/다이어트식품");
             list.add("생수/음료/우유");
@@ -456,11 +585,16 @@ public class InitDb {
             while (iterator17.hasNext()) {
                 String categoryName = iterator17.next();
                 Category category = new Category(categoryName, "식품", sequence);
-                food.addChild(category);
+                subcategory18.addChild(category);
                 em.persist(category);
                 iterator17.remove();
                 sequence++;
             }
+
+            // 유아/완구
+            Category subcategory19  = new Category("유아/완구", null, sequence);
+            food.addChild(subcategory19);
+            em.persist(subcategory19);
 
             list.add("분유/기저귀/물티슈");
             list.add("완구/로봇/놀이매트");
@@ -472,13 +606,18 @@ public class InitDb {
             while (iterator18.hasNext()) {
                 String categoryName = iterator18.next();
                 Category category = new Category(categoryName, "유아/완구", sequence);
-                food.addChild(category);
+                subcategory19.addChild(category);
                 em.persist(category);
                 iterator18.remove();
                 sequence++;
             }
 
-            // 생활/주방/건강
+            // 생활/주방/건강 living
+            // 생활용품
+            Category subcategory20  = new Category("생활용품", null, sequence);
+            living.addChild(subcategory20);
+            em.persist(subcategory20);
+
             list.add("세제/섬유유연제");
             list.add("구강/화장지/생리대");
             list.add("건전지/비디오폰");
@@ -490,11 +629,16 @@ public class InitDb {
             while (iterator19.hasNext()) {
                 String categoryName = iterator19.next();
                 Category category = new Category(categoryName, "생활용품", sequence);
-                living.addChild(category);
+                subcategory20.addChild(category);
                 em.persist(category);
                 iterator19.remove();
                 sequence++;
             }
+
+            // 주방용품
+            Category subcategory21  = new Category("주방용품", null, sequence);
+            living.addChild(subcategory21);
+            em.persist(subcategory21);
 
             list.add("냄비/팬/조리도구");
             list.add("식기/컵/보관용기");
@@ -504,11 +648,16 @@ public class InitDb {
             while (iterator20.hasNext()) {
                 String categoryName = iterator20.next();
                 Category category = new Category(categoryName, "주방용품", sequence);
-                living.addChild(category);
+                subcategory21.addChild(category);
                 em.persist(category);
                 iterator20.remove();
                 sequence++;
             }
+
+            // 건강/의료용품
+            Category subcategory22  = new Category("건강/의료용품", null, sequence);
+            living.addChild(subcategory22);
+            em.persist(subcategory22);
 
             list.add("마스크/실버용품");
             list.add("안마/마사지기");
@@ -518,13 +667,20 @@ public class InitDb {
             while (iterator21.hasNext()) {
                 String categoryName = iterator21.next();
                 Category category = new Category(categoryName, "건강/의료용품", sequence);
-                living.addChild(category);
+                subcategory22.addChild(category);
                 em.persist(category);
                 iterator21.remove();
                 sequence++;
             }
 
-            // 패션/잡화/뷰티
+
+
+            // 패션/잡화/뷰티 fashion
+            // 패션잡화/의류
+            Category subcategory23  = new Category("패션잡화/의류", null, sequence);
+            fashion.addChild(subcategory23);
+            em.persist(subcategory23);
+
             list.add("가방/지갑");
             list.add("남성신발");
             list.add("여성신발");
@@ -540,11 +696,16 @@ public class InitDb {
             while (iterator22.hasNext()) {
                 String categoryName = iterator22.next();
                 Category category = new Category(categoryName, "패션잡화/의류", sequence);
-                fashion.addChild(category);
+                subcategory23.addChild(category);
                 em.persist(category);
                 iterator22.remove();
                 sequence++;
             }
+
+            // 뷰티
+            Category subcategory24  = new Category("뷰티", null, sequence);
+            fashion.addChild(subcategory24);
+            em.persist(subcategory24);
 
             list.add("남성뷰티");
             list.add("스킨케어");
@@ -556,11 +717,16 @@ public class InitDb {
             while (iterator23.hasNext()) {
                 String categoryName = iterator23.next();
                 Category category = new Category(categoryName, "뷰티", sequence);
-                fashion.addChild(category);
+                subcategory24.addChild(category);
                 em.persist(category);
                 iterator23.remove();
                 sequence++;
             }
+
+            // 패션/잡화/뷰티-브랜드관
+            Category subcategory25  = new Category("패션/잡화/뷰티-브랜드관", null, sequence);
+            fashion.addChild(subcategory25);
+            em.persist(subcategory25);
 
             list.add("무신사스토어");
             Iterator<String> iterator24 = list.iterator();
@@ -568,13 +734,18 @@ public class InitDb {
             while (iterator24.hasNext()) {
                 String categoryName = iterator24.next();
                 Category category = new Category(categoryName, "패션/잡화/뷰티-브랜드관", sequence);
-                fashion.addChild(category);
+                subcategory25.addChild(category);
                 em.persist(category);
                 iterator24.remove();
                 sequence++;
             }
 
-            // 반려동물/취미/사무
+            // 반려동물/취미/사무 animal
+            // 반려동물용품
+            Category subcategory26  = new Category("반려동물용품", null, sequence);
+            animal.addChild(subcategory26);
+            em.persist(subcategory26);
+
             list.add("강아지용품");
             list.add("고양이용품");
             list.add("수족관/소동물용품");
@@ -583,11 +754,15 @@ public class InitDb {
             while (iterator30.hasNext()) {
                 String categoryName = iterator30.next();
                 Category category = new Category(categoryName, "반려동물용품", sequence);
-                animal.addChild(category);
+                subcategory26.addChild(category);
                 em.persist(category);
                 iterator30.remove();
                 sequence++;
             }
+
+            Category subcategory27  = new Category("취미/상품권", null, sequence);
+            animal.addChild(subcategory27);
+            em.persist(subcategory27);
 
             list.add("악기/디지털피아노");
             list.add("드론/레고/키덜트");
@@ -597,11 +772,15 @@ public class InitDb {
             while (iterator26.hasNext()) {
                 String categoryName = iterator26.next();
                 Category category = new Category(categoryName, "취미/상품권", sequence);
-                animal.addChild(category);
+                subcategory27.addChild(category);
                 em.persist(category);
                 iterator26.remove();
                 sequence++;
             }
+
+            Category subcategory28  = new Category("문구/사무용품", null, sequence);
+            animal.addChild(subcategory28);
+            em.persist(subcategory28);
 
             list.add("방학 열공템");
             list.add("사무실 소모품");
@@ -617,11 +796,15 @@ public class InitDb {
             while (iterator27.hasNext()) {
                 String categoryName = iterator27.next();
                 Category category = new Category(categoryName, "문구/사무용품", sequence);
-                animal.addChild(category);
+                subcategory28.addChild(category);
                 em.persist(category);
                 iterator27.remove();
                 sequence++;
             }
+
+            Category subcategory29  = new Category("도서", null, sequence);
+            animal.addChild(subcategory29);
+            em.persist(subcategory29);
 
             list.add("도서");
             Iterator<String> iterator28 = list.iterator();
@@ -629,15 +812,24 @@ public class InitDb {
             while (iterator28.hasNext()) {
                 String categoryName = iterator28.next();
                 Category category = new Category(categoryName, "도서", sequence);
-                animal.addChild(category);
+                subcategory29.addChild(category);
                 em.persist(category);
                 iterator28.remove();
                 sequence++;
             }
 
             // 3차 분류
+            // 가전/TV
+            // TV
+            list.add("TV전체");
+            list.add("2025년형");
+            list.add("고화질");
+            list.add("TV액세서리");
+
+            saveCategories(list, "TV", 23L, "TV");
+
             // 노트북
-            Category laptop = itemService.findCategoryByNameAndParentName("노트북", "컴퓨터/노트북/조립PC");
+            Category laptop = itemService.findCategoryByNameAndParentName("노트북", "노트북/데스크탑");
 
             list.add("AI 노트북");
             list.add("게이밍 노트북");
@@ -662,7 +854,7 @@ public class InitDb {
 
 
             // 게이밍 노트북
-            Category gamingLapTop = itemService.findCategoryByNameAndParentName("게이밍 노트북", "노트북");
+            Category gamingLapTop = itemService.findCategoryByNameAndParentName("게이밍 노트북", "노트북/데스크탑");
 
             list.add("RTX4060");
             list.add("RTX4070");
@@ -700,14 +892,6 @@ public class InitDb {
 
         }
 
-        private Book createBook(String author, String isbn, String name, int price, int stockQuantity) {
-            return new Book(author, isbn, name, price, stockQuantity);
-        }
-
-        private Delivery createDelivery(Member member, Address address) {
-
-            return new Delivery(address, DeliveryStatus.PENDING);
-        }
 
     }
 }
