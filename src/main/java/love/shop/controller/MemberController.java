@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.PasswordNotMatchException;
+import love.shop.common.exception.UnauthorizedAccessException;
 import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
 import love.shop.service.login.LoginService;
@@ -23,6 +24,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -140,7 +143,9 @@ public class MemberController {
     public ResponseEntity<?> passwordUpdate(@Validated @RequestBody PasswordUpdateReqDto passwordDto) {
         log.info("비밀번호 변경 시작");
         log.info("passwordDto={}", passwordDto);
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+//        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
         // 클라이언트 쪽에서 한번 확인하고, 서버에서도 한번더 확인
         // 1. 현재 비밀번호를 꺼내와서 맞는지 확인
         // 1번은 필드 검증으로 위임
@@ -164,7 +169,9 @@ public class MemberController {
         // 1. 유저가 입력한 아이디가 기존 유저 아이디 중에 중복되는 것이 있는지 확인.
         // 1번은 필드 검증으로 위임
         // 2. 중복 확인이 되면 변경
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+//        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
         Member member = memberService.updateLoginId(loginIdDto.getNewLoginId(), memberId);
         MemberDto memberDto = new MemberDto(member);
         MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
@@ -178,9 +185,13 @@ public class MemberController {
         // 0. 이메일 인증. 이메일 인증은 클라이언트 쪽에서 진행해야 할듯? 아니면 서버쪽에서 인증 이메일 보내는거 해줘도 되고?
         // 1. 이메일 형식 검사 (필드 검증으로 위임)
         // 2. 이메일 중복 검사 (필드 검증으로 위임)
+        // 3. 이메일 인증
+
         // 3. 이메일 변경
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+//        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Member member = memberService.updateEmail(emailDto.getNewEmail(), memberId);
+
         MemberDto memberDto = new MemberDto(member);
         MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
 
@@ -192,7 +203,9 @@ public class MemberController {
 
         // 1. 본인인증??
         // 2. 별도의 검증 과정 없이 일단 이름은 변경시키는 걸로
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+//        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
 
         Member member = memberService.updateName(nameDto.getNewName(), memberId);
         MemberDto memberDto = new MemberDto(member);
@@ -207,7 +220,9 @@ public class MemberController {
         // 전화번호는 인증과정을 거쳐야한다.
         // 1. 본인인증??
         // 2. 별도의 검증 과정 없이 일단 이름은 변경시키는 걸로
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+//        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
 
         Member member = memberService.updatePhoneNum(phoneNumDto.getNewPhoneNum(), memberId);
         MemberDto memberDto = new MemberDto(member);
@@ -218,7 +233,8 @@ public class MemberController {
 
     @PostMapping("/member/address")
     public ResponseEntity<MemberInfoResult<MemberDto>> addressUpdate(@Validated @RequestBody AddressUpdateReqDto addressDto) {
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+//        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         log.info("addressDto={}", addressDto);
 
         Member member = memberService.updateAddress(addressDto, memberId);
@@ -239,7 +255,8 @@ public class MemberController {
 
     @GetMapping("/member/isLogin")
     public ResponseEntity<?> memberIdLogin() {
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+//        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
         Member member = memberService.findMemberById(memberId);
         log.info("현재 로그인 중인 유저={}", member.getName());
 
@@ -255,6 +272,42 @@ public class MemberController {
         ReAccessToken reAccessToken = new ReAccessToken("엑세스 토큰 재발급 성공?");
         return ResponseEntity.ok(reAccessToken);
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+        log.info("SecurityContextHolder 테스트");
+//        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+//        CustomUser principal = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+//        log.info("로그인 안한 상태에서 SecurityContextHolder에 있는 멤버 정보 빼오기={}", memberId);
+//        log.info("이건 뭘까?={}", principal);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        log.info("이건 뭘까?={}", principal);
+
+        if (principal.getClass() == String.class && principal == "anonymousUser") {
+            log.info("true");
+        } else {
+            log.info("false");
+        }
+
+        return ResponseEntity.ok("ok");
+    }
+
+    private Long currentUser(Object principal) {
+        // 그런데 SecurityContextHolder로 하는거 말고도 HttpServletRequest로 하는 방법도 있음.
+        log.info("현재 로그인 중인지 아닌지 검사 실행");
+        try {
+            if (principal.getClass() == CustomUser.class) {
+                return ((CustomUser) principal).getMemberId();
+            }
+            throw new UnauthorizedAccessException();
+        } catch (Error error) {
+            throw new UnauthorizedAccessException(error);
+        }
+    }
+
+
 
     /*
     @GetMapping("/test-v1")
@@ -323,6 +376,7 @@ public class MemberController {
         private int count;
         private String message;
     }
-
      */
+
+
 }
