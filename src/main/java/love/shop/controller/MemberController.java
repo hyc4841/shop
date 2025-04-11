@@ -25,8 +25,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -181,11 +179,13 @@ public class MemberController {
 
     // 이메일 변경
     @PostMapping("/member/email")
-    public ResponseEntity<?> emailUpdate(@RequestBody @Validated EmailUpdateReqDto emailDto) {
+    public ResponseEntity<?> emailUpdate(@RequestBody @Validated EmailUpdateReqDto emailDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
         // 0. 이메일 인증. 이메일 인증은 클라이언트 쪽에서 진행해야 할듯? 아니면 서버쪽에서 인증 이메일 보내는거 해줘도 되고?
         // 1. 이메일 형식 검사 (필드 검증으로 위임)
         // 2. 이메일 중복 검사 (필드 검증으로 위임)
-        // 3. 이메일 인증
+        // 3. 이메일 인증 확인
+        memberService.checkEmailCertification(emailDto.getNewEmail(), bindingResult);
+
 
         // 3. 이메일 변경
 //        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
@@ -196,6 +196,32 @@ public class MemberController {
         MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
 
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/member/email/auth")
+    public ResponseEntity<?> sendUpdateEmailCertification(@RequestBody @Valid EmailCertificationDto emailDto) throws MessagingException {
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        memberService.sendEmailCertification(emailDto.getEmail());
+
+        return ResponseEntity.ok("ok");
+    }
+
+    // 이메일 변경 인증을 완전히 분리해야 할까?
+    @PostMapping("/member/email/auth/confirm")
+    public ResponseEntity<?> updateEmailCertificationConfirm(@RequestBody @Valid EmailCertificationConfirmReqDto confirmDto,
+                                                             BindingResult bindingResult) throws MethodArgumentNotValidException {
+
+        log.info("인증 코드 확인 ={}", confirmDto.getCode());
+        log.info("인증 이메일 확인 ={}", confirmDto.getEmail());
+
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        memberService.confirmEmailCertification(confirmDto.getEmail(), confirmDto.getCode(), bindingResult);
+
+        EmailCertificationConfirmResDto response = new EmailCertificationConfirmResDto(confirmDto.getEmail(), "인증에 성공했습니다.", 200);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/member/name")
@@ -215,7 +241,7 @@ public class MemberController {
     }
 
     @PostMapping("/member/phone-num")
-    public ResponseEntity<MemberInfoResult<MemberDto>> phoneNumUpdate(@Validated @RequestBody PhoneNumUpdateReqDto phoneNumDto) {
+    public ResponseEntity<?> phoneNumUpdate(@Validated @RequestBody PhoneNumUpdateReqDto phoneNumDto) {
 
         // 전화번호는 인증과정을 거쳐야한다.
         // 1. 본인인증??
@@ -232,7 +258,7 @@ public class MemberController {
     }
 
     @PostMapping("/member/address")
-    public ResponseEntity<MemberInfoResult<MemberDto>> addressUpdate(@Validated @RequestBody AddressUpdateReqDto addressDto) {
+    public ResponseEntity<?> addressUpdate(@Validated @RequestBody AddressUpdateReqDto addressDto) {
 //        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
         Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         log.info("addressDto={}", addressDto);
