@@ -68,6 +68,7 @@ public class SalesPageController {
         return ResponseEntity.ok(pageDtoList);
     }
 
+    // 단건 조회인데 왜 페이징이 들어가 있지? 아 리뷰 페이징
     // 판매 페이지 조회
     @GetMapping("/page/{pageId}")
     public ResponseEntity<?> findPageByPageId(@PathVariable Long pageId,
@@ -75,8 +76,10 @@ public class SalesPageController {
                                               @RequestParam(name = "reviewLimit", defaultValue = "10") int reviewLimit) {
         log.info("페이지 id로 페이지 찾기={}", pageId);
 
+        // 페이지 조회
         SalesPageDto pageDto = itemPageService.findPageByPageId(pageId);
 
+        // 리뷰는 따로 떠와서 wrapper에 넣어준다.
         // 방안 1. 페이지와 리뷰를 따로 데이터베이스에 접근해서 가져온다. 리뷰는 페이징으로 가져온다.
         // 방안 2. 페이지 가져올때
 
