@@ -32,21 +32,16 @@ public class ItemController {
 
     // 아이템 저장.
     @PostMapping("/item")
-    public ResponseEntity<ItemDto> saveItemWithCategory(@RequestBody @Validated ItemSaveReqDto itemDto) {
-
-        log.info("itemDto={}", itemDto);
-        log.info("아이템 카테고리별로 저장하기");
-
+    public ResponseEntity<?> saveItemWithCategory(@RequestBody @Validated ItemSaveReqDto itemDto) {
         Item savedItem = itemService.saveItemWithCategory(itemDto);
-
         ItemDto savedItemDto = ItemDto.createItemDto(savedItem);
 
         return ResponseEntity.ok(savedItemDto);
     }
 
     // 카테고리 중분류 아이템 조건 검색
-    // 아이템 조회
-    @GetMapping("/items")
+    // 아이템 조회--
+//    @GetMapping("/items")
     public ResponseEntity<?> items(@ModelAttribute SearchCond searchCond, // 중분류 카테고리로 뿌려주는걸로 만들자
                                    @RequestParam Map<String, String> checkedFilter,
                                    @RequestParam(value = "offset", defaultValue = "0") int offset,
