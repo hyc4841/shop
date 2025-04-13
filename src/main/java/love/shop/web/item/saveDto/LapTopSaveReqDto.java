@@ -7,7 +7,6 @@ import love.shop.web.item.filter.lapTop.*;
 
 import java.util.List;
 
-
 @JsonTypeName(value = "LapTop")
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -21,7 +20,7 @@ public class LapTopSaveReqDto extends ItemSaveReqDto {
     private LapTopStorage lapTopStorage;
     @NotNull
     private LapTopScreenSize lapTopScreenSize;
-    @NotNull
+
     private LapTopManufactureBrand lapTopManufactureBrand;
 
     public LapTopSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String dataType, LapTopBrand lapTopBrand, LapTopCpu lapTopCpu, LapTopStorage lapTopStorage, LapTopScreenSize lapTopScreenSize, LapTopManufactureBrand lapTopManufactureBrand) {
