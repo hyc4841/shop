@@ -2,33 +2,71 @@ package love.shop.domain.item.type;
 
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.item.Item;
 import love.shop.web.item.filter.tv.*;
+import love.shop.web.item.saveDto.TVSaveReqDto;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TV extends Item {
 
-    private TVBrand brand;
-    private TVDisplayPanel displayPanel;
-    private TVDisplayType displayType;
-    private TVHDR hdr;
-    private TVManufacturer manufacturer;
-    private TVPictureQuality pictureQuality;
-    private TVProcessor processor;
-    private TVRefreshRate refreshRate;
-    private TVScreenSize screenSize;
-    private String sound;
-    private TVSpeakerChannel speakerChannel;
-    private TVSpeakerOutput speakerOutput;
+    private String tvBrands;
+    private String tvDisplayPanels;
+    private String tvDisplayTypes;
+    private String tvHDRs;
+    private String tvManufacturers;
+    private String tvPictureQualities;
+    private String tvProcessors;
+    private String tvRefreshRates;
+    private String tvResolutions;
+    private String tvScreenSizes;
+    private String tvSounds;
+    private String tvSpeakerChannels;
+    private String tvSpeakerOutputs;
 
-    private final String dataType = "Tv";
+    private final String dataType = "TV";
 
     @Override
     public String getType() {
         return dataType;
+    }
+
+    public TV(String name, int price, int stockQuantity, String tvBrands, String tvDisplayPanels, String tvDisplayTypes, String tvHDRs, String tvManufacturers, String tvPictureQualities, String tvProcessors, String tvRefreshRates, String tvResolutions, String tvScreenSizes, String tvSounds, String tvSpeakerChannels, String tvSpeakerOutputs) {
+        super(name, price, stockQuantity);
+        this.tvBrands = tvBrands;
+        this.tvDisplayPanels = tvDisplayPanels;
+        this.tvDisplayTypes = tvDisplayTypes;
+        this.tvHDRs = tvHDRs;
+        this.tvManufacturers = tvManufacturers;
+        this.tvPictureQualities = tvPictureQualities;
+        this.tvProcessors = tvProcessors;
+        this.tvRefreshRates = tvRefreshRates;
+        this.tvResolutions = tvResolutions;
+        this.tvScreenSizes = tvScreenSizes;
+        this.tvSounds = tvSounds;
+        this.tvSpeakerChannels = tvSpeakerChannels;
+        this.tvSpeakerOutputs = tvSpeakerOutputs;
+    }
+
+    public TV(TVSaveReqDto tvDto) {
+        super(tvDto.getName(), tvDto.getPrice(), tvDto.getStockQuantity());
+        this.tvBrands = tvDto.getTvBrands();
+        this.tvDisplayPanels = tvDto.getTvDisplayPanels();
+        this.tvDisplayTypes = tvDto.getTvDisplayTypes();
+        this.tvHDRs = tvDto.getTvHDRs();
+        this.tvManufacturers = tvDto.getTvManufacturers();
+        this.tvPictureQualities = tvDto.getTvPictureQualities();
+        this.tvProcessors = tvDto.getTvProcessors();
+        this.tvRefreshRates = tvDto.getTvRefreshRates();
+        this.tvResolutions = tvDto.getTvResolutions();
+        this.tvScreenSizes = tvDto.getTvScreenSizes();
+        this.tvSounds = tvDto.getTvSounds();
+        this.tvSpeakerChannels = tvDto.getTvSpeakerChannels();
+        this.tvSpeakerOutputs = tvDto.getTvSpeakerOutputs();
     }
 }
