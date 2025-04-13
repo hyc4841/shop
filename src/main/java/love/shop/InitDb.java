@@ -35,8 +35,8 @@ public class InitDb {
 
     @PostConstruct
     public void init() throws MethodArgumentNotValidException {
-        service.initCategories();
-        service.initMember();
+//        service.initCategories();
+//        service.initMember();
 //        service.pageInit();
 
     }
