@@ -29,6 +29,12 @@ public class ItemSalesPage {
     private String optionName; // 해당 페이지에 어떤 옵션의 이름으로 들어 갈건지
 
     @Column
+    private String itemDisplayName; // 옵션에서 보일 상품의 이름
+
+    @Column
+    private Boolean isMainItem;
+
+    @Column
     private Integer sequence; // 목록에서 보일 순서
 
     // 그럼 이제 조금 달라짐. 기존에는 아이템을 검색하는 거였다면 이젠 아이템 페이지를 검색하는 꼴이됨.
@@ -56,6 +62,11 @@ public class ItemSalesPage {
         this.salesPage = null;
         this.item.getItemPages().remove(this);
         this.item = null;
+    }
+
+    public void setIsMainItemAndDisplayName(Boolean isMainItem, String itemDisplayName) {
+        this.isMainItem = isMainItem;
+        this.itemDisplayName = itemDisplayName;
     }
 
 }
