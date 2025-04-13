@@ -203,29 +203,6 @@ public class ItemRepository {
                 .offset(offset)
                 .limit(limit)
                 .fetch();
-
-                /*
-                query.select(item)
-                .from(itemCategory)
-                .join(itemCategory.item, item)
-                .join(itemCategory.category, category)
-                .where(basicCond)
-                .offset(offset)
-                .limit(limit)
-                .fetch();
-
-                 */
-
-                /*
-                queryFactory.select(item)
-                .from(itemCategory)
-                .join(itemCategory.item, item)
-                .join(itemCategory.category, category)
-                .where(basicCond)
-                .offset(offset)
-                .limit(limit)
-                .fetch();
-                */
     }
 
     private void lapTopSearchCond(BooleanBuilder builder, Map<String, List<String>> filters) {
@@ -287,7 +264,6 @@ public class ItemRepository {
                     break;
             }
         }
-
     }
 
     /*
