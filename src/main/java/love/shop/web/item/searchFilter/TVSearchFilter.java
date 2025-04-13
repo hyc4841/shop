@@ -10,6 +10,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TVSearchFilter extends SearchFilter {
+
     private List<TVBrand> tvBrands;
     private List<TVDisplayPanel> tvDisplayPanels;
     private List<TVDisplayType> tvDisplayTypes;
@@ -36,7 +37,7 @@ public class TVSearchFilter extends SearchFilter {
         tvSearchFilter.setTvRefreshRates(Arrays.asList(TVRefreshRate.values()));
         tvSearchFilter.setTvResolutions(Arrays.asList(TVResolution.values()));
         tvSearchFilter.setTvScreenSizes(Arrays.asList(TVScreenSize.values()));
-        tvSearchFilter.setTvSounds(TVSound.createTVSoundList());
+        tvSearchFilter.setTvSounds(TVSound.createTVSoundList()); // 이렇게 그냥 string 으로 해도 괜찮을거 같은데?
         tvSearchFilter.setTvSpeakerChannels(Arrays.asList(TVSpeakerChannel.values()));
         tvSearchFilter.setTvSpeakerOutputs(Arrays.asList(TVSpeakerOutput.values()));
 
