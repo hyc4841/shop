@@ -9,11 +9,13 @@ import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.type.LapTop;
+import love.shop.domain.item.type.TV;
 import love.shop.domain.itemCart.ItemCart;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.web.item.saveDto.BookSaveReqDto;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.saveDto.LapTopSaveReqDto;
+import love.shop.web.item.saveDto.TVSaveReqDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,9 +80,13 @@ public abstract class Item {
 
     public static Item createItem(ItemSaveReqDto itemDto) {
 
+        log.info("데이터 타입이 안들어온단 소리인가?={}", itemDto.getType());
+
         return switch (itemDto.getType()) {
             case "LapTop" -> new LapTop((LapTopSaveReqDto) itemDto);
             case "Book" -> new Book((BookSaveReqDto) itemDto);
+            case "TV" -> new TV((TVSaveReqDto) itemDto);
+            /*
             case "SmartPhone" -> new Book((BookSaveReqDto) itemDto);
             case "Projector" -> new Book((BookSaveReqDto) itemDto);
             case "BeamScreen" -> new Book((BookSaveReqDto) itemDto);
@@ -99,6 +105,7 @@ public abstract class Item {
             case "WiredHeadphones" -> new Book((BookSaveReqDto) itemDto);
             case "WirelessHeadset" -> new Book((BookSaveReqDto) itemDto);
             case "WiredHeadset" -> new Book((BookSaveReqDto) itemDto);
+             */
             default -> {
                 log.info("카테고리에 없는 데이터 유형");
                 yield null;
