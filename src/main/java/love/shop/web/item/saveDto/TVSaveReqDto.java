@@ -1,44 +1,45 @@
 package love.shop.web.item.saveDto;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import love.shop.web.item.filter.tv.*;
 
 import java.util.List;
 
-@JsonTypeName(value = "Tv")
+@JsonTypeName(value = "TV")
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TVSaveReqDto extends ItemSaveReqDto {
 
-    private TVBrand brand;
-    private TVDisplayPanel displayPanel;
-    private TVDisplayType displayType;
-    private TVHDR hdr;
-    private TVManufacturer manufacturer;
-    private TVPictureQuality pictureQuality;
-    private TVProcessor processor;
-    private TVRefreshRate refreshRate;
-    private TVScreenSize screenSize;
-    private TVSound sound;
-    private TVSpeakerChannel speakerChannel;
-    private TVSpeakerOutput speakerOutput;
+    private String tvBrands;
+    private String tvDisplayPanels;
+    private String tvDisplayTypes;
+    private String tvHDRs;
+    private String tvManufacturers;
+    private String tvPictureQualities;
+    private String tvProcessors;
+    private String tvRefreshRates;
+    private String tvResolutions;
+    private String tvScreenSizes;
+    private String tvSounds;
+    private String tvSpeakerChannels;
+    private String tvSpeakerOutputs;
 
-    public TVSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String type, TVBrand brand, TVDisplayPanel displayPanel, TVDisplayType displayType, TVHDR hdr, TVManufacturer manufacturer, TVPictureQuality pictureQuality, TVProcessor processor, TVRefreshRate refreshRate, TVScreenSize screenSize, TVSound sound, TVSpeakerChannel speakerChannel, TVSpeakerOutput speakerOutput) {
-        super(name, price, stockQuantity, categoriesId, type);
-        this.brand = brand;
-        this.displayPanel = displayPanel;
-        this.displayType = displayType;
-        this.hdr = hdr;
-        this.manufacturer = manufacturer;
-        this.pictureQuality = pictureQuality;
-        this.processor = processor;
-        this.refreshRate = refreshRate;
-        this.screenSize = screenSize;
-        this.sound = sound;
-        this.speakerChannel = speakerChannel;
-        this.speakerOutput = speakerOutput;
+    public TVSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String dataType, String tvBrands, String tvDisplayPanels, String tvDisplayTypes, String tvHDRs, String tvManufacturers, String tvPictureQualities, String tvProcessors, String tvRefreshRates, String tvResolutions, String tvScreenSizes, String tvSounds, String tvSpeakerChannels, String tvSpeakerOutputs) {
+        super(name, price, stockQuantity, categoriesId, dataType);
+        this.tvBrands = tvBrands;
+        this.tvDisplayPanels = tvDisplayPanels;
+        this.tvDisplayTypes = tvDisplayTypes;
+        this.tvHDRs = tvHDRs;
+        this.tvManufacturers = tvManufacturers;
+        this.tvPictureQualities = tvPictureQualities;
+        this.tvProcessors = tvProcessors;
+        this.tvRefreshRates = tvRefreshRates;
+        this.tvResolutions = tvResolutions;
+        this.tvScreenSizes = tvScreenSizes;
+        this.tvSounds = tvSounds;
+        this.tvSpeakerChannels = tvSpeakerChannels;
+        this.tvSpeakerOutputs = tvSpeakerOutputs;
     }
-
 }
