@@ -16,11 +16,22 @@ public class ItemPageDto {
 
     private String optionName;
 
+    private Boolean isMainItem;
+
+    private String itemDisplayName;
+
+    private Integer itemPrice;
+    private Integer itemQuantity;
+
 
     public ItemPageDto(ItemSalesPage itemPage) {
         this.id = itemPage.getId();
         this.itemId = itemPage.getItem().getId();
         this.pageId = itemPage.getSalesPage().getId();
         this.optionName = itemPage.getOptionName();
+        this.isMainItem = itemPage.getIsMainItem();
+        this.itemDisplayName = itemPage.getItemDisplayName();
+        this.itemPrice = itemPage.getItem().getPrice();
+        this.itemQuantity = itemPage.getItem().getStockQuantity();
     }
 }
