@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+// type 라는 이름의 필드로 어떤 클래스로 json을 받을지 선택하는 것. 이때 type 필드는 클래스 내 필드 명으로 사용할 수 없음. 이거 트러블 슈팅으로 쓰자
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = TVSaveReqDto.class, name = "TV"),
         @JsonSubTypes.Type(value = LapTopSaveReqDto.class, name = "LapTop"),
         @JsonSubTypes.Type(value = BookSaveReqDto.class, name = "Book"),
         @JsonSubTypes.Type(value = BeamScreenSaveReqDto.class, name = "BeamScreen"),
@@ -31,13 +33,12 @@ import java.util.List;
         @JsonSubTypes.Type(value = WirelessEarbudsSaveReqDto.class, name = "WirelessEarbuds"),
         @JsonSubTypes.Type(value = WirelessHeadphonesSaveReqDto.class, name = "WirelessHeadphones"),
         @JsonSubTypes.Type(value = WirelessHeadsetSaveReqDto.class, name = "WirelessHeadset"),
-
 })
 @Data
 @RequiredArgsConstructor
 public class ItemSaveReqDto {
 
-    private String type;
+    private String dataType;
     @NotBlank
     private String name;
     @NotNull
@@ -48,16 +49,16 @@ public class ItemSaveReqDto {
     private List<Integer> categoriesId; // 카테고리도 반드시 있어야하긴 한데..
 
 
-    public ItemSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String type) {
+    public ItemSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String dataType) {
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.categoriesId = categoriesId;
-        this.type = type;
+        this.dataType = dataType;
     }
 
     public String getType() {
-        return type;
+        return dataType;
     }
 
 
