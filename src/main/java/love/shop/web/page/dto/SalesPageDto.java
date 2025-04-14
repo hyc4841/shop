@@ -2,10 +2,12 @@ package love.shop.web.page.dto;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.item.Item;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.salesPage.SalesPage;
 import love.shop.web.item.dto.ItemDto;
-import love.shop.web.itemPage.dto.ItemPageDto;
+import love.shop.web.itemPage.dto.ItemSalesPageDto;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class SalesPageDto {
     private List<String> images;
     private String description;
 
-    private List<ItemPageDto> itemPages;
+    private List<ItemSalesPageDto> itemSalesPages;
 
     private ItemDto mainItem;
 
@@ -31,22 +33,17 @@ public class SalesPageDto {
         this.pageName = salesPage.getPageName();
         this.images = salesPage.getImages();
         this.description = salesPage.getDescription();
-        this.itemPages = salesPage.getItemSalesPages().stream()
-                .map(itemPage -> new ItemPageDto(itemPage))
+        this.itemSalesPages = salesPage.getItemSalesPages().stream()
+                .map(itemPage -> new ItemSalesPageDto(itemPage))
                 .collect(Collectors.toList());
 
         for (ItemSalesPage itemSalesPage : salesPage.getItemSalesPages()) {
             if (itemSalesPage.getIsMainItem()) {
-                this.mainItem = ItemDto.createItemDto(itemSalesPage.getItem());
+                this.mainItem = ItemDto.createItemDto(Item.proxyToEntity(itemSalesPage.getItem()));
             }
         }
 
-        // 여기서 리뷰는 아마 안가져오는걸로 해야할것임. 리뷰는 따로 가져오는걸로?
-        /*
-        this.reviews = salesPage.getReviews().stream()
-                .map(review -> new ReviewDto(review))
-                .collect(Collectors.toList());
-         */
+
     }
 
     public static List<SalesPageDto> createPageDtoList(List<SalesPage> pageList) {
@@ -59,4 +56,18 @@ public class SalesPageDto {
 
         return salesPageDtoList;
     }
+
+    /*
+    private Item proxyToEntity(Object entity) {
+        // 프록시 객체면 원본 객체로 바꾸기
+        if (entity instanceof HibernateProxy) {
+            log.info("프록시 객체면 원본 객체로 바꾸기");
+            entity = ((HibernateProxy) entity)
+                    .getHibernateLazyInitializer()
+                    .getImplementation();
+        }
+
+        return (Item) entity;
+    }
+     */
 }

@@ -57,6 +57,7 @@ public abstract class ItemDto {
 
 
     public static ItemDto createItemDto(Item item) {
+        log.info("타입 확인={}", item.getType());
 
         return switch (item.getType()) {
             case "LapTop" -> new LapTopDto((LapTop) item);
