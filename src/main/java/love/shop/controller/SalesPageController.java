@@ -13,7 +13,7 @@ import love.shop.service.itemPage.SalesPageService;
 import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.item.searchFilter.SearchFilter;
 import love.shop.web.itemPage.dto.CreatePageReqDto;
-import love.shop.web.itemPage.dto.ItemPageDto;
+import love.shop.web.itemPage.dto.ItemSalesPageDto;
 import love.shop.web.itemPage.dto.ModifyPageReqDto;
 import love.shop.web.page.dto.SalesPageDto;
 import org.springframework.http.ResponseEntity;
@@ -142,9 +142,9 @@ public class SalesPageController {
         // 리뷰, 각 판매 페이지에서 페이징으로 가져오는거 구현하기,
         // 판매 페이지 레이아웃 간단히 만들고, 옵션 구현된거 제대로 꾸며보기
 
-        ItemPageDto mainItem = null;
-        List<ItemPageDto> itemPages = pageDto.getItemPages();
-        for (ItemPageDto itemPage : itemPages) {
+        ItemSalesPageDto mainItem = null;
+        List<ItemSalesPageDto> itemPages = pageDto.getItemSalesPages();
+        for (ItemSalesPageDto itemPage : itemPages) {
             if (itemPage.getIsMainItem()) {
                 mainItem = itemPage;
             }
