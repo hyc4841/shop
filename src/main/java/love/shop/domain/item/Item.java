@@ -16,6 +16,7 @@ import love.shop.web.item.saveDto.BookSaveReqDto;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.saveDto.LapTopSaveReqDto;
 import love.shop.web.item.saveDto.TVSaveReqDto;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,5 +127,17 @@ public abstract class Item {
     public void setItemPages(ItemSalesPage itemPages) {
         this.itemPages.add(itemPages);
     }
+
+    public static Item proxyToEntity(Object entity) {
+        // 프록시 객체면 원본 객체로 바꾸기
+        if (entity instanceof HibernateProxy) {
+            log.info("프록시 객체면 원본 객체로 바꾸기");
+            entity = ((HibernateProxy) entity)
+                    .getHibernateLazyInitializer()
+                    .getImplementation();
+        }
+        return (Item) entity;
+    }
+
 
 }
