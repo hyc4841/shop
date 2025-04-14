@@ -2,15 +2,17 @@ package love.shop.web.itemPage.dto;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.item.Item;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
+import love.shop.web.item.dto.ItemDto;
 
 @Slf4j
 @Data
-public class ItemPageDto {
+public class ItemSalesPageDto {
 
     private Long id;
 
-    private Long itemId;
+    private ItemDto item; // 이거 추후에 itemDto로 바꿔야함.
 
     private Long pageId;
 
@@ -24,9 +26,9 @@ public class ItemPageDto {
     private Integer itemQuantity;
 
 
-    public ItemPageDto(ItemSalesPage itemPage) {
+    public ItemSalesPageDto(ItemSalesPage itemPage) {
         this.id = itemPage.getId();
-        this.itemId = itemPage.getItem().getId();
+        this.item = ItemDto.createItemDto(Item.proxyToEntity(itemPage.getItem()));
         this.pageId = itemPage.getSalesPage().getId();
         this.optionName = itemPage.getOptionName();
         this.isMainItem = itemPage.getIsMainItem();
