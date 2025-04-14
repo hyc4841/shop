@@ -13,6 +13,7 @@ import love.shop.service.itemPage.SalesPageService;
 import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.item.searchFilter.SearchFilter;
 import love.shop.web.itemPage.dto.CreatePageReqDto;
+import love.shop.web.itemPage.dto.ItemPageDto;
 import love.shop.web.itemPage.dto.ModifyPageReqDto;
 import love.shop.web.page.dto.SalesPageDto;
 import org.springframework.http.ResponseEntity;
@@ -138,11 +139,19 @@ public class SalesPageController {
 
         // 페이징 구현하는거 자세히 알기
 
-
         // 리뷰, 각 판매 페이지에서 페이징으로 가져오는거 구현하기,
         // 판매 페이지 레이아웃 간단히 만들고, 옵션 구현된거 제대로 꾸며보기
 
-        PageResultWrapper<Object> result = new PageResultWrapper<>(pageDto, "ok");
+        ItemPageDto mainItem = null;
+        List<ItemPageDto> itemPages = pageDto.getItemPages();
+        for (ItemPageDto itemPage : itemPages) {
+            if (itemPage.getIsMainItem()) {
+                mainItem = itemPage;
+            }
+        }
+
+
+        PageResultWrapper<Object> result = new PageResultWrapper<>(pageDto, mainItem,"ok");
         return ResponseEntity.ok(result);
     }
 
@@ -150,6 +159,7 @@ public class SalesPageController {
     @AllArgsConstructor
     static class PageResultWrapper<T> {
         private T page;
+        private T mainItem;
         private T review;
     }
 

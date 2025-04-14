@@ -2,7 +2,9 @@ package love.shop.web.page.dto;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.salesPage.SalesPage;
+import love.shop.web.item.dto.ItemDto;
 import love.shop.web.itemPage.dto.ItemPageDto;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class SalesPageDto {
 
     private List<ItemPageDto> itemPages;
 
+    private ItemDto mainItem;
+
 //    private List<ReviewDto> reviews; // 리뷰는 따로 가져오는걸로 하자.
 
     public SalesPageDto(SalesPage salesPage) {
@@ -30,6 +34,12 @@ public class SalesPageDto {
         this.itemPages = salesPage.getItemSalesPages().stream()
                 .map(itemPage -> new ItemPageDto(itemPage))
                 .collect(Collectors.toList());
+
+        for (ItemSalesPage itemSalesPage : salesPage.getItemSalesPages()) {
+            if (itemSalesPage.getIsMainItem()) {
+                this.mainItem = ItemDto.createItemDto(itemSalesPage.getItem());
+            }
+        }
 
         // 여기서 리뷰는 아마 안가져오는걸로 해야할것임. 리뷰는 따로 가져오는걸로?
         /*
