@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import love.shop.domain.ItemOption;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.order.Order;
 import love.shop.domain.review.Review;
@@ -34,8 +35,13 @@ public class SalesPage {
     @OneToMany(mappedBy = "salesPage")
     private List<Order> orders = new ArrayList<>();
 
+    @OneToMany(mappedBy = "salesPage")
+    private List<ItemOption> itemOption = new ArrayList<>();
+
     @Column
     private Boolean pageIsActive;
+
+
 
     //    private String seller;          // 판매자 나중에 연관관계 연결해야함.
 
