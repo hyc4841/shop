@@ -102,6 +102,10 @@ public class SalesPageController {
     public ResponseEntity<?> createItemPage(@RequestBody CreatePageReqDto pageReqDto) {
         log.info("아이템 판매 페이지 생성={}", pageReqDto);
 
+        // 판매 페이지를 생성할 때 계층형 아이템 옵션을 만들어 줘야함.
+        //CreatePageReqDto를 그에 알맞게 변형 시켜야함. 밑에 createItemPage
+
+
         SalesPage page = itemPageService.createItemPage(pageReqDto);
         SalesPageDto pageDto = new SalesPageDto(page);
 
