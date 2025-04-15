@@ -40,7 +40,6 @@ public class SalesPageRepository {
     QLapTop lapTop = QLapTop.lapTop;
     QTV tV = QTV.tV;
 
-
     public void savePage(SalesPage page) {
         em.persist(page);
     }
@@ -77,6 +76,7 @@ public class SalesPageRepository {
                 .fetch();
     }
 
+    // 이거 로직 수정해야함. 지금은 ItemSalesPage가 ItemOption으로 변경됨.
     public List<SalesPage> findSalesPageByItemCategoryAndSearchCond(SearchCond searchCond, Map<String, List<String>> filters, int offset, int limit) {
 
         JPAQuery<SalesPage> query = queryFactory.selectFrom(salesPage)
