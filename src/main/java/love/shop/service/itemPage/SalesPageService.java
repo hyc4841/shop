@@ -101,31 +101,13 @@ public class SalesPageService {
             });
         });
 
-
-
-        /*
-        optionAndItem.forEach((key, value) -> {
-            // key :  옵션 이름. value : List<Map<itemId, itemDisplayName>> 형태로된 데이터
-
-            for (Long itemId : value) {
-                log.info("반복");
-                ItemSalesPage itemPage = new ItemSalesPage(key);
-                Item item = itemRepository.findOne(itemId).orElseThrow(() -> new RuntimeException());
-                itemPage.setItem(item);
-                itemPage.setSalesPage(page);
-            }
-        });
-         */
-
-
     }
 
-    // 실제론
+    // 실제론 비활성화 처리
     @Transactional
     public void deletePage(Long pageId) {
         SalesPage page = salesPageRepository.findPageByPageId(pageId).orElseThrow(() -> new RuntimeException());
         page.deletePage(); // 페이지 활성화만 false로 바꾸는걸로 하자
-
     }
 
     public List<SalesPage> findSalesPageByItemCategoryAndSearchCond(SearchCond searchCond, Map<String, List<String>> filters, int offset, int limit) {
