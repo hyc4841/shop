@@ -146,7 +146,7 @@ public class ItemController {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
 
         for (Category parent : parents) {
-            CategoryDto categoryDto = toCategoryDto(categories, parent);
+            CategoryDto categoryDto = toCategoryDto(categories, parent); // 플렛하게 가져온 카테고리를 계층으로 만들어주는 함수
             categoryDtoList.add(categoryDto);
         }
 
