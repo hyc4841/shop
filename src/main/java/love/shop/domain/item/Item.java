@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
-import love.shop.domain.ItemOption;
+import love.shop.domain.itemOption.ItemOption;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.type.LapTop;
 import love.shop.domain.item.type.TV;
@@ -50,8 +50,8 @@ public abstract class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<ItemSalesPage> itemPages = new ArrayList<>();
 
-    @OneToOne(mappedBy = "item", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private ItemOption itemOption; // 판매 페이지에서 보일 옵션
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<ItemOption> itemOption; // 판매 페이지에서 보일 옵션
 
 //    private String seller; 판매자
 
