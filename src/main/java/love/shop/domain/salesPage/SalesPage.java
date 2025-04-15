@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import love.shop.domain.ItemOption;
+import love.shop.domain.itemOption.ItemOption;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.order.Order;
 import love.shop.domain.review.Review;
@@ -35,7 +35,7 @@ public class SalesPage {
     @OneToMany(mappedBy = "salesPage")
     private List<Order> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "salesPage")
+    @OneToMany(mappedBy = "salesPage", cascade = CascadeType.PERSIST)
     private List<ItemOption> itemOption = new ArrayList<>();
 
     @Column
