@@ -11,6 +11,7 @@ import love.shop.domain.category.QCategory;
 import love.shop.domain.item.QItem;
 import love.shop.domain.item.type.QLapTop;
 import love.shop.domain.item.type.QTV;
+import love.shop.domain.itemOption.QItemOption;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.itemSalesPage.QItemSalesPage;
 import love.shop.domain.salesPage.QSalesPage;
@@ -36,6 +37,8 @@ public class SalesPageRepository {
     QCategory category = QCategory.category;
     QItem item = QItem.item;
     QItemCategory itemCategory = QItemCategory.itemCategory;
+    QItemOption itemOption = QItemOption.itemOption;
+
 
     QLapTop lapTop = QLapTop.lapTop;
     QTV tV = QTV.tV;
@@ -80,8 +83,8 @@ public class SalesPageRepository {
     public List<SalesPage> findSalesPageByItemCategoryAndSearchCond(SearchCond searchCond, Map<String, List<String>> filters, int offset, int limit) {
 
         JPAQuery<SalesPage> query = queryFactory.selectFrom(salesPage)
-                .join(itemSalesPage).on(salesPage.id.eq(itemSalesPage.salesPage.id))
-                .join(item).on(itemSalesPage.item.id.eq(item.id))
+                .join(itemOption).on(salesPage.id.eq(itemOption.salesPage.id))
+                .join(item).on(item.id.eq(itemOption.item.id))
                 .join(itemCategory).on(item.id.eq(itemCategory.item.id))
                 .join(category).on(category.id.eq(itemCategory.category.id));
 
