@@ -125,8 +125,8 @@ public class SalesPageService {
 
     // 페이지 단건 조회
     public SalesPageDto findPageByPageId(Long pageId) {
-        SalesPage page = salesPageRepository.findPageByPageId(pageId).orElseThrow(() -> new RuntimeException());
-        return new SalesPageDto(page);
+        SalesPage salesPage = salesPageRepository.findPageByPageId(pageId).orElseThrow(() -> new RuntimeException());
+        return new SalesPageDto(salesPage);
     }
 
     private void itemPageReg(SalesPage page, Map<String, Map<Long, Map<String, Boolean>>> optionAndItem) {
