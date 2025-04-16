@@ -36,7 +36,7 @@ public class SalesPage {
     private List<Order> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "salesPage", cascade = CascadeType.PERSIST)
-    private List<ItemOption> itemOption = new ArrayList<>();
+    private List<ItemOption> itemOptions = new ArrayList<>();
 
     @Column
     private Boolean pageIsActive;
