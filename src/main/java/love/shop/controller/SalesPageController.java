@@ -31,8 +31,6 @@ public class SalesPageController {
 //    이후에 페이지에 해당하는 리뷰 만들기
 
     private final SalesPageService itemPageService;
-    private final ItemRepository itemRepository;
-    private final SalesPageRepository itemPageRepository;
     private final ItemService itemService;
     private final SalesPageService salesPageService;
 
@@ -69,8 +67,6 @@ public class SalesPageController {
 
         List<SalesPage> salesPageList = salesPageService.findSalesPageByItemCategoryAndSearchCond(searchCond, convertedFilter, offset, limit);
         log.info("조건으로 찾은 SalesPage={}", salesPageList);
-        // 검색 조건으로 찾은 아이템 Dto로 변환
-//        List<ItemDto> itemDtoList = ItemDto.createItemDtoList(items);
 
         // dto 변환
         List<SalesPageDto> pageDtoList = SalesPageDto.createPageDtoList(salesPageList);
@@ -89,11 +85,11 @@ public class SalesPageController {
         // 1. 등록되어 있지 않은 itemPage를 삭제하려 할때,
         // 2. 이미 등록 되어 있는 아이템을 등록하려 할때
 
-        SalesPage page = itemPageService.modifyItemPage(modifyPageReqDto.getPageId(), modifyPageReqDto.getDeleteItems(),
+        SalesPage salesPage = itemPageService.modifyItemPage(modifyPageReqDto.getPageId(), modifyPageReqDto.getDeleteItems(),
                 modifyPageReqDto.getPageName(), modifyPageReqDto.getImages(), modifyPageReqDto.getDescription(),
                 modifyPageReqDto.getOptionAndItem());// 이렇게 dto를 넘기는건 다른 곳에선 사용 못한다. 이걸 좀 풀어줘야할듯
 
-        SalesPageDto pageDto = new SalesPageDto(page);
+        SalesPageDto pageDto = new SalesPageDto(salesPage);
 
         return ResponseEntity.ok(pageDto);
     }
@@ -105,8 +101,8 @@ public class SalesPageController {
         // 판매 페이지를 생성할 때 계층형 아이템 옵션을 만들어 줘야함.
         //CreatePageReqDto를 그에 알맞게 변형 시켜야함. 밑에 createItemPage
 
-        SalesPage page = itemPageService.createItemPage(pageReqDto);
-        SalesPageDto pageDto = new SalesPageDto(page);
+        SalesPage salesPage = itemPageService.createItemPage(pageReqDto);
+        SalesPageDto pageDto = new SalesPageDto(salesPage);
 
         return ResponseEntity.ok(pageDto);
     }
@@ -145,16 +141,8 @@ public class SalesPageController {
         // 리뷰, 각 판매 페이지에서 페이징으로 가져오는거 구현하기,
         // 판매 페이지 레이아웃 간단히 만들고, 옵션 구현된거 제대로 꾸며보기
 
-        ItemSalesPageDto mainItem = null;
-        List<ItemSalesPageDto> itemPages = pageDto.getItemSalesPages();
-        for (ItemSalesPageDto itemPage : itemPages) {
-            if (itemPage.getIsMainItem()) {
-                mainItem = itemPage;
-            }
-        }
 
-
-        PageResultWrapper<Object> result = new PageResultWrapper<>(pageDto, mainItem,"ok");
+        PageResultWrapper<Object> result = new PageResultWrapper<>(pageDto, "ok");
         return ResponseEntity.ok(result);
     }
 
@@ -162,7 +150,7 @@ public class SalesPageController {
     @AllArgsConstructor
     static class PageResultWrapper<T> {
         private T page;
-        private T mainItem;
+//        private T mainItem;
         private T review;
     }
 
