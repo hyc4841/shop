@@ -2,18 +2,12 @@ package love.shop.web.page.dto;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.item.Item;
 import love.shop.domain.itemOption.ItemOption;
-import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.web.item.dto.ItemDto;
 import love.shop.web.itemOption.dto.ItemOptionDto;
-import love.shop.web.itemPage.dto.ItemSalesPageDto;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Data
@@ -25,8 +19,6 @@ public class SalesPageDto {
     private String description;
     private List<ItemOptionDto> itemOptionList;
 
-    private List<ItemSalesPageDto> itemSalesPages;
-//    private ItemDto mainItem;
 
 //    private List<ReviewDto> reviews; // 리뷰는 따로 가져오는걸로 하자.
 
@@ -35,23 +27,9 @@ public class SalesPageDto {
         this.pageName = salesPage.getPageName();
         this.images = salesPage.getImages();
         this.description = salesPage.getDescription();
-        this.itemOptionList = salesPage.getItemOption().stream().map(itemOption -> new ItemOptionDto(itemOption))
-                .collect(Collectors.toList());
 
-        /*
-        this.itemSalesPages = salesPage.getItemSalesPages().stream()
-                .map(itemPage -> new ItemSalesPageDto(itemPage))
-                .collect(Collectors.toList());
-         */
-        /*
-        for (ItemSalesPage itemSalesPage : salesPage.getItemSalesPages()) {
-            if (itemSalesPage.getIsMainItem()) {
-                this.mainItem = ItemDto.createItemDto(Item.proxyToEntity(itemSalesPage.getItem()));
-            }
-        }
-         */
-
-
+        // 새로 추가된 판매 페이지 상품 옵션
+        this.itemOptionList = ItemOptionDto.makeItemOptionDto(salesPage.getItemOptions());
     }
 
     public static List<SalesPageDto> createPageDtoList(List<SalesPage> pageList) {
@@ -65,17 +43,5 @@ public class SalesPageDto {
         return salesPageDtoList;
     }
 
-    /*
-    private Item proxyToEntity(Object entity) {
-        // 프록시 객체면 원본 객체로 바꾸기
-        if (entity instanceof HibernateProxy) {
-            log.info("프록시 객체면 원본 객체로 바꾸기");
-            entity = ((HibernateProxy) entity)
-                    .getHibernateLazyInitializer()
-                    .getImplementation();
-        }
 
-        return (Item) entity;
-    }
-     */
 }
