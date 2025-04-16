@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.item.Item;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.web.itemOption.dto.CreateItemOptionReqDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +48,7 @@ public class ItemOption { // 판매 페이지의 계층형 상품 옵션
     // 연관관계 메서드
     public void setSalesPage(SalesPage salesPage) {
         this.salesPage = salesPage;
-        salesPage.getItemOption().add(this);
+        salesPage.getItemOptions().add(this);
     }
 
     public void setItem(Item item) {
