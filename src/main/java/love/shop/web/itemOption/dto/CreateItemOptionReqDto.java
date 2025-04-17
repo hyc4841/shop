@@ -13,4 +13,6 @@ public class CreateItemOptionReqDto {
 
     private Integer parentNum; // 부모 옵션 번호
 
+    private Boolean isMainItem; // 판매 페이지에 메인 상품
+
 }
