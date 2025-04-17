@@ -57,15 +57,10 @@ public class SalesPageService {
     public SalesPage createItemPage(CreatePageReqDto pageReqDto) {
 
         SalesPage salesPage = new SalesPage(pageReqDto.getPageName(), pageReqDto.getImages(), pageReqDto.getDescription());
-        // ItemOption 설정
+
         List<CreateItemOptionReqDto> optionList = pageReqDto.getOptionList();
 
         Iterator<CreateItemOptionReqDto> iterator = optionList.iterator(); // 만약에 리스트 요소 삭제하는 방식 사용할거면 iterator 사용해야함.
-
-
-        // 먼저 전부 ItemOption 엔티티로 만든다
-        // 현재 요소의 이름과 부모의 이름 요소가 같은 엔티티들을 현재 요소의 자식으로 넣는다(자식들도 마찬가지로 현재 요소를 부모로 넣는다.)
-        // 자식 요소도 마찬가지로 자식이 또 있을 수 있으므로 재귀 함수로 위 과정을 반복한다.
 
         // 먼저 최상위 옵션들을 뽑아낸다.
         for (CreateItemOptionReqDto itemOptionDto : optionList) {
@@ -75,15 +70,17 @@ public class SalesPageService {
                 if (itemOptionDto.getItemId() != null) {
                     Item item = itemRepository.findOne(itemOptionDto.getItemId()).orElseThrow(() -> new RuntimeException("해당 아이템이 없음"));
                     itemOption.setItem(item);
+
+                    // 판매 페이지에 간판으로 표시될 상품 설정
+                    if (itemOptionDto.getIsMainItem()) {
+                        itemOption.setIsMainItem(true);
+                    }
+
                 }
-//                optionList.remove(itemOptionDto); // 중간에 리스트 객체를 제거하면 문제가 생기나?
                 itemOption.setSalesPage(salesPage);
                 makeItemOptionDepth(optionList, itemOption, salesPage); // 재귀 함수 부분
-
             }
         }
-
-//        itemPageReg(salesPage, pageReqDto.getOptionAndItem());
 
         // 일단 다 설정 됐는데 salesPage 저장 시점에 같이 저장되는지 봐야함
         log.info("판매 페이지 저장 시점");
