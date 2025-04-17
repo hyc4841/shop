@@ -7,6 +7,10 @@ public class TVSound {
 
     private List<String> tvSounds;
 
+    public TVSound() {
+        this.tvSounds = createTVSoundList();
+    }
+
     public static List<String> createTVSoundList() {
         List<String> tvSoundList = new ArrayList<>();
         tvSoundList.add("DTS:X");
