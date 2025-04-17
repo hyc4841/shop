@@ -64,6 +64,8 @@ public class SalesPageController {
 
         // 클라이언트 쪽에서 보여줄 필터
         SearchFilter filters = SearchFilter.findFilter(type);
+        // 상품 스펙(상품 필터) 데이터베이스로 이전 시작
+
 
         List<SalesPage> salesPageList = salesPageService.findSalesPageByItemCategoryAndSearchCond(searchCond, convertedFilter, offset, limit);
         log.info("조건으로 찾은 SalesPage={}", salesPageList);
