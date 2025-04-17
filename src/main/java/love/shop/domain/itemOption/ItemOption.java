@@ -39,10 +39,13 @@ public class ItemOption { // 판매 페이지의 계층형 상품 옵션
 
     private Integer optionNum; // 옵션 저장 과정에서 부모 자식 식별용 속성
 
+    private Boolean isMainItem;
+
     // 최상위 옵션 생성자
     public ItemOption(String optionName, Integer optionNum) {
         this.optionName = optionName;
         this.optionNum = optionNum;
+        this.isMainItem = false;
     }
 
     // 연관관계 메서드
@@ -59,5 +62,9 @@ public class ItemOption { // 판매 페이지의 계층형 상품 옵션
     public void setParent(ItemOption itemOption) {
         this.parent = itemOption;
         itemOption.getChild().add(this);
+    }
+
+    public void setIsMainItem(Boolean isMainItem) {
+        this.isMainItem = isMainItem;
     }
 }
