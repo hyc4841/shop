@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class SearchFilter {
 
+    // 필터링 조건들을 데이터베이스에 넣어놓고 사용할건지 아님 이렇게 하드코딩으로 할건지
+    // 근데 제대로 할려면 db에 넣는게 맞음. db에 넣으면 관리도 쉽게 가능함.
 
     public static SearchFilter findFilter(String type) {
         if (type == null) {
