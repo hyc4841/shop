@@ -4,12 +4,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.domain.address.Address;
 import love.shop.domain.category.Category;
-import love.shop.domain.delivery.Delivery;
-import love.shop.domain.delivery.DeliveryStatus;
 import love.shop.domain.item.Item;
-import love.shop.domain.item.type.Book;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.PasswordAndCheck;
@@ -17,6 +13,8 @@ import love.shop.domain.salesPage.SalesPage;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.service.page.PageService;
+import love.shop.web.item.saveDto.ItemSaveReqDto;
+import love.shop.web.item.saveDto.TVSaveReqDto;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +36,7 @@ public class InitDb {
 //        service.initCategories();
 //        service.initMember();
 //        service.pageInit();
-
+//        service.initItem();
     }
 
     @Component
@@ -50,6 +48,41 @@ public class InitDb {
         private final ItemService itemService;
         private final PageService pageService;
         private final MemberService memberService;
+
+        public void initItem() {
+            // 1. ItemSaveReqDto 생성
+            List<Integer> categories1 = new ArrayList<>(Arrays.asList(2, 23, 193));
+            TVSaveReqDto tv1 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+                    "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
+                    null, null, "Hz_60", "QHD", "27인치",
+                    "돌비애트모스", null, null);
+            itemService.saveItemWithCategory(tv1);
+
+            TVSaveReqDto tv2 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+                    "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
+                    null, null, "Hz_60", "QHD", "27인치",
+                    "돌비애트모스", null, null);
+            itemService.saveItemWithCategory(tv2);
+
+            TVSaveReqDto tv3 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+                    "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
+                    null, null, "Hz_60", "QHD", "27인치",
+                    "돌비애트모스", null, null);
+            itemService.saveItemWithCategory(tv3);
+
+            TVSaveReqDto tv4 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+                    "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
+                    null, null, "Hz_60", "QHD", "27인치",
+                    "돌비애트모스", null, null);
+            itemService.saveItemWithCategory(tv4);
+
+            TVSaveReqDto tv5 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+                    "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
+                    null, null, "Hz_60", "QHD", "27인치",
+                    "돌비애트모스", null, null);
+            itemService.saveItemWithCategory(tv5);
+
+        }
 
         public void initMember() {
             PasswordAndCheck passwordAndCheck = new PasswordAndCheck("1234", "1234");
@@ -825,6 +858,7 @@ public class InitDb {
             list.add("2025년형");
             list.add("고화질");
             list.add("TV액세서리");
+            list.add("이동형/인테리어TV");
 
             saveCategories(list, "TV", 23L, "TV");
 
