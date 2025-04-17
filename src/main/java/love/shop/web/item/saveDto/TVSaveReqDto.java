@@ -1,7 +1,6 @@
 package love.shop.web.item.saveDto;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,14 +25,19 @@ public class TVSaveReqDto extends ItemSaveReqDto {
     private String tvSpeakerChannels;
     private String tvSpeakerOutputs;
 
-    public TVSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String dataType, String tvBrands, String tvDisplayPanels, String tvDisplayTypes, String tvHDRs, String tvManufacturers, String tvPictureQualities, String tvProcessors, String tvRefreshRates, String tvResolutions, String tvScreenSizes, String tvSounds, String tvSpeakerChannels, String tvSpeakerOutputs) {
+    public TVSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String dataType,
+                        String tvBrands, String tvDisplayPanels, String tvDisplayTypes, String tvHDRs,
+                        String tvManufacturers, String tvPictureQualities, String tvProcessors,
+                        String tvRefreshRates, String tvResolutions, String tvScreenSizes,
+                        String tvSounds, String tvSpeakerChannels, String tvSpeakerOutputs) {
+
         super(name, price, stockQuantity, categoriesId, dataType);
         this.tvBrands = tvBrands;
         this.tvDisplayPanels = tvDisplayPanels;
         this.tvDisplayTypes = tvDisplayTypes;
         this.tvHDRs = tvHDRs;
         this.tvManufacturers = tvManufacturers;
-        this.tvPictureQualities = tvPictureQualities;
+        this.tvPictureQualities = tvPictureQualities; // 해상도
         this.tvProcessors = tvProcessors;
         this.tvRefreshRates = tvRefreshRates;
         this.tvResolutions = tvResolutions;
