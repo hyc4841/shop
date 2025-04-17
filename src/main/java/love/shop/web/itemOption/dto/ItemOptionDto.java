@@ -19,6 +19,7 @@ public class ItemOptionDto {
     private String optionName;
     private ItemDto item;
     private Long salesPageId;
+    private Boolean isMainItem;
     private List<ItemOptionDto> child;
 
     // 자식은 연결 안된 생성자
@@ -37,8 +38,8 @@ public class ItemOptionDto {
         } else {
             this.item = null;
         }
-
         this.salesPageId = itemOption.getSalesPage().getId();
+        this.isMainItem = itemOption.getIsMainItem();
     }
 
     public static List<ItemOptionDto> makeItemOptionDto(List<ItemOption> itemOptionList) {
