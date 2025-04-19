@@ -1,6 +1,25 @@
 package love.shop.web.item.filter.tv;
 
-public enum TVBrand { // 브랜드
-    울트라HD, QLED, 올레드_evo, 네오_QLED, evo, Crystal, UHD, QNED, 쿠카, SMART, 스탠바이미2 ,스탠바이미, 더_프레임,
-    룸앤TV, 우버, 큐빅스전자, 오브제컬렉션, 와이드뷰, 더_세리프, 나노셀
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import love.shop.domain.itemSpec.TVSpec;
+
+@Entity
+@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class TVBrand { // 브랜드
+
+    @Id
+    @GeneratedValue
+    @Column(name = "tv_brand_id")
+    private Long id;
+
+    private String specName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tv_spec_id")
+    private TVSpec tvSpec;
+
 }

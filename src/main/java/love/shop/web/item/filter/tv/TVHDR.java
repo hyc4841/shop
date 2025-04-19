@@ -1,5 +1,26 @@
 package love.shop.web.item.filter.tv;
 
-public enum TVHDR { // HDR 기술
-    돌비비전IQ, 돌비비전, HDR10_plus, HDR10, HDR자동조절, HLG, 아이맥스인핸스드, 톤매핑
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import love.shop.domain.itemSpec.TVSpec;
+
+@Entity
+@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class TVHDR { // HDR 기술
+    @Id
+    @GeneratedValue
+    @Column(name = "tv_hdr_id")
+    private Long id;
+
+    private String specName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tv_spec_id")
+    private TVSpec tvSpec;
+
+
+
 }

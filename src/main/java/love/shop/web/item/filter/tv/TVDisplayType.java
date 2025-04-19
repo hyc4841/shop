@@ -1,6 +1,24 @@
 package love.shop.web.item.filter.tv;
 
-public enum TVDisplayType { // 화면 종류
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import love.shop.domain.itemSpec.TVSpec;
 
-    OLED_TV, 미니LED_TV, QLED_TV, QNED_TV, LED_TV, LED_모니터
+@Entity
+@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class TVDisplayType { // 화면 종류
+    @Id
+    @GeneratedValue
+    @Column(name = "tv_display_type_id")
+    private Long id;
+
+    private String specName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tv_spec_id")
+    private TVSpec tvSpec;
+
 }
