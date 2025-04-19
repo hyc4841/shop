@@ -27,6 +27,7 @@ public class TVSearchFilter extends SearchFilter {
 
     public static TVSearchFilter createTVSearchFilter() {
         TVSearchFilter tvSearchFilter = new TVSearchFilter();
+        /*
         tvSearchFilter.setTvBrands(Arrays.asList(TVBrand.values()));
         tvSearchFilter.setTvDisplayPanels(Arrays.asList(TVDisplayPanel.values()));
         tvSearchFilter.setTvDisplayTypes(Arrays.asList(TVDisplayType.values()));
@@ -40,6 +41,7 @@ public class TVSearchFilter extends SearchFilter {
         tvSearchFilter.setTvSounds(TVSound.createTVSoundList()); // 이렇게 그냥 string 으로 해도 괜찮을거 같은데?
         tvSearchFilter.setTvSpeakerChannels(TVSpeakerChannel.createTVSpeakerChannelList());
         tvSearchFilter.setTvSpeakerOutputs(TVSpeakerOutput.createTVSpeakerOutputlList());
+         */
 
         return tvSearchFilter;
     }
