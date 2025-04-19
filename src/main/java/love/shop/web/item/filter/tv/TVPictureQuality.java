@@ -5,6 +5,15 @@ import java.util.List;
 
 public class TVPictureQuality {
 
+
+
+
+
+
+
+
+
+/*
     private List<String> tvPictureQuality;
 
     public static List<String> createTVPictureQualityList() {
@@ -15,6 +24,8 @@ public class TVPictureQuality {
 
         return tvPictureQuality;
     }
+
+ */
 
 
 

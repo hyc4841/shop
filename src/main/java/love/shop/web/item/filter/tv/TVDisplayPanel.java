@@ -1,5 +1,24 @@
 package love.shop.web.item.filter.tv;
 
-public enum TVDisplayPanel { // 패널 종류
-    IPS, VA
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import love.shop.domain.itemSpec.TVSpec;
+
+@Entity
+@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class TVDisplayPanel { // 패널 종류
+    @Id
+    @GeneratedValue
+    @Column(name = "tv_display_panel_id")
+    private Long id;
+
+    private String specName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tv_spec_id")
+    private TVSpec tvSpec;
+
 }
