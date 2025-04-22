@@ -12,7 +12,7 @@ import java.util.List;
 // type 라는 이름의 필드로 어떤 클래스로 json을 받을지 선택하는 것. 이때 type 필드는 클래스 내 필드 명으로 사용할 수 없음. 이거 트러블 슈팅으로 쓰자
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = TVSaveReqDto.class, name = "TV"),
+        @JsonSubTypes.Type(value = TVSaveReqDto.class, name = "Tv"),
         @JsonSubTypes.Type(value = LapTopSaveReqDto.class, name = "LapTop"),
         @JsonSubTypes.Type(value = BookSaveReqDto.class, name = "Book"),
         @JsonSubTypes.Type(value = BeamScreenSaveReqDto.class, name = "BeamScreen"),

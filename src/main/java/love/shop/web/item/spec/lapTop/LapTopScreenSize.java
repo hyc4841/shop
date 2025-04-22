@@ -1,4 +1,4 @@
-package love.shop.web.item.filter.lapTop;
+package love.shop.web.item.spec.lapTop;
 
 public enum LapTopScreenSize {
     Inch_17("17인치"), Inch_16("16인치"), Inch_15("15인치"), Inch_13("13인치");

@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.NotEnoughStockException;
 import love.shop.domain.ItemCategory.ItemCategory;
+import love.shop.domain.item.type.Tv;
 import love.shop.domain.itemOption.ItemOption;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.type.LapTop;
-import love.shop.domain.item.type.TV;
 import love.shop.domain.itemCart.ItemCart;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.web.item.saveDto.BookSaveReqDto;
@@ -27,7 +27,6 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-
 @Getter
 public abstract class Item {
 
@@ -90,7 +89,7 @@ public abstract class Item {
         return switch (itemDto.getType()) {
             case "LapTop" -> new LapTop((LapTopSaveReqDto) itemDto);
             case "Book" -> new Book((BookSaveReqDto) itemDto);
-            case "TV" -> new TV((TVSaveReqDto) itemDto);
+            case "TV" -> new Tv((TVSaveReqDto) itemDto);
             /*
             case "SmartPhone" -> new Book((BookSaveReqDto) itemDto);
             case "Projector" -> new Book((BookSaveReqDto) itemDto);

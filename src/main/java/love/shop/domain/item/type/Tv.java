@@ -6,14 +6,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.item.Item;
-import love.shop.web.item.filter.tv.*;
 import love.shop.web.item.saveDto.TVSaveReqDto;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TV extends Item {
+public class Tv extends Item {
 
     private String tvBrands;
     private String tvDisplayPanels;
@@ -29,14 +28,14 @@ public class TV extends Item {
     private String tvSpeakerChannels;
     private String tvSpeakerOutputs;
 
-    private final String dataType = "TV";
+    private final String dataType = "Tv";
 
     @Override
     public String getType() {
         return dataType;
     }
 
-    public TV(String name, int price, int stockQuantity, String tvBrands, String tvDisplayPanels, String tvDisplayTypes, String tvHDRs, String tvManufacturers, String tvPictureQualities, String tvProcessors, String tvRefreshRates, String tvResolutions, String tvScreenSizes, String tvSounds, String tvSpeakerChannels, String tvSpeakerOutputs) {
+    public Tv(String name, int price, int stockQuantity, String tvBrands, String tvDisplayPanels, String tvDisplayTypes, String tvHDRs, String tvManufacturers, String tvPictureQualities, String tvProcessors, String tvRefreshRates, String tvResolutions, String tvScreenSizes, String tvSounds, String tvSpeakerChannels, String tvSpeakerOutputs) {
         super(name, price, stockQuantity);
         this.tvBrands = tvBrands;
         this.tvDisplayPanels = tvDisplayPanels;
@@ -53,7 +52,7 @@ public class TV extends Item {
         this.tvSpeakerOutputs = tvSpeakerOutputs;
     }
 
-    public TV(TVSaveReqDto tvDto) {
+    public Tv(TVSaveReqDto tvDto) {
         super(tvDto.getName(), tvDto.getPrice(), tvDto.getStockQuantity());
         this.tvBrands = tvDto.getTvBrands();
         this.tvDisplayPanels = tvDto.getTvDisplayPanels();

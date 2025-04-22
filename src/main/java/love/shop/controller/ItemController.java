@@ -5,15 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
+import love.shop.domain.itemSpec.ItemSpec;
 import love.shop.repository.item.ItemRepository;
 import love.shop.service.item.ItemService;
-import love.shop.service.member.MemberService;
 import love.shop.web.category.dto.CategoryDto;
 import love.shop.web.item.dto.*;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.item.searchFilter.SearchFilter;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
+import love.shop.web.itemSpec.dto.ItemSpecDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -69,8 +70,10 @@ public class ItemController {
         Category category = itemService.findCategoryById(searchCond.getCategories());
         String type = category.getType(); // 해당 카테고리의 데이터 타입 확인
 
+        ItemSpec itemSpec = itemService.findItemSpec(type);
+
         // 클라이언트 쪽에서 보여줄 필터
-        SearchFilter filters = SearchFilter.findFilter(type);
+        ItemSpecDto filters = SearchFilter.findFilter(type, itemSpec);
 
         List<Item> items = itemService.findItemsBySearchCond(searchCond, convertedFilter, offset, limit);
         log.info("조건으로 찾은 items={}", items);
@@ -135,9 +138,6 @@ public class ItemController {
     @GetMapping("/category/major")
     public ResponseEntity<?> findMajorCategory() {
         log.info("대분류 카테고리 조회");
-
-//        List<Category> majorCategory = itemRepository.findMajorCategory();
-
         List<Category> categories = itemRepository.findAllCategory();
 
         List<Category> parents = categories.stream().filter(category -> ObjectUtils.isEmpty(category.getParent()))
@@ -145,19 +145,11 @@ public class ItemController {
 
         List<CategoryDto> categoryDtoList = new ArrayList<>();
 
+        // 카테고리 계층 형성 로직
         for (Category parent : parents) {
             CategoryDto categoryDto = toCategoryDto(categories, parent); // 플렛하게 가져온 카테고리를 계층으로 만들어주는 함수
             categoryDtoList.add(categoryDto);
         }
-
-
-        // 이거 모든 카테고리 다 땡겨온다음에 계층형으로 다시 재구성하자. 재귀함수 사용하면 될듯'
-
-        /*
-        List<CategoryDto> categoryDtoList = majorCategory.stream().map(category -> new CategoryDto(category))
-                .collect(Collectors.toList());
-
-         */
 
         return ResponseEntity.ok(categoryDtoList);
     }
