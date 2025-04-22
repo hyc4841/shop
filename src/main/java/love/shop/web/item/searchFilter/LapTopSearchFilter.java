@@ -2,7 +2,7 @@ package love.shop.web.item.searchFilter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import love.shop.web.item.filter.lapTop.*;
+import love.shop.web.item.spec.lapTop.*;
 
 import java.util.Arrays;
 import java.util.List;

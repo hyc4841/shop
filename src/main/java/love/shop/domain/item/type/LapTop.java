@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import love.shop.domain.item.*;
-import love.shop.web.item.filter.lapTop.*;
+import love.shop.web.item.spec.lapTop.*;
 import love.shop.web.item.saveDto.LapTopSaveReqDto;
 
 @EqualsAndHashCode(callSuper = true)

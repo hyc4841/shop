@@ -2,24 +2,23 @@ package love.shop.web.item.searchFilter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import love.shop.web.item.filter.tv.*;
+import love.shop.web.item.spec.tv.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TVSearchFilter extends SearchFilter {
 
-    private List<TVBrand> tvBrands;
-    private List<TVDisplayPanel> tvDisplayPanels;
-    private List<TVDisplayType> tvDisplayTypes;
-    private List<TVHDR> tvHDRs;
-    private List<TVManufacturer> tvManufacturers;
+    private List<TvBrand> tvBrands;
+    private List<TvDisplayPanel> tvDisplayPanels;
+    private List<TvDisplayType> tvDisplayTypes;
+    private List<TvHDR> tvHDRS;
+    private List<TvManufacturer> tvManufacturers;
     private List<String> tvPictureQualities;
-    private List<TVProcessor> tvProcessors;
-    private List<TVRefreshRate> tvRefreshRates;
-    private List<TVResolution> tvResolutions;
+    private List<TvProcessor> tvProcessors;
+    private List<TvRefreshRate> tvRefreshRates;
+    private List<TvResolution> tvResolutions;
     private List<String> tvScreenSizes;
     private List<String> tvSounds;
     private List<String> tvSpeakerChannels;

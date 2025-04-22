@@ -44,7 +44,7 @@ public abstract class ItemDto {
                     itemDtoList.add(new BookDto((Book) item));
                     break;
                 case "TV":
-                    itemDtoList.add(new TVDto((TV) item));
+                    itemDtoList.add(new TVDto((Tv) item));
                     break;
 
                 default:
@@ -80,7 +80,7 @@ public abstract class ItemDto {
             case "WiredHeadphones" -> new WiredHeadphonesDto((WiredHeadphones) item);
             case "WirelessHeadset" -> new WirelessHeadsetDto((WirelessHeadset) item);
             case "WiredHeadset" -> new WiredHeadsetDto((WiredHeadset) item);
-            case "TV" -> new TVDto((TV) item);
+            case "TV" -> new TVDto((Tv) item);
 
             default -> {
                 log.info("유효한 카테고리가 없는 상품={}", item);

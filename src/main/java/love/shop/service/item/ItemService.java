@@ -7,6 +7,7 @@ import love.shop.domain.ItemCategory.ItemCategory;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.type.Book;
 import love.shop.domain.item.Item;
+import love.shop.domain.itemSpec.ItemSpec;
 import love.shop.repository.item.ItemRepository;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import love.shop.web.item.saveDto.ItemSaveReqDto;
@@ -29,9 +30,19 @@ public class ItemService {
     @Transactional
     public void save(Item item) {
         itemRepository.save(item);
-
-        // 보통 아이템을 저장할 땐 카테고리를 같이 넣어서 저장한다.
     }
+
+
+    @Transactional
+    public void saveItemSpecList(ItemSpec itemSpec) {
+        itemRepository.saveItemSpec(itemSpec);
+    }
+
+    public ItemSpec findItemSpec(String dtype) {
+        log.info("아이템 스펙 찾는중={}", dtype);
+        return itemRepository.findItemSpec(dtype).orElseThrow(() -> new RuntimeException("해당 아이템 스펙이 없습니다."));
+    }
+
 
     @Transactional
     public Item saveItemWithCategory(ItemSaveReqDto saveReqDto) {

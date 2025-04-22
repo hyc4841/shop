@@ -2,8 +2,7 @@ package love.shop.web.item.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import love.shop.domain.item.type.TV;
-import love.shop.web.item.filter.tv.*;
+import love.shop.domain.item.type.Tv;
 import love.shop.web.itemCategory.dto.ItemCategoryDto;
 
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class TVDto extends ItemDto{
     private String tvSpeakerChannels;
     private String tvSpeakerOutputs;
 
-    public TVDto(TV tv) {
+    public TVDto(Tv tv) {
         super(tv.getName(), tv.getPrice(), tv.getStockQuantity());
         super.setItemCategories(tv.getItemCategories().stream()
                 .map(itemCategory -> new ItemCategoryDto(itemCategory))

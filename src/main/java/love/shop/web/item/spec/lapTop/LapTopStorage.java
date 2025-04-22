@@ -1,4 +1,4 @@
-package love.shop.web.item.filter.lapTop;
+package love.shop.web.item.spec.lapTop;
 
 public enum LapTopStorage {
     TB_1, TB_2 ,GB_512, GB_256

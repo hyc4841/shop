@@ -12,7 +12,9 @@ import love.shop.domain.category.QCategory;
 import love.shop.domain.item.*;
 import love.shop.domain.item.type.QBook;
 import love.shop.domain.item.type.QLapTop;
-import love.shop.web.item.filter.lapTop.*;
+import love.shop.domain.itemSpec.ItemSpec;
+import love.shop.domain.itemSpec.QItemSpec;
+import love.shop.web.item.spec.lapTop.*;
 import love.shop.web.item.searchCond.*;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import org.springframework.stereotype.Repository;
@@ -35,6 +37,7 @@ public class ItemRepository {
     QItemCategory itemCategory = QItemCategory.itemCategory;
     QBook book = QBook.book;
     QLapTop lapTop = QLapTop.lapTop;
+    QItemSpec itemSpec = QItemSpec.itemSpec;
 
     // 아이템 저장
     public void save(Item item) {
@@ -47,6 +50,31 @@ public class ItemRepository {
             // merge를 사용할 땐, 모든 필드의 값을 다 넣어줘야한다. 값이 안들어간 곳은 null로 채워진다.
         }
     }
+
+    public void saveItemSpec(ItemSpec itemSpec) {
+        em.persist(itemSpec);
+    }
+
+    public Optional<ItemSpec> findItemSpec(String dtype) {
+        return Optional.ofNullable(em.createQuery("select is from ItemSpec is" +
+                        " join fetch is.tvBrand a" +
+                        " join fetch is.tvDisplayPanels b" +
+                        " join fetch is.tvDisplayTypes c" +
+                        " join fetch is.tvHDRS d" +
+                        " join fetch is.tvManufacturers e" +
+                        " join fetch is.tvPictureQualities f" +
+                        " join fetch is.tvProcessors g" +
+                        " join fetch is.tvRefreshRates h" +
+                        " join fetch is.tvResolutions i" +
+                        " join fetch is.tvScreenSizes j" +
+                        " join fetch is.tvSounds k" +
+                        " join fetch is.tvSpeakerChannels l" +
+                        " join fetch is.tvSpeakerOutputs m" +
+                        " where is.dataType = :data_type", ItemSpec.class)
+                .setParameter("data_type", dtype)
+                .getSingleResult());
+    }
+
     // 아이템 저장
     public void saveItem(Item item) {
         em.persist(item);
@@ -56,6 +84,7 @@ public class ItemRepository {
     public Optional<Item> findOne(Long id) {
         return Optional.ofNullable(em.find(Item.class, id));
     }
+
 
     // 모든 아이템 조회
     public List<Item> findAll() {

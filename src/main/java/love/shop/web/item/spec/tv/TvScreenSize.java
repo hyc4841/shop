@@ -1,18 +1,34 @@
-package love.shop.web.item.filter.tv;
+package love.shop.web.item.spec.tv;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import love.shop.domain.itemSpec.TvSpec;
 
-public class TVScreenSize { // 화면 크기
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class TvScreenSize { // 화면 크기
 
-    private List<String> tvScreenSize;
+    @Id
+    @GeneratedValue
+    @Column(name = "tv_screen_size_id")
+    private Long id;
 
-    public TVScreenSize() {
-        this.tvScreenSize = createTVScreenSizeList();
+    private String specName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tv_spec_id")
+    private TvSpec tvSpec;
+
+    public TvScreenSize(String specName, TvSpec tvSpec) {
+        this.specName = specName;
+        this.tvSpec = tvSpec;
+        tvSpec.getTvScreenSizes().add(this);
     }
 
-    public static List<String> createTVScreenSizeList() {
-        List<String> tvPictureQuality = new ArrayList<>();
+    /*
         tvPictureQuality.add("24인치");
         tvPictureQuality.add("27인치");
         tvPictureQuality.add("32인치");
@@ -32,8 +48,6 @@ public class TVScreenSize { // 화면 크기
         tvPictureQuality.add("98인치");
         tvPictureQuality.add("100인치");
         tvPictureQuality.add("115인치");
+     */
 
-
-        return tvPictureQuality;
-    }
 }

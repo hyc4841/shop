@@ -10,13 +10,13 @@ import love.shop.domain.ItemCategory.QItemCategory;
 import love.shop.domain.category.QCategory;
 import love.shop.domain.item.QItem;
 import love.shop.domain.item.type.QLapTop;
-import love.shop.domain.item.type.QTV;
+import love.shop.domain.item.type.QTv;
 import love.shop.domain.itemOption.QItemOption;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.itemSalesPage.QItemSalesPage;
 import love.shop.domain.salesPage.QSalesPage;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.web.item.filter.lapTop.*;
+import love.shop.web.item.spec.lapTop.*;
 import love.shop.web.item.searchCond.SearchCond;
 import org.springframework.stereotype.Repository;
 
@@ -41,7 +41,7 @@ public class SalesPageRepository {
 
 
     QLapTop lapTop = QLapTop.lapTop;
-    QTV tV = QTV.tV;
+    QTv tv = QTv.tv;
 
     public void savePage(SalesPage page) {
         em.persist(page);
@@ -118,7 +118,7 @@ public class SalesPageRepository {
                 case "TV" :
                     log.info("TV 변환");
                     TVSearchCond(filterCond, filters);
-                    query.join(tV).on(item.id.eq(tV.id));
+                    query.join(tv).on(item.id.eq(tv.id));
                     break;
 
                 default:
@@ -187,7 +187,7 @@ public class SalesPageRepository {
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvSpeakerOutputs : filters.get(key)) {
                             log.info("tvSpeakerOutputs={}", tvSpeakerOutputs);
-                            builder.or(tV.tvSpeakerOutputs.eq(tvSpeakerOutputs));
+                            builder.or(tv.tvSpeakerOutputs.eq(tvSpeakerOutputs));
                         }
                     }
                     break;
@@ -196,7 +196,7 @@ public class SalesPageRepository {
                         for (String tvProcessors : filters.get(key)) {
                             log.info("tvProcessors={}", tvProcessors);
 
-                            builder.or(tV.tvProcessors.eq(tvProcessors));
+                            builder.or(tv.tvProcessors.eq(tvProcessors));
                         }
                     }
                     break;
@@ -205,7 +205,7 @@ public class SalesPageRepository {
                         for (String tvDisplayTypes : filters.get(key)) {
                             log.info("tvDisplayTypes={}", tvDisplayTypes);
 
-                            builder.or(tV.tvDisplayTypes.eq(tvDisplayTypes));
+                            builder.or(tv.tvDisplayTypes.eq(tvDisplayTypes));
                         }
                     }
                     break;
@@ -214,7 +214,7 @@ public class SalesPageRepository {
                         for (String tvSpeakerChannels : filters.get(key)) {
                             log.info("tvSpeakerChannels={}", tvSpeakerChannels);
 
-                            builder.or(tV.tvSpeakerChannels.eq(tvSpeakerChannels));
+                            builder.or(tv.tvSpeakerChannels.eq(tvSpeakerChannels));
                         }
                     }
                     break;
@@ -223,7 +223,7 @@ public class SalesPageRepository {
                         for (String tvManufacturers : filters.get(key)) {
                             log.info("tvManufacturers={}", tvManufacturers);
 
-                            builder.or(tV.tvManufacturers.eq(tvManufacturers));
+                            builder.or(tv.tvManufacturers.eq(tvManufacturers));
                         }
                     }
                     break;
@@ -232,7 +232,7 @@ public class SalesPageRepository {
                         for (String tvHDRs : filters.get(key)) {
                             log.info("tvHDRs={}", tvHDRs);
 
-                            builder.or(tV.tvHDRs.eq(tvHDRs));
+                            builder.or(tv.tvHDRs.eq(tvHDRs));
                         }
                     }
                     break;
@@ -242,7 +242,7 @@ public class SalesPageRepository {
                         for (String tvDisplayPanels : filters.get(key)) {
                             log.info("tvDisplayPanels={}", tvDisplayPanels);
 
-                            builder.or(tV.tvDisplayPanels.eq(tvDisplayPanels));
+                            builder.or(tv.tvDisplayPanels.eq(tvDisplayPanels));
                         }
                     }
                     break;
@@ -252,7 +252,7 @@ public class SalesPageRepository {
                         for (String tvScreenSizes : filters.get(key)) {
                             log.info("tvScreenSizes={}", tvScreenSizes);
 
-                            builder.or(tV.tvScreenSizes.eq(tvScreenSizes));
+                            builder.or(tv.tvScreenSizes.eq(tvScreenSizes));
                         }
                     }
                     break;
@@ -262,7 +262,7 @@ public class SalesPageRepository {
                         for (String tvRefreshRates : filters.get(key)) {
                             log.info("tvRefreshRates={}", tvRefreshRates);
 
-                            builder.or(tV.tvRefreshRates.eq(tvRefreshRates));
+                            builder.or(tv.tvRefreshRates.eq(tvRefreshRates));
                         }
                     }
                     break;
@@ -272,7 +272,7 @@ public class SalesPageRepository {
                         for (String tvBrands : filters.get(key)) {
                             log.info("tvBrands={}", tvBrands);
 
-                            builder.or(tV.tvBrands.eq(tvBrands));
+                            builder.or(tv.tvBrands.eq(tvBrands));
                         }
                     }
                     break;
@@ -281,7 +281,7 @@ public class SalesPageRepository {
                         for (String tvPictureQualities : filters.get(key)) {
                             log.info("tvPictureQualities={}", tvPictureQualities);
 
-                            builder.or(tV.tvPictureQualities.eq(tvPictureQualities));
+                            builder.or(tv.tvPictureQualities.eq(tvPictureQualities));
                         }
                     }
                     break;
@@ -290,7 +290,7 @@ public class SalesPageRepository {
                         for (String tvSounds : filters.get(key)) {
                             log.info("tvSounds={}", tvSounds);
 
-                            builder.or(tV.tvSounds.eq(tvSounds));
+                            builder.or(tv.tvSounds.eq(tvSounds));
                         }
                     }
                     break;
@@ -299,7 +299,7 @@ public class SalesPageRepository {
                         for (String tvResolutions : filters.get(key)) {
                             log.info("tvResolutions={}", tvResolutions);
 
-                            builder.or(tV.tvResolutions.eq(tvResolutions));
+                            builder.or(tv.tvResolutions.eq(tvResolutions));
                         }
                     }
                     break;
