@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.Item;
-import love.shop.domain.itemSpec.QTvSpec;
 import love.shop.domain.itemSpec.TvSpec;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
@@ -15,7 +14,6 @@ import love.shop.domain.salesPage.SalesPage;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.service.page.PageService;
-import love.shop.web.item.saveDto.ItemSaveReqDto;
 import love.shop.web.item.saveDto.TVSaveReqDto;
 import love.shop.web.item.spec.tv.*;
 import love.shop.web.signup.dto.SignupRequestDto;
@@ -32,7 +30,6 @@ import java.util.*;
 public class InitDb {
 
     private final InitService service;
-
 
     @PostConstruct
     public void init() throws MethodArgumentNotValidException {
@@ -671,7 +668,7 @@ public class InitDb {
                 sequence++;
             }
             // tv 따로 저장
-            Category tv_2 = new Category("TV", "영상/음향가전", "TV", 0);
+            Category tv_2 = new Category("TV", "영상/음향가전", "Tv", 0);
             subcategory1.addChild(tv_2);
             em.persist(tv_2);
 
@@ -1297,7 +1294,7 @@ public class InitDb {
             list.add("TV액세서리");
             list.add("이동형/인테리어TV");
 
-            saveCategories(list, "TV", 23L, "TV");
+            saveCategories(list, "TV", 23L, "Tv");
 
             // 노트북
             Category laptop = itemService.findCategoryByNameAndParentName("노트북", "노트북/데스크탑");
