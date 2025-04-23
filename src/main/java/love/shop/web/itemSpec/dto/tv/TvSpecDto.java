@@ -2,8 +2,8 @@ package love.shop.web.itemSpec.dto.tv;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import love.shop.domain.itemSpec.TvSpec;
-import love.shop.web.item.spec.tv.*;
 import love.shop.web.itemSpec.dto.ItemSpecDto;
 
 import java.util.List;
@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 public class TvSpecDto extends ItemSpecDto {
 
     private List<TvBrandDto> tvBrandList;

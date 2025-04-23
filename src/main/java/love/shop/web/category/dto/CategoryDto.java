@@ -52,4 +52,7 @@ public class CategoryDto {
     public void addChildren(Category child) {
         children.add(new CategoryDto(child));
     }
+
+    public CategoryDto() {
+    }
 }

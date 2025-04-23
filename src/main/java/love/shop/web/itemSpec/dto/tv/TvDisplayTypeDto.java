@@ -1,10 +1,11 @@
 package love.shop.web.itemSpec.dto.tv;
 
 import lombok.Data;
-import love.shop.web.item.spec.tv.TvDisplayPanel;
+import lombok.NoArgsConstructor;
 import love.shop.web.item.spec.tv.TvDisplayType;
 
 @Data
+@NoArgsConstructor
 public class TvDisplayTypeDto {
     private Long id;
     private String specName;
