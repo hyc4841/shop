@@ -70,10 +70,7 @@ public class ItemController {
         Category category = itemService.findCategoryById(searchCond.getCategories());
         String type = category.getType(); // 해당 카테고리의 데이터 타입 확인
 
-        ItemSpec itemSpec = itemService.findItemSpec(type);
-
-        // 클라이언트 쪽에서 보여줄 필터
-        ItemSpecDto filters = SearchFilter.findFilter(type, itemSpec);
+        ItemSpecDto filters = itemService.findItemSpec(type);
 
         List<Item> items = itemService.findItemsBySearchCond(searchCond, convertedFilter, offset, limit);
         log.info("조건으로 찾은 items={}", items);
@@ -138,20 +135,9 @@ public class ItemController {
     @GetMapping("/category/major")
     public ResponseEntity<?> findMajorCategory() {
         log.info("대분류 카테고리 조회");
-        List<Category> categories = itemRepository.findAllCategory();
+        List<CategoryDto> depthCategory = itemService.getDepthCategory();
 
-        List<Category> parents = categories.stream().filter(category -> ObjectUtils.isEmpty(category.getParent()))
-                .collect(Collectors.toList());
-
-        List<CategoryDto> categoryDtoList = new ArrayList<>();
-
-        // 카테고리 계층 형성 로직
-        for (Category parent : parents) {
-            CategoryDto categoryDto = toCategoryDto(categories, parent); // 플렛하게 가져온 카테고리를 계층으로 만들어주는 함수
-            categoryDtoList.add(categoryDto);
-        }
-
-        return ResponseEntity.ok(categoryDtoList);
+        return ResponseEntity.ok(depthCategory);
     }
 
     private CategoryDto toCategoryDto(List<Category> categories, Category parent) {
