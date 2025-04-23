@@ -1,7 +1,9 @@
 package love.shop.domain.itemSpec;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import love.shop.web.item.spec.tv.*;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @DiscriminatorValue("Tv")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TvSpec extends ItemSpec {
 
     @Id
