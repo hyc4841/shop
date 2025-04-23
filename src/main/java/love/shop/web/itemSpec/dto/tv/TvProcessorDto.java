@@ -9,9 +9,11 @@ import love.shop.web.item.spec.tv.TvProcessor;
 public class TvProcessorDto {
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
 
     public TvProcessorDto(TvProcessor tvProcessor) {
         this.id = tvProcessor.getId();
         this.specName = tvProcessor.getSpecName();
+        this.isPopularSpec = tvProcessor.getIsPopularSpec();
     }
 }

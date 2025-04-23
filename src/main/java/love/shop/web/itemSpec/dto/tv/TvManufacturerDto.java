@@ -9,9 +9,12 @@ import love.shop.web.item.spec.tv.TvManufacturer;
 public class TvManufacturerDto {
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
+
 
     public TvManufacturerDto(TvManufacturer tvManufacturer) {
         this.id = tvManufacturer.getId();
         this.specName = tvManufacturer.getSpecName();
+        this.isPopularSpec = tvManufacturer.getIsPopularSpec();
     }
 }

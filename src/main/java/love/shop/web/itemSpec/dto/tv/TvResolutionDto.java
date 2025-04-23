@@ -9,9 +9,11 @@ import love.shop.web.item.spec.tv.TvResolution;
 public class TvResolutionDto {
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
 
     public TvResolutionDto(TvResolution tvResolution) {
         this.id = tvResolution.getId();
         this.specName = tvResolution.getSpecName();
+        this.isPopularSpec = tvResolution.getIsPopularSpec();
     }
 }

@@ -9,9 +9,12 @@ import love.shop.web.item.spec.tv.TvDisplayPanel;
 public class TvDisplayPanelDto {
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
+
 
     public TvDisplayPanelDto(TvDisplayPanel tvDisplayPanel) {
         this.id = tvDisplayPanel.getId();
         this.specName = tvDisplayPanel.getSpecName();
+        this.isPopularSpec = tvDisplayPanel.getIsPopularSpec();
     }
 }

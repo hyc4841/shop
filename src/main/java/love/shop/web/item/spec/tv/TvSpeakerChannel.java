@@ -15,17 +15,18 @@ public class TvSpeakerChannel {
     @GeneratedValue
     @Column(name = "tv_speaker_channel_id")
     private Long id;
-
     private String specName;
+    private Boolean isPopularSpec;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tv_spec_id")
     private TvSpec tvSpec;
 
-    public TvSpeakerChannel(String specName, TvSpec tvSpec) {
+    public TvSpeakerChannel(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
         this.specName = specName;
         this.tvSpec = tvSpec;
         tvSpec.getTvSpeakerChannels().add(this);
+        this.isPopularSpec = isPopularSpec;
     }
     /*
         tvSoundList.add("2.0채널");

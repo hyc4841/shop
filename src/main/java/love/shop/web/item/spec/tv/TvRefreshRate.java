@@ -15,20 +15,18 @@ public class TvRefreshRate { // 주사율
      @GeneratedValue
      @Column(name = "tv_refresh_rate_id")
      private Long id;
-
      private String specName;
+     private Boolean isPopularSpec;
 
      @ManyToOne(fetch = FetchType.LAZY)
      @JoinColumn(name = "tv_spec_id")
      private TvSpec tvSpec;
 
-     public TvRefreshRate(String specName, TvSpec tvSpec) {
+     public TvRefreshRate(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
           this.specName = specName;
           this.tvSpec = tvSpec;
           tvSpec.getTvRefreshRates().add(this);
+          this.isPopularSpec = isPopularSpec;
      }
 
-     /*
-Hz_144, Hz_120, Hz_75, Hz_60
- */
 }

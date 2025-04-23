@@ -15,16 +15,17 @@ public class TvManufacturer { // 제조사
     @GeneratedValue
     @Column(name = "tv_manufacturer_id")
     private Long id;
-
     private String specName;
+    private Boolean isPopularSpec;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tv_spec_id")
     private TvSpec tvSpec;
 
-    public TvManufacturer(String specName, TvSpec tvSpec) {
+    public TvManufacturer(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
         this.specName = specName;
         this.tvSpec = tvSpec;
         tvSpec.getTvManufacturers().add(this);
+        this.isPopularSpec = isPopularSpec;
     }
 }
