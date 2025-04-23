@@ -5,12 +5,10 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
-import love.shop.domain.itemSpec.ItemSpec;
 import love.shop.domain.salesPage.SalesPage;
 import love.shop.service.item.ItemService;
 import love.shop.service.itemPage.SalesPageService;
 import love.shop.web.item.searchCond.SearchCond;
-import love.shop.web.item.searchFilter.SearchFilter;
 import love.shop.web.itemPage.dto.CreatePageReqDto;
 import love.shop.web.itemPage.dto.ModifyPageReqDto;
 import love.shop.web.itemSpec.dto.ItemSpecDto;
@@ -60,14 +58,12 @@ public class SalesPageController {
         // 타입이 없고 카테고리 id만 넘어온다면
         Category category = itemService.findCategoryById(searchCond.getCategories());
         String type = category.getType(); // 해당 카테고리의 데이터 타입 확인
-        log.info("왜 안됨?={}", type);
 
-        ItemSpec itemSpec = itemService.findItemSpec(type);
+        log.info("타입 확인={}", type);
 
-        log.info("스펙 다 찾음?");
+        ItemSpecDto filters = itemService.findItemSpec(type);
 
-        // 클라이언트 쪽에서 보여줄 필터
-        ItemSpecDto filters = SearchFilter.findFilter(type, itemSpec);
+
         // 상품 스펙(상품 필터) 데이터베이스로 이전 시작
         // 필터 뿌려주는 로직 바꿔야함.
         log.info("필터 제대로 뽑히나?={}", filters);
