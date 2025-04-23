@@ -56,23 +56,9 @@ public class ItemRepository {
     }
 
     public Optional<ItemSpec> findItemSpec(String dtype) {
-        return Optional.ofNullable(em.createQuery("select is from ItemSpec is" +
-                        " join fetch is.tvBrand a" +
-                        " join fetch is.tvDisplayPanels b" +
-                        " join fetch is.tvDisplayTypes c" +
-                        " join fetch is.tvHDRS d" +
-                        " join fetch is.tvManufacturers e" +
-                        " join fetch is.tvPictureQualities f" +
-                        " join fetch is.tvProcessors g" +
-                        " join fetch is.tvRefreshRates h" +
-                        " join fetch is.tvResolutions i" +
-                        " join fetch is.tvScreenSizes j" +
-                        " join fetch is.tvSounds k" +
-                        " join fetch is.tvSpeakerChannels l" +
-                        " join fetch is.tvSpeakerOutputs m" +
-                        " where is.dataType = :data_type", ItemSpec.class)
-                .setParameter("data_type", dtype)
-                .getSingleResult());
+        return Optional.ofNullable(queryFactory.selectFrom(itemSpec)
+                .where(itemSpec.dataType.eq(dtype))
+                .fetchOne());
     }
 
     // 아이템 저장
