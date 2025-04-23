@@ -108,6 +108,8 @@ public class SalesPageRepository {
             basicCond.and(item.price.loe(searchCond.getLessPrice()));
         }
 
+        log.info("searchCond.getType()={}", searchCond.getType());
+
         if (searchCond.getType() != null) {
             switch (searchCond.getType()) {
                 case "LapTop" :
@@ -115,7 +117,7 @@ public class SalesPageRepository {
                     lapTopSearchCond(filterCond, filters);
                     query.join(lapTop).on(item.id.eq(lapTop.id));
                     break;
-                case "TV" :
+                case "Tv" :
                     log.info("TV 변환");
                     TVSearchCond(filterCond, filters);
                     query.join(tv).on(item.id.eq(tv.id));

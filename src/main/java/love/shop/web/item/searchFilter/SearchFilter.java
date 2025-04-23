@@ -15,6 +15,9 @@ public class SearchFilter {
     // 근데 제대로 할려면 db에 넣는게 맞음. db에 넣으면 관리도 쉽게 가능함.
 
     public static ItemSpecDto findFilter(String type, ItemSpec itemSpec) {
+
+        log.info("타입 확인={}", type);
+
         if (type == null) {
             return null;
         }
