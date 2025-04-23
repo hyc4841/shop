@@ -63,11 +63,9 @@ public class SalesPageController {
 
         ItemSpecDto filters = itemService.findItemSpec(type);
 
-
         // 상품 스펙(상품 필터) 데이터베이스로 이전 시작
         // 필터 뿌려주는 로직 바꿔야함.
-        log.info("필터 제대로 뽑히나?={}", filters);
-
+//        log.info("필터 제대로 뽑히나?={}", filters);
 
         List<SalesPage> salesPageList = salesPageService.findSalesPageByItemCategoryAndSearchCond(searchCond, convertedFilter, offset, limit);
         log.info("조건으로 찾은 SalesPage={}", salesPageList);

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public abstract class ItemSpec {
-
     @Id
     @GeneratedValue
     @Column(name = "item_spec_id")
