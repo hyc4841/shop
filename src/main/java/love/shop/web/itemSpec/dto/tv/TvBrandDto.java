@@ -10,9 +10,11 @@ public class TvBrandDto {
 
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
 
     public TvBrandDto(TvBrand tvBrand) {
         this.id = tvBrand.getId();
         this.specName = tvBrand.getSpecName();
+        this.isPopularSpec = tvBrand.getIsPopularSpec();
     }
 }

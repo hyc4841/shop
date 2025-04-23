@@ -9,9 +9,11 @@ import love.shop.web.item.spec.tv.TvScreenSize;
 public class TvScreenSizeDto {
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
 
     public TvScreenSizeDto(TvScreenSize tvScreenSize) {
         this.id = tvScreenSize.getId();
         this.specName = tvScreenSize.getSpecName();
+        this.isPopularSpec = tvScreenSize.getIsPopularSpec();
     }
 }

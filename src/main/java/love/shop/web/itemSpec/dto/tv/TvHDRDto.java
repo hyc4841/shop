@@ -9,9 +9,12 @@ import love.shop.web.item.spec.tv.TvHDR;
 public class TvHDRDto {
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
+
 
     public TvHDRDto(TvHDR tvHDR) {
         this.id = tvHDR.getId();
         this.specName = tvHDR.getSpecName();
+        this.isPopularSpec = tvHDR.getIsPopularSpec();
     }
 }

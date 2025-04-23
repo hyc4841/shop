@@ -9,9 +9,11 @@ import love.shop.web.item.spec.tv.TvSpeakerOutput;
 public class TvSpeakerOutputDto {
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
 
     public TvSpeakerOutputDto(TvSpeakerOutput tvSpeakerOutput) {
         this.id = tvSpeakerOutput.getId();
         this.specName = tvSpeakerOutput.getSpecName();
+        this.isPopularSpec = tvSpeakerOutput.getIsPopularSpec();
     }
 }

@@ -9,9 +9,12 @@ import love.shop.web.item.spec.tv.TvDisplayType;
 public class TvDisplayTypeDto {
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
+
 
     public TvDisplayTypeDto(TvDisplayType tvDisplayType) {
         this.id = tvDisplayType.getId();
         this.specName = tvDisplayType.getSpecName();
+        this.isPopularSpec = tvDisplayType.getIsPopularSpec();
     }
 }

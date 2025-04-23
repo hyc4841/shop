@@ -9,9 +9,11 @@ import love.shop.web.item.spec.tv.TvRefreshRate;
 public class TvRefreshRateDto {
     private Long id;
     private String specName;
+    private Boolean isPopularSpec;
 
     public TvRefreshRateDto(TvRefreshRate tvRefreshRate) {
         this.id = tvRefreshRate.getId();
         this.specName = tvRefreshRate.getSpecName();
+        this.isPopularSpec = tvRefreshRate.getIsPopularSpec();
     }
 }

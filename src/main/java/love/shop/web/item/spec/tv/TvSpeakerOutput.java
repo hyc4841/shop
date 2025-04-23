@@ -15,23 +15,18 @@ public class TvSpeakerOutput {
     @GeneratedValue
     @Column(name = "tv_speaker_output_id")
     private Long id;
-
     private String specName;
+    private Boolean isPopularSpec;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tv_spec_id")
     private TvSpec tvSpec;
 
-    public TvSpeakerOutput(String specName, TvSpec tvSpec) {
+    public TvSpeakerOutput(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
         this.specName = specName;
         this.tvSpec = tvSpec;
         tvSpec.getTvSpeakerOutputs().add(this);
+        this.isPopularSpec = isPopularSpec;
     }
-
-    /*
-        tvSoundList.add("20W");
-        tvSoundList.add("40W");
-        tvSoundList.add("60W");
-     */
 
 }
