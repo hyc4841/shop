@@ -34,6 +34,7 @@ public class ItemOptionDto {
         }
 
         if (itemOption.getItem() != null) {
+            log.info("아이템은 dto로 변환 안되냐?={}", itemOption.getItem());
             this.item = ItemDto.createItemDto(Item.proxyToEntity(itemOption.getItem()));
         } else {
             this.item = null;
