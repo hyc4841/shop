@@ -50,19 +50,6 @@ public class ItemSalesPage {
         this.item = item;
         item.setItemPages(this);
     }
-    // page 연결
-    public void setSalesPage(SalesPage salesPage) {
-        this.salesPage = salesPage;
-        salesPage.setItemSalesPages(this);
-    }
-
-    // page와 item 연관관계 끊어주기
-    public void deleteItemPage() {
-        this.salesPage.getItemSalesPages().remove(this);
-        this.salesPage = null;
-        this.item.getItemPages().remove(this);
-        this.item = null;
-    }
 
     public void setIsMainItemAndDisplayName(Boolean isMainItem, String itemDisplayName) {
         this.isMainItem = isMainItem;
