@@ -9,8 +9,9 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TVDto extends ItemDto{
+public class TVDto extends ItemDto {
 
+    private Long itemId;
     private String tvBrands;
     private String tvDisplayPanels;
     private String tvDisplayTypes;
@@ -30,7 +31,7 @@ public class TVDto extends ItemDto{
         super.setItemCategories(tv.getItemCategories().stream()
                 .map(itemCategory -> new ItemCategoryDto(itemCategory))
                 .collect(Collectors.toList()));
-
+        this.itemId = tv.getId();
         this.tvBrands = tv.getTvBrands();
         this.tvDisplayPanels = tv.getTvDisplayPanels();
         this.tvDisplayTypes = tv.getTvDisplayTypes();
