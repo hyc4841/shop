@@ -68,8 +68,8 @@ public class SalesPageRepository {
     public List<SalesPage> findPageByItemCategory(Long categoryId, int offset, int limit) {
 
         return queryFactory.selectFrom(salesPage)
-                .join(salesPage.itemSalesPages, itemSalesPage)
-                .join(itemSalesPage.item, item)
+                .join(salesPage.itemOptions, itemOption)
+                .join(itemOption.item, item)
                 .join(item.itemCategories, itemCategory)
                 .join(itemCategory.category, category)
                 .where(itemCategory.category.id.eq(categoryId))
@@ -185,7 +185,7 @@ public class SalesPageRepository {
 
         for (String key : filters.keySet()) {
             switch (key) {
-                case "tvSpeakerOutputs":
+                case "tvSpeakerOutputList":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvSpeakerOutputs : filters.get(key)) {
                             log.info("tvSpeakerOutputs={}", tvSpeakerOutputs);
@@ -193,7 +193,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvProcessors":
+                case "tvProcessorList":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvProcessors : filters.get(key)) {
                             log.info("tvProcessors={}", tvProcessors);
@@ -202,7 +202,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvDisplayTypes":
+                case "tvDisplayTypeList":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvDisplayTypes : filters.get(key)) {
                             log.info("tvDisplayTypes={}", tvDisplayTypes);
@@ -211,7 +211,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvSpeakerChannels":
+                case "tvSpeakerChannelList":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvSpeakerChannels : filters.get(key)) {
                             log.info("tvSpeakerChannels={}", tvSpeakerChannels);
@@ -220,7 +220,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvManufacturers":
+                case "tvManufacturerList":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvManufacturers : filters.get(key)) {
                             log.info("tvManufacturers={}", tvManufacturers);
@@ -229,7 +229,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvHDRs":
+                case "tvHDRList":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvHDRs : filters.get(key)) {
                             log.info("tvHDRs={}", tvHDRs);
@@ -238,7 +238,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvDisplayPanels":
+                case "tvDisplayPanelList":
                     if (!filters.get(key).get(0).isBlank()) {
 
                         for (String tvDisplayPanels : filters.get(key)) {
@@ -248,7 +248,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvScreenSizes":
+                case "tvScreenSizeList":
                     if (!filters.get(key).get(0).isBlank()) {
 
                         for (String tvScreenSizes : filters.get(key)) {
@@ -258,7 +258,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvRefreshRates":
+                case "tvRefreshRateList":
                     if (!filters.get(key).get(0).isBlank()) {
 
                         for (String tvRefreshRates : filters.get(key)) {
@@ -268,7 +268,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvBrands":
+                case "tvBrandList":
                     if (!filters.get(key).get(0).isBlank()) {
 
                         for (String tvBrands : filters.get(key)) {
@@ -278,7 +278,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvPictureQualities":
+                case "tvPictureQualityList":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvPictureQualities : filters.get(key)) {
                             log.info("tvPictureQualities={}", tvPictureQualities);
@@ -287,7 +287,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvSounds":
+                case "tvSoundList":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvSounds : filters.get(key)) {
                             log.info("tvSounds={}", tvSounds);
@@ -296,7 +296,7 @@ public class SalesPageRepository {
                         }
                     }
                     break;
-                case "tvResolutions":
+                case "tvResolutionList":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String tvResolutions : filters.get(key)) {
                             log.info("tvResolutions={}", tvResolutions);
