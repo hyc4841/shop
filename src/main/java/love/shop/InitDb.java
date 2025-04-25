@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.Item;
+import love.shop.domain.itemOption.ItemOption;
 import love.shop.domain.itemSpec.TvSpec;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
@@ -33,11 +34,11 @@ public class InitDb {
 
     @PostConstruct
     public void init() throws MethodArgumentNotValidException {
-        service.initCategories();
-        service.initMember();
-        service.initItem();
+//        service.initCategories();
+//        service.initMember();
+//        service.initItem();
 //        service.pageInit();
-        service.initItemSpec();
+//        service.initItemSpec();
     }
 
     @Component
@@ -410,25 +411,20 @@ public class InitDb {
             new TvScreenSize("97인치(245cm)", tvSpec, false);
             new TvScreenSize("88인치(222cm)", tvSpec, false);
             new TvScreenSize("86인치(218cm)", tvSpec, false);
-            new TvScreenSize("85인치(215cm)", tvSpec, false);
             new TvScreenSize("83인치(209cm)", tvSpec, false);
             new TvScreenSize("82인치(207cm)", tvSpec, false);
             new TvScreenSize("79인치(199cm)", tvSpec, false);
             new TvScreenSize("77인치(195cm)", tvSpec, false);
-            new TvScreenSize("75인치(189cm)", tvSpec, false);
             new TvScreenSize("72인치(183cm)", tvSpec, false);
             new TvScreenSize("70인치(177cm)", tvSpec, false);
-            new TvScreenSize("65인치(163cm)", tvSpec, false);
             new TvScreenSize("64인치(162cm)", tvSpec, false);
             new TvScreenSize("60인치(152cm)", tvSpec, false);
             new TvScreenSize("58인치(147cm)", tvSpec, false);
-            new TvScreenSize("55인치(139cm)", tvSpec, false);
             new TvScreenSize("50인치(127cm)", tvSpec, false);
             new TvScreenSize("49인치(123cm)", tvSpec, false);
             new TvScreenSize("48인치(122cm)", tvSpec, false);
             new TvScreenSize("47인치(119cm)", tvSpec, false);
             new TvScreenSize("46인치(116cm)", tvSpec, false);
-            new TvScreenSize("43인치(109cm)", tvSpec, false);
             new TvScreenSize("42인치(106cm)", tvSpec, false);
             new TvScreenSize("40인치(101cm)", tvSpec, false);
             new TvScreenSize("37인치(94cm)", tvSpec, false);
@@ -545,34 +541,136 @@ public class InitDb {
 
 
         public void pageInit() {
-            // 먼저 페이지를 만들자
-            // 페이지 1
+
+            Item lapTop1 = itemService.findOne(1L);
+            Item lapTop2 = itemService.findOne(2L);
+            Item lapTop3 = itemService.findOne(3L);
+            Item lapTop4 = itemService.findOne(4L);
+            Item lapTop5 = itemService.findOne(5L);
+
+            // 상품 페이지 만드는 조건
+            // itemOption만 연결해서 만들기
             List<String> images = new ArrayList<>();
-            SalesPage page = new SalesPage("테스트 아이템 페이지", images, "이것은 테스트 입니다.");
+            images.add("테스트 이미지 1");
+            // 상품 판매 페이지 생성
+            SalesPage salesPage = new SalesPage("상품 테스트 페이지 노트북 판매", images, "이것은 테스트이며 노트북 판매 페이지 입니다.");
 
-            List<Item> itemList = new ArrayList<>();
+            ItemOption topOption = new ItemOption("모델", 0);
+            topOption.setSalesPage(salesPage);
+            
+            ItemOption inch_15 = new ItemOption("15인치", 1);
+            inch_15.setParent(topOption);
+            inch_15.setSalesPage(salesPage);
+            ItemOption inch_16 = new ItemOption("16인치", 2);
+            inch_16.setParent(topOption);
+            inch_16.setSalesPage(salesPage);
+            ItemOption inch_17 = new ItemOption("17인치", 3);
+            inch_17.setParent(topOption);
+            inch_17.setSalesPage(salesPage);
+            ItemOption inch_14 = new ItemOption("14인치", 4);
+            inch_14.setParent(topOption);
+            inch_14.setSalesPage(salesPage);
+            ItemOption inch_13 = new ItemOption("13인치", 5);
+            inch_13.setParent(topOption);
+            inch_13.setSalesPage(salesPage);
 
-            Item book = itemService.findOne(1L);
-            Item laptop = itemService.findOne(6L);
+            ItemOption inch_15_color = new ItemOption("색상", 6);// 15인치 1
+            inch_15_color.setParent(inch_15);
+            inch_15_color.setSalesPage(salesPage);
 
-            itemList.add(book);
-            itemList.add(laptop);
+            ItemOption inch_15_color_black = new ItemOption("블랙", 7);
+            inch_15_color_black.setParent(inch_15_color);
+            inch_15_color_black.setSalesPage(salesPage);
+            inch_15_color_black.setItem(lapTop1);
+            inch_15_color_black.setIsMainItem(true);
+            
+            ItemOption inch_15_color_silver = new ItemOption("실버", 8);
+            inch_15_color_silver.setParent(inch_15_color);
+            inch_15_color_silver.setSalesPage(salesPage);
+            inch_15_color_silver.setItem(lapTop2);
 
-            pageService.savePage(page, itemList);
+            ItemOption inch_15_color_gray = new ItemOption("그레이", 9);
+            inch_15_color_gray.setParent(inch_15_color);
+            inch_15_color_gray.setSalesPage(salesPage);
+            inch_15_color_gray.setItem(lapTop3);
 
-            // 페이지 2
-            List<String> images2 = new ArrayList<>();
-            SalesPage page2 = new SalesPage("테스트 아이템 페이지2", images2, "이것은 테스트 입니다2.");
+            ItemOption inch_16_color = new ItemOption("색상", 10); // 16인치 2
+            inch_16_color.setParent(inch_16);
+            inch_16_color.setSalesPage(salesPage);
 
-            List<Item> itemList2 = new ArrayList<>();
+            ItemOption inch_16_color_black = new ItemOption("블랙", 11);
+            inch_16_color_black.setParent(inch_16_color);
+            inch_16_color_black.setSalesPage(salesPage);
+            inch_16_color_black.setItem(lapTop1);
 
-            Item book2 = itemService.findOne(1L);
-            Item laptop2 = itemService.findOne(6L);
+            ItemOption inch_16_color_silver = new ItemOption("실버", 12);
+            inch_16_color_silver.setParent(inch_16_color);
+            inch_16_color_silver.setSalesPage(salesPage);
+            inch_16_color_silver.setItem(lapTop2);
 
-            itemList2.add(book2);
-            itemList2.add(laptop2);
+            ItemOption inch_16_color_gray = new ItemOption("그레이", 13);
+            inch_16_color_gray.setParent(inch_16_color);
+            inch_16_color_gray.setSalesPage(salesPage);
+            inch_16_color_gray.setItem(lapTop3);
 
-            pageService.savePage(page2, itemList2);
+            ItemOption inch_17_color = new ItemOption("색상", 14); // 17인치 3
+            inch_17_color.setParent(inch_17);
+            inch_17_color.setSalesPage(salesPage);
+
+            ItemOption inch_17_color_black = new ItemOption("블랙", 15);
+            inch_17_color_black.setParent(inch_17_color);
+            inch_17_color_black.setSalesPage(salesPage);
+            inch_17_color_black.setItem(lapTop1);
+
+            ItemOption inch_17_color_silver = new ItemOption("실버", 16);
+            inch_17_color_silver.setParent(inch_17_color);
+            inch_17_color_silver.setSalesPage(salesPage);
+            inch_17_color_silver.setItem(lapTop2);
+
+            ItemOption inch_17_color_gray = new ItemOption("그레이", 17);
+            inch_17_color_gray.setParent(inch_17_color);
+            inch_17_color_gray.setSalesPage(salesPage);
+            inch_17_color_gray.setItem(lapTop3);
+
+            ItemOption inch_14_color = new ItemOption("색상", 18); // 14인치 4
+            inch_14_color.setParent(inch_14);
+            inch_14_color.setSalesPage(salesPage);
+
+            ItemOption inch_14_color_black = new ItemOption("블랙", 19);
+            inch_14_color_black.setParent(inch_14_color);
+            inch_14_color_black.setSalesPage(salesPage);
+            inch_14_color_black.setItem(lapTop1);
+
+            ItemOption inch_14_color_silver = new ItemOption("실버", 20);
+            inch_14_color_silver.setParent(inch_14_color);
+            inch_14_color_silver.setSalesPage(salesPage);
+            inch_14_color_silver.setItem(lapTop2);
+
+            ItemOption inch_14_color_gray = new ItemOption("그레이", 21);
+            inch_14_color_gray.setParent(inch_14_color);
+            inch_14_color_gray.setSalesPage(salesPage);
+            inch_14_color_gray.setItem(lapTop3);
+
+            ItemOption inch_13_color = new ItemOption("색상", 22); // 13인치 5
+            inch_13_color.setParent(inch_13);
+            inch_13_color.setSalesPage(salesPage);
+
+            ItemOption inch_13_color_black = new ItemOption("블랙", 23);
+            inch_13_color_black.setParent(inch_13_color);
+            inch_13_color_black.setSalesPage(salesPage);
+            inch_13_color_black.setItem(lapTop1);
+
+            ItemOption inch_13_color_silver = new ItemOption("실버", 24);
+            inch_13_color_silver.setParent(inch_13_color);
+            inch_13_color_silver.setSalesPage(salesPage);
+            inch_13_color_silver.setItem(lapTop4);
+
+            ItemOption inch_13_color_gray = new ItemOption("그레이", 25);
+            inch_13_color_gray.setParent(inch_13_color);
+            inch_13_color_gray.setSalesPage(salesPage);
+            inch_13_color_gray.setItem(lapTop5);
+
+            em.persist(salesPage);
         }
 
         private void saveCategories(List<String> itemList, String subCategory, Long parentId, String type) {
