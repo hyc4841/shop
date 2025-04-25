@@ -27,10 +27,10 @@ public class SalesPageController {
 
 //    이후에 페이지에 해당하는 리뷰 만들기
 
-    private final SalesPageService itemPageService;
     private final ItemService itemService;
     private final SalesPageService salesPageService;
 
+    // 상품 페이지 필터링 조회
     @GetMapping("/items")
     public ResponseEntity<?> items(@ModelAttribute SearchCond searchCond, // 중분류 카테고리로 뿌려주는걸로 만들자
                                    @RequestParam Map<String, String> checkedFilter,
@@ -79,6 +79,7 @@ public class SalesPageController {
         return ResponseEntity.ok(objectItemListPageResult);
     }
 
+    // 상품 페이지 수정
     @PatchMapping("/page/{pageId}")
     public ResponseEntity<?> modifyItemPage(@PathVariable Long pageId, @RequestBody ModifyPageReqDto modifyPageReqDto) {
 
@@ -87,7 +88,7 @@ public class SalesPageController {
         // 1. 등록되어 있지 않은 itemPage를 삭제하려 할때,
         // 2. 이미 등록 되어 있는 아이템을 등록하려 할때
 
-        SalesPage salesPage = itemPageService.modifyItemPage(modifyPageReqDto.getPageId(), modifyPageReqDto.getDeleteItems(),
+        SalesPage salesPage = salesPageService.modifyItemPage(modifyPageReqDto.getPageId(), modifyPageReqDto.getDeleteItems(),
                 modifyPageReqDto.getPageName(), modifyPageReqDto.getImages(), modifyPageReqDto.getDescription(),
                 modifyPageReqDto.getOptionAndItem());// 이렇게 dto를 넘기는건 다른 곳에선 사용 못한다. 이걸 좀 풀어줘야할듯
 
@@ -96,6 +97,7 @@ public class SalesPageController {
         return ResponseEntity.ok(pageDto);
     }
 
+    // 상품 페이지 생성
     @PostMapping("/page")
     public ResponseEntity<?> createItemPage(@RequestBody CreatePageReqDto pageReqDto) {
         log.info("아이템 판매 페이지 생성={}", pageReqDto);
@@ -103,7 +105,7 @@ public class SalesPageController {
         // 판매 페이지를 생성할 때 계층형 아이템 옵션을 만들어 줘야함.
         //CreatePageReqDto를 그에 알맞게 변형 시켜야함. 밑에 createItemPage
 
-        SalesPage salesPage = itemPageService.createItemPage(pageReqDto);
+        SalesPage salesPage = salesPageService.createItemPage(pageReqDto);
         SalesPageDto pageDto = new SalesPageDto(salesPage);
 
         return ResponseEntity.ok(pageDto);
@@ -116,7 +118,7 @@ public class SalesPageController {
                                           @RequestParam(value = "limit", defaultValue = "100") int limit) {
         log.info("페이지 아이템 카테고리 id로 조회하기 시작={}", categoryId);
 
-        List<SalesPageDto> pageDtoList = itemPageService.findItemPageWithItemCategory(categoryId, offset, limit);
+        List<SalesPageDto> pageDtoList = salesPageService.findItemPageWithItemCategory(categoryId, offset, limit);
 
         // 아이템 몇개 채워넣고 카테고리 및 필터링 검색으로 해당 아이템을 가진 판매 페이지 조회로 가보자
 
@@ -132,7 +134,7 @@ public class SalesPageController {
         log.info("페이지 id로 페이지 찾기={}", pageId);
 
         // 페이지 조회
-        SalesPageDto pageDto = itemPageService.findPageByPageId(pageId);
+        SalesPageDto pageDto = salesPageService.findPageByPageId(pageId);
 
         // 리뷰는 따로 떠와서 wrapper에 넣어준다.
         // 방안 1. 페이지와 리뷰를 따로 데이터베이스에 접근해서 가져온다. 리뷰는 페이징으로 가져온다.
@@ -158,7 +160,7 @@ public class SalesPageController {
 
     @DeleteMapping("/page/{pageId}")
     public ResponseEntity<?> deletePage(@PathVariable Long pageId) {
-        itemPageService.deletePage(pageId);
+        salesPageService.deletePage(pageId);
 
         /*
         예외 처리
