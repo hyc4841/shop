@@ -30,8 +30,9 @@ public class SalesPageService {
     public SalesPage modifyItemPage(Long pageId, List<Long> deleteItems, String pageName,
                                     List<String> images, String description, Map<String, Map<Long, Map<String, Boolean>>> optionAndItem) {
 
-        SalesPage page = salesPageRepository.findPageByPageId(pageId).orElseThrow(() -> new RuntimeException());
 
+        SalesPage page = salesPageRepository.findPageByPageId(pageId).orElseThrow(() -> new RuntimeException());
+/*
         // 1. 기존에 등록되어 있는 아이템 삭제할거 있으면 삭제함
         if (deleteItems != null) {
             for (Long itemPageId : deleteItems) {
@@ -48,11 +49,12 @@ public class SalesPageService {
         itemPageReg(page, optionAndItem);
 
         salesPageRepository.savePage(page);
+         */
 
         return page;
     }
 
-    // 아이템 페이지 만들기(판매 페이지)
+    // 아이템 페이지 만들기(판매 페이지). 현재 상품 옵션 바뀐 버전으로 완성된 상태
     @Transactional
     public SalesPage createItemPage(CreatePageReqDto pageReqDto) {
 
@@ -77,12 +79,12 @@ public class SalesPageService {
                     }
 
                 }
-                itemOption.setSalesPage(salesPage);
+                itemOption.setSalesPage(salesPage); // 상품 옵션 - 상품 판매 페이지 연관관계 연결 부분
                 makeItemOptionDepth(optionList, itemOption, salesPage); // 재귀 함수 부분
             }
         }
 
-        // 일단 다 설정 됐는데 salesPage 저장 시점에 같이 저장되는지 봐야함
+        // 일단 다 설정 됐는데 salesPage 저장 시점에 같이 저장되는지 봐야함. -> 같이 저장된다.
         log.info("판매 페이지 저장 시점");
         salesPageRepository.savePage(salesPage);
 
@@ -144,8 +146,7 @@ public class SalesPageService {
                 itemDisplayNameAndMainFlag.forEach((itemDisplayName, mainFlag) -> {
                     Item item = itemRepository.findOne(itemId).orElseThrow(() -> new RuntimeException("아이템이 존재하지 않습니다"));
                     itemSalesPage.setItem(item);
-                    itemSalesPage.setSalesPage(page);
-                    itemSalesPage.setIsMainItemAndDisplayName(mainFlag, itemDisplayName);
+                        itemSalesPage.setIsMainItemAndDisplayName(mainFlag, itemDisplayName);
                 });
             });
         });
