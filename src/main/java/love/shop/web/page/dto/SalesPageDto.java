@@ -19,7 +19,6 @@ public class SalesPageDto {
     private String description;
     private List<ItemOptionDto> itemOptionList;
 
-
 //    private List<ReviewDto> reviews; // 리뷰는 따로 가져오는걸로 하자.
 
     public SalesPageDto(SalesPage salesPage) {
@@ -36,7 +35,7 @@ public class SalesPageDto {
         List<SalesPageDto> salesPageDtoList = new ArrayList<>();
 
         for (SalesPage salesPage : pageList) {
-            log.info("지연조회 시점");
+            log.info("판매 페이지 지연조회 시점");
             salesPageDtoList.add(new SalesPageDto(salesPage));
         }
 
