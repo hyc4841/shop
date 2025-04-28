@@ -18,10 +18,7 @@ import love.shop.service.order.OrderService;
 import love.shop.web.item.dto.ItemDto;
 import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.dto.MemberDto;
-import love.shop.web.order.dto.OrderCheckoutDto;
-import love.shop.web.order.dto.OrderDto;
-import love.shop.web.order.dto.OrderReqDto;
-import love.shop.web.order.dto.OrderDeliveryAddressUpdateDto;
+import love.shop.web.order.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -39,12 +36,27 @@ public class OrderController {
     private final ItemRepository itemRepository;
     private final ItemService itemService;
 
-    @GetMapping("/checkout/order")
-    public ResponseEntity<?> checkoutOrder(@RequestParam @Valid OrderCheckoutDto checkoutDto) {
+    // 원래는 get이 맞는데, 보내오는 데이터의 형식상 post를 사용하는게 더 적합하다.
+    @PostMapping("/checkout/order")
+    public ResponseEntity<?> checkoutOrder(@RequestBody @Valid OrderCheckoutDto checkoutDto) {
 
-        // 예외처리, 만약 주문하려는 상품의 수량이 부족하면 예외 보내줘야함.
+        // 선택지가 있음
+        // 프론트에서 아이템 id만 보내서 수량 괜찮은지만 보고 따로 item에 대한 데이터는 보내지 않는다. 왜냐? 이미 프론트에서 주문하려는 상품 데이터를
+        // 가지고 이동했기 때문
+        // 아니면 지금거 유지
+        // 지금거 유지할거면 쿼리 몇개 나가는지, 쓸데없는 쿼리 나가는지 확인해야함.
 
-        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+
+        log.info("데이터 잘 오나?={}", checkoutDto);
+        // 데이터 잘 넘어오는거 확인 그런데 응답 데이터를 좀 더 다듬을 필요가 있다. 그리고 지금 쿼리문이 너무 많이 나간다. 이거 줄일 방법 생각하기
+        // 또 하나, 과연 주문 확인 화면으로 갈 때, 상품하고
+
+
+        // 예외처리, 만약 주문하려는 상품의 수량이 부족하면 예외 보내줘야함. 이거 구현하기 -> 일단 구현 성공
+
+
+        // 현재 로그인 중인 멤버
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         Member member = memberService.findMemberById(memberId);
         MemberDto memberDto = new MemberDto(member);
@@ -53,15 +65,22 @@ public class OrderController {
         // 1. 주문하려는 상품과 수량 보여주기. 가격 계산은 프론트에서
         // 2. 주문하려는 회원의 배송지 보여주기
 
-        Map<ItemDto, Integer> itemAndQuantity = new HashMap<>();
-
+        // 주문 하려는 상품과 수량 다시 확인해서 itemDto로 만든 다음 데이터 뿌려주기
+        List<OrderPreviewDto> orderPreviewDtoList = new ArrayList<>();
         checkoutDto.getItemAndQuantity().forEach((itemId, quantity) -> {
             Item item = itemService.findOne(itemId);
+            // 수량 확인
+            item.checkoutStock(quantity);
+
             ItemDto itemDto = ItemDto.createItemDto(item);
-            itemAndQuantity.put(itemDto, quantity);
+
+            OrderPreviewDto orderPreviewDto = new OrderPreviewDto(itemDto, quantity);
+            orderPreviewDtoList.add(orderPreviewDto);
         });
 
-        CheckoutOrderWrapper<Object> result = new CheckoutOrderWrapper<>(itemAndQuantity, memberDto);
+        CheckoutOrderWrapper<Object> result = new CheckoutOrderWrapper<>(orderPreviewDtoList, memberDto);
+
+        // 위 로직 전부 지하화 하기
 
         return ResponseEntity.ok(result);
     }
@@ -194,7 +213,18 @@ public class OrderController {
     // 주문 방식이 장바구니 구매가 있을 수도 있다.
 
 
-
+    private Long currentUser(Object principal) {
+        // 그런데 SecurityContextHolder로 하는거 말고도 HttpServletRequest로 하는 방법도 있음.
+        log.info("현재 로그인 중인지 아닌지 검사 실행");
+        try {
+            if (principal.getClass() == CustomUser.class) {
+                return ((CustomUser) principal).getMemberId();
+            }
+            throw new UnauthorizedAccessException();
+        } catch (Error error) {
+            throw new UnauthorizedAccessException(error);
+        }
+    }
 
 
     /*
