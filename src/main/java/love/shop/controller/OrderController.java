@@ -1,5 +1,6 @@
 package love.shop.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +12,13 @@ import love.shop.domain.item.Item;
 import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
 import love.shop.repository.item.ItemRepository;
+import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.service.order.OrderService;
 import love.shop.web.item.dto.ItemDto;
 import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.dto.MemberDto;
+import love.shop.web.order.dto.OrderCheckoutDto;
 import love.shop.web.order.dto.OrderDto;
 import love.shop.web.order.dto.OrderReqDto;
 import love.shop.web.order.dto.OrderDeliveryAddressUpdateDto;
@@ -23,8 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,6 +37,43 @@ public class OrderController {
     private final OrderService orderService;
     private final MemberService memberService;
     private final ItemRepository itemRepository;
+    private final ItemService itemService;
+
+    @GetMapping("/checkout/order")
+    public ResponseEntity<?> checkoutOrder(@RequestParam @Valid OrderCheckoutDto checkoutDto) {
+
+        // 예외처리, 만약 주문하려는 상품의 수량이 부족하면 예외 보내줘야함.
+
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+
+        Member member = memberService.findMemberById(memberId);
+        MemberDto memberDto = new MemberDto(member);
+
+        // 주문 확인 페이지에서 뿌려줄 데이터
+        // 1. 주문하려는 상품과 수량 보여주기. 가격 계산은 프론트에서
+        // 2. 주문하려는 회원의 배송지 보여주기
+
+        Map<ItemDto, Integer> itemAndQuantity = new HashMap<>();
+
+        checkoutDto.getItemAndQuantity().forEach((itemId, quantity) -> {
+            Item item = itemService.findOne(itemId);
+            ItemDto itemDto = ItemDto.createItemDto(item);
+            itemAndQuantity.put(itemDto, quantity);
+        });
+
+        CheckoutOrderWrapper<Object> result = new CheckoutOrderWrapper<>(itemAndQuantity, memberDto);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class CheckoutOrderWrapper<T> {
+
+        private T itemList;
+        private T Address;
+
+    }
 
     // 주문 저장
     @PostMapping("/order")
