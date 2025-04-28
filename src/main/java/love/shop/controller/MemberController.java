@@ -333,8 +333,6 @@ public class MemberController {
         }
     }
 
-
-
     /*
     @GetMapping("/test-v1")
     public TestResV1 testV1() {

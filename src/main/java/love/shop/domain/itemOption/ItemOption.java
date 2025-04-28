@@ -15,6 +15,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItemOption { // 판매 페이지의 계층형 상품 옵션
 
+    // 카테고리 처럼
+
     @Id
     @GeneratedValue
     @Column(name = "item_option_id")
