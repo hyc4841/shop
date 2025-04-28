@@ -29,7 +29,7 @@ public class UserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         log.info("유저 찾기 실행");
-        Member member = memberRepository.findMemberByLoginId(loginId).orElseThrow(() -> new UserNotExistException());
+        Member member = memberRepository.findMemberByLoginId(loginId).orElseThrow(() -> new UsernameNotFoundException("유저 없음"));
         log.info("loadUserByUsername={}", member);
 
         return createUserDetails(member);
