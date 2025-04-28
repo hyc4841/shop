@@ -82,6 +82,12 @@ public abstract class Item {
         this.stockQuantity = restStock;
     }
 
+    public void checkoutStock(int quantity) {
+        if (this.stockQuantity < quantity) { // 비교하려는 수량이 더 많으면
+            throw new NotEnoughStockException("수량이 부족합니다.");
+        }
+    }
+
     public static Item createItem(ItemSaveReqDto itemDto) {
 
         log.info("데이터 타입이 안들어온단 소리인가?={}", itemDto.getType());
