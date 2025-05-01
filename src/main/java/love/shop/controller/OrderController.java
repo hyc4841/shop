@@ -36,7 +36,8 @@ public class OrderController {
     private final ItemRepository itemRepository;
     private final ItemService itemService;
 
-    // 원래는 get이 맞는데, 보내오는 데이터의 형식상 post를 사용하는게 더 적합하다.
+    // 원래는 get이 맞는데, 보내오는 데이터의 형식상 post를 사용하는게 더 적합하다. 이거 트러블 슈팅거리?
+    // get인데 json을 써야할때 어떻게 해야하는가에 대한 고민.
     @PostMapping("/checkout/order")
     public ResponseEntity<?> checkoutOrder(@RequestBody @Valid OrderCheckoutDto checkoutDto) {
 
@@ -48,12 +49,8 @@ public class OrderController {
 
 
         log.info("데이터 잘 오나?={}", checkoutDto);
-        // 데이터 잘 넘어오는거 확인 그런데 응답 데이터를 좀 더 다듬을 필요가 있다. 그리고 지금 쿼리문이 너무 많이 나간다. 이거 줄일 방법 생각하기
         // 또 하나, 과연 주문 확인 화면으로 갈 때, 상품하고
-
-
         // 예외처리, 만약 주문하려는 상품의 수량이 부족하면 예외 보내줘야함. 이거 구현하기 -> 일단 구현 성공
-
 
         // 현재 로그인 중인 멤버
         Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
