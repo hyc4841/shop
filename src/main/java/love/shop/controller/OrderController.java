@@ -49,7 +49,7 @@ public class OrderController {
     private final ItemRepository itemRepository;
     private final ItemService itemService;
 
-    private final PaymentClient portone;
+    private final PaymentClient portone; // 이거 Bean으로 제대로 설정 됐는지 확인해 봐야함. 밑에 자꾸 안되는거보니까 여기가 문제일수도있음.
     private final WebhookVerifier portoneWebHook;
 
     @PostMapping("/order/payment/complete")
