@@ -1,12 +1,18 @@
 package love.shop.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.portone.sdk.server.payment.PaymentClient;
+import io.portone.sdk.server.payment.PaidPayment;
+import io.portone.sdk.server.payment.VirtualAccountIssuedPayment;
+import io.portone.sdk.server.webhook.WebhookVerifier;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import love.shop.common.exception.OrderMemberNotMatchException;
+import love.shop.common.exception.SyncPaymentException;
 import love.shop.common.exception.UnauthorizedAccessException;
 import love.shop.domain.item.Item;
 import love.shop.domain.member.Member;
@@ -19,11 +25,18 @@ import love.shop.web.item.dto.ItemDto;
 import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.dto.MemberDto;
 import love.shop.web.order.dto.*;
+import love.shop.web.order.dto.payment.Payment;
+import love.shop.web.order.dto.payment.PaymentCustomData;
+import love.shop.web.order.dto.payment.PaymentId;
+import love.shop.web.order.dto.payment.PaymentItemData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,6 +48,122 @@ public class OrderController {
     private final MemberService memberService;
     private final ItemRepository itemRepository;
     private final ItemService itemService;
+
+    private final PaymentClient portone;
+    private final WebhookVerifier portoneWebHook;
+
+    @PostMapping("/order/payment/complete")
+    public ResponseEntity<?> paymentComplete(@RequestBody PaymentId paymentId) throws ExecutionException, InterruptedException {
+        log.info("결제 id  ={}", paymentId.getPaymentId());
+
+        return ResponseEntity.ok(syncPayment(paymentId.getPaymentId()));
+    }
+
+    private Mono<Payment> syncPayment(String paymentId) throws ExecutionException, InterruptedException {
+        log.info("결제 아이디 확인={}", paymentId);
+
+        // 데이터베이스에 저장한 결제 정보 가져오기
+        log.info("포트원에서 결제 정보 가져오기={}", portone.getPayment(paymentId));
+
+        CompletableFuture<io.portone.sdk.server.payment.Payment> payment1 = portone.getPayment(paymentId);
+        io.portone.sdk.server.payment.Payment payment2 = payment1.get();
+        log.info("너 정체가 뭐냐?={}", payment2);
+
+        Payment payment = new Payment("PENDING");
+
+        // 원인을 모르겠다... flatMap 부분이 아예 실행이 안된다. 원인을 찾고 쭉쭉 나가야하는데..
+        return Mono.fromFuture(portone.getPayment(paymentId))
+                .onErrorMap(ignored -> new SyncPaymentException())
+                .flatMap(actualPayment -> {
+                    log.info("왜 안되냐고={}", actualPayment);
+                    if (actualPayment instanceof PaidPayment) {
+                        // PaidPayment 타입인 경우
+                        PaidPayment paidPayment = (PaidPayment) actualPayment; // 명시적 형변환 필요
+                        if (!verifyPayment(paidPayment)) {
+                            log.info("왜 안되냐고고");
+                            return Mono.error(new SyncPaymentException());
+                        }
+                        log.info("결제 성공 {}", actualPayment);
+                        /*
+                        if (finalPayment.status().equals("PAID")) {
+                            return Mono.just(finalPayment);
+                        } else {
+                            Payment newPayment = new Payment("PAID");
+                            paymentStore.put(paymentId, newPayment);
+                            return Mono.just(newPayment);
+                        }
+                         */
+                    } else if (actualPayment instanceof VirtualAccountIssuedPayment) {
+                        log.info("여기?");
+                        Payment newPayment = new Payment("VIRTUAL_ACCOUNT_ISSUED");
+//                        paymentStore.put(paymentId, newPayment);
+                        return Mono.just(newPayment);
+                    } else {
+                        log.info("아니면 여기??");
+                        // 어떤 타입과도 일치하지 않는 경우 (default에 해당)
+                        return Mono.just(payment);
+                    }
+                    return Mono.just(payment);
+                });
+
+    }
+
+    // 포트원 결제 정보와 서버 결제 정보가 일치하는지 확인
+    private boolean verifyPayment(PaidPayment payment) {
+        // 포트원으로 보내는 결제 데이터에 customData를 넣을 수 있음. 거기에 구매하는 상품 정보를 넣으면 될듯.
+        // 서버가 가지고 있는 상품에 대한 가격 정보 등이 정확한지 이 메서드에서 판단한다.
+        String customData = payment.getCustomData();
+        if (customData == null) {
+            log.info("결제 정보에 상품 정보가 없음");
+            return false;
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // 결제 정보에 있던 customData를 서버가 가지고 있는 데이터 클래스로 파싱하기
+        PaymentCustomData paymentData = null;
+        try {
+            paymentData = objectMapper.readValue(customData, PaymentCustomData.class);
+            log.info("결제 정보 파싱={}", paymentData);
+        } catch (JsonProcessingException e) {
+            return false;
+        }
+
+        // 결제 정보에 넣어야할 상품 정보
+        // 상품 id, 상품 가격, 구매 개수 => 이것이 리스트로 들어옴.
+        // 한번 결제할 때, 여러개의 상품을 한번에 결제할 수 있도록 했기 때문에.
+        // 이 부분에서 브라우저에서 결제한 정보와 서버가 가지고 있는 정보가 맞는지 확인(제일 중요한건 결제 금액이 맞는지 확인)
+        /*
+        // 클라이언트 쪽에서 보내온 구매 상품 데이터 형식11
+        [
+            {
+                itemId : 1,
+                quantity : 1,
+                totalPrice: item.price * quantity
+            },
+            {
+                itemId : 2,
+                quantity : 2,
+                totalPrice: item.price * quantity
+            },
+            {
+                itemId : 3,
+                quantity : 3,
+                totalPrice: item.price * quantity
+            },
+        ]
+         */
+        for (PaymentItemData itemData : paymentData.getItemData()) {
+            Item item = itemService.findOne(itemData.getItemId());
+            int price = item.getPrice(); // 서버에 저장된 상품 가격
+            if (itemData.getTotalPrice() != price * itemData.getQuantity()) {
+//                throw new RuntimeException("결제 정보와 서버에 저장된 데이터가 다름. 데이터 조작이 의심됨!");
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     // 원래는 get이 맞는데, 보내오는 데이터의 형식상 post를 사용하는게 더 적합하다. 이거 트러블 슈팅거리?
     // get인데 json을 써야할때 어떻게 해야하는가에 대한 고민.
@@ -212,7 +341,7 @@ public class OrderController {
 
     private Long currentUser(Object principal) {
         // 그런데 SecurityContextHolder로 하는거 말고도 HttpServletRequest로 하는 방법도 있음.
-        log.info("현재 로그인 중인지 아닌지 검사 실행");
+             log.info("현재 로그인 중인지 아닌지 검사 실행");
         try {
             if (principal.getClass() == CustomUser.class) {
                 return ((CustomUser) principal).getMemberId();
