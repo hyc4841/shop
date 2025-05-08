@@ -8,9 +8,11 @@ import jakarta.persistence.PersistenceContext;
 import love.shop.common.configuration.PortOneSecretProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.codec.ServerCodecConfigurer;
 
 @EnableCaching // 캐시 활성화
 @SpringBootApplication
@@ -36,6 +38,16 @@ public class ShopApplication {
 	@Bean
 	WebhookVerifier webhookVerifier(PortOneSecretProperties secret) {
 		return new WebhookVerifier(secret.getWebhook());
+	}
+
+	@Bean
+	ErrorProperties errorProperties() {
+		return new ErrorProperties();
+	}
+
+	@Bean
+	ServerCodecConfigurer serverCodecConfigurer() {
+		return ServerCodecConfigurer.create();
 	}
 
 	/*
