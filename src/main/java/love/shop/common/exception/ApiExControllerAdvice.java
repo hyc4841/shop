@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -120,6 +121,24 @@ public class ApiExControllerAdvice {
         log.error("[exceptionHandle] ex", e);
         return new ErrorApi(400, "해당 카테고리는 존재하지 않습니다.");
     }
+
+
+    /*
+    @ExceptionHandler(SyncPaymentException.class)
+    public Mono<ResponseEntity<ErrorApi>> syncPaymentException(SyncPaymentException e) {
+        log.error("[exceptionHandle] ex 여기?", e);
+        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorApi(400, "결제 검증 실패.")));
+    }
+
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(SyncPaymentException.class)
+    public ErrorApi syncPaymentException(SyncPaymentException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorApi(400, "결제 검증 오류 발생");
+    }
+
+
 
 
 }
