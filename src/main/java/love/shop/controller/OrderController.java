@@ -32,10 +32,8 @@ import love.shop.web.order.dto.payment.PaymentItemData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -55,56 +53,69 @@ public class OrderController {
     @PostMapping("/order/payment/complete")
     public ResponseEntity<?> paymentComplete(@RequestBody PaymentId paymentId) throws ExecutionException, InterruptedException {
         log.info("결제 id  ={}", paymentId.getPaymentId());
+        Payment paymentMono = syncPayment(paymentId.getPaymentId());
+        log.info("paymentMono={}", paymentMono.getClass());
 
-        return ResponseEntity.ok(syncPayment(paymentId.getPaymentId()));
+        return ResponseEntity.ok(paymentMono);
     }
 
-    private Mono<Payment> syncPayment(String paymentId) throws ExecutionException, InterruptedException {
+    private Payment syncPayment(String paymentId) throws ExecutionException, InterruptedException {
         log.info("결제 아이디 확인={}", paymentId);
 
         // 데이터베이스에 저장한 결제 정보 가져오기
-        log.info("포트원에서 결제 정보 가져오기={}", portone.getPayment(paymentId));
-
-        CompletableFuture<io.portone.sdk.server.payment.Payment> payment1 = portone.getPayment(paymentId);
-        io.portone.sdk.server.payment.Payment payment2 = payment1.get();
-        log.info("너 정체가 뭐냐?={}", payment2);
-
         Payment payment = new Payment("PENDING");
 
-        // 원인을 모르겠다... flatMap 부분이 아예 실행이 안된다. 원인을 찾고 쭉쭉 나가야하는데..
+        try {
+            io.portone.sdk.server.payment.Payment actualPayment = portone.getPayment(paymentId).get();
+
+            log.info("actualPayment={}", actualPayment);
+
+
+            if (actualPayment instanceof PaidPayment paidPayment) {
+                if (!verifyPayment(paidPayment)) throw new SyncPaymentException("400", "잘못됨"); // 예외 발생
+
+                log.info("결제 성공 {}", actualPayment);
+
+            } else if (actualPayment instanceof VirtualAccountIssuedPayment) {
+                Payment newPayment = new Payment("VIRTUAL_ACCOUNT_ISSUED");
+//                        paymentStore.put(paymentId, newPayment);
+                return newPayment;
+            } else {
+                return payment;
+            }
+            return payment;
+
+        } catch (RuntimeException e) {
+            throw new SyncPaymentException("400", "잘못됨");
+        }
+
+        /*
         return Mono.fromFuture(portone.getPayment(paymentId))
-                .onErrorMap(ignored -> new SyncPaymentException())
+                .onErrorMap(ignored -> new SyncPaymentException("400", "잘못됨"))
                 .flatMap(actualPayment -> {
-                    log.info("왜 안되냐고={}", actualPayment);
-                    if (actualPayment instanceof PaidPayment) {
-                        // PaidPayment 타입인 경우
-                        PaidPayment paidPayment = (PaidPayment) actualPayment; // 명시적 형변환 필요
-                        if (!verifyPayment(paidPayment)) {
-                            log.info("왜 안되냐고고");
-                            return Mono.error(new SyncPaymentException());
-                        }
+                    log.info("오류 발생");
+                    return Mono.error(new SyncPaymentException("400", "잘못됨")); // 예외 발생
+                });
+
+         */
+                /*
+                .flatMap(actualPayment -> {
+                    if (actualPayment instanceof PaidPayment paidPayment) {
+                        if (!verifyPayment(paidPayment)) return Mono.error(new SyncPaymentException()); // 예외 발생
+
                         log.info("결제 성공 {}", actualPayment);
-                        /*
-                        if (finalPayment.status().equals("PAID")) {
-                            return Mono.just(finalPayment);
-                        } else {
-                            Payment newPayment = new Payment("PAID");
-                            paymentStore.put(paymentId, newPayment);
-                            return Mono.just(newPayment);
-                        }
-                         */
+
                     } else if (actualPayment instanceof VirtualAccountIssuedPayment) {
-                        log.info("여기?");
                         Payment newPayment = new Payment("VIRTUAL_ACCOUNT_ISSUED");
 //                        paymentStore.put(paymentId, newPayment);
                         return Mono.just(newPayment);
                     } else {
-                        log.info("아니면 여기??");
-                        // 어떤 타입과도 일치하지 않는 경우 (default에 해당)
                         return Mono.just(payment);
                     }
                     return Mono.just(payment);
                 });
+
+                 */
 
     }
 
@@ -113,8 +124,12 @@ public class OrderController {
         // 포트원으로 보내는 결제 데이터에 customData를 넣을 수 있음. 거기에 구매하는 상품 정보를 넣으면 될듯.
         // 서버가 가지고 있는 상품에 대한 가격 정보 등이 정확한지 이 메서드에서 판단한다.
         String customData = payment.getCustomData();
+
         if (customData == null) {
             log.info("결제 정보에 상품 정보가 없음");
+            // 검증을 할 수 없을 때, 결제를 그냥 취소해버리자
+            portone.cancelPayment(payment.getId(), null, null, null, "결제 검증 불가",
+                    null, null, null);
             return false;
         }
 
@@ -126,6 +141,9 @@ public class OrderController {
             paymentData = objectMapper.readValue(customData, PaymentCustomData.class);
             log.info("결제 정보 파싱={}", paymentData);
         } catch (JsonProcessingException e) {
+            log.error("결제 정보 파싱 불가", e);
+            portone.cancelPayment(payment.getId(), null, null, null, "결제 검증 불가",
+                    null, null, null);
             return false;
         }
 
@@ -158,9 +176,12 @@ public class OrderController {
             int price = item.getPrice(); // 서버에 저장된 상품 가격
             if (itemData.getTotalPrice() != price * itemData.getQuantity()) {
 //                throw new RuntimeException("결제 정보와 서버에 저장된 데이터가 다름. 데이터 조작이 의심됨!");
+                portone.cancelPayment(payment.getId(), null, null, null, "데이터 조작 의심",
+                        null, null, null);
                 return false;
             }
         }
+        log.info("결제 검증 성공");
         return true;
     }
 
