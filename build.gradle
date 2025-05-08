@@ -70,7 +70,12 @@ dependencies {
 	// 자바 메일
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	// 포트원
 	implementation 'io.portone:server-sdk:0.9.1'
+
+	// webflux
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 
 
 }
