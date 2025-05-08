@@ -3,7 +3,6 @@ package love.shop.common.configuration;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import love.shop.common.exception.FilterExApi;
-import love.shop.filter.LogoutFilter;
 import love.shop.service.RedisService;
 import love.shop.filter.JwtFilter;
 import love.shop.web.login.jwt.JwtTokenProvider;
@@ -35,7 +34,6 @@ public class SpringSecurityConfig {
     private final RedisService redisService;
     private final FilterExApi filterExApi;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("securityFilterChain 실행");
@@ -55,7 +53,12 @@ public class SpringSecurityConfig {
 
                 // 위에 요청 패턴에 대한 예외처리
                 .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+                            log.info("필터 패턴에서 예외 발생");
+                            log.info("request={}", request);
+                            log.info("response={}", response);
+
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.setContentType("application/json; charset=UTF-8");
                             PrintWriter out = response.getWriter();
                             out.println("{\"status\": \"401\", \"message\": \"인증되지 않은 유저의 접근입니다.\"}");
