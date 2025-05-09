@@ -3,6 +3,9 @@ package love.shop.web.address.dto;
 import lombok.Data;
 import love.shop.domain.address.Address;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class AddressDto {
 
@@ -20,5 +23,16 @@ public class AddressDto {
         this.zipcode = address.getZipcode();
         this.detailedAddress = address.getDetailedAddress();
         this.addressName = address.getAddressName();
+    }
+
+    public static List<AddressDto> makeAddressDtoList(List<Address> addressList) {
+        List<AddressDto> addressDtoList = new ArrayList<>();
+
+        for (Address address : addressList) {
+            AddressDto addressDto = new AddressDto(address);
+            addressDtoList.add(addressDto);
+        }
+
+        return addressDtoList;
     }
 }
