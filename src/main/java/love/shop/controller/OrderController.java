@@ -14,13 +14,16 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.common.exception.OrderMemberNotMatchException;
 import love.shop.common.exception.SyncPaymentException;
 import love.shop.common.exception.UnauthorizedAccessException;
+import love.shop.domain.address.Address;
 import love.shop.domain.item.Item;
 import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
 import love.shop.repository.item.ItemRepository;
+import love.shop.service.Address.AddressService;
 import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.service.order.OrderService;
+import love.shop.web.address.dto.AddressDto;
 import love.shop.web.item.dto.ItemDto;
 import love.shop.web.login.dto.CustomUser;
 import love.shop.web.login.dto.MemberDto;
@@ -46,17 +49,15 @@ public class OrderController {
     private final MemberService memberService;
     private final ItemRepository itemRepository;
     private final ItemService itemService;
+    private final AddressService addressService;
 
-    private final PaymentClient portone; // 이거 Bean으로 제대로 설정 됐는지 확인해 봐야함. 밑에 자꾸 안되는거보니까 여기가 문제일수도있음.
+    private final PaymentClient portone;
     private final WebhookVerifier portoneWebHook;
 
+    // 클라이언트에서 결제 후 서버에서 결제 검증 컨트롤러
     @PostMapping("/order/payment/complete")
-    public ResponseEntity<?> paymentComplete(@RequestBody PaymentId paymentId) throws ExecutionException, InterruptedException {
-        log.info("결제 id  ={}", paymentId.getPaymentId());
-        Payment paymentMono = syncPayment(paymentId.getPaymentId());
-        log.info("paymentMono={}", paymentMono.getClass());
-
-        return ResponseEntity.ok(paymentMono);
+    public ResponseEntity<?> paymentComplete(@RequestBody PaymentId paymentId) {
+        return ResponseEntity.ok(paymentComplete(paymentId));
     }
 
     private Payment syncPayment(String paymentId) throws ExecutionException, InterruptedException {
@@ -204,9 +205,8 @@ public class OrderController {
 
         // 현재 로그인 중인 멤버
         Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        Member member = memberService.findMemberById(memberId);
-        MemberDto memberDto = new MemberDto(member);
+        List<Address> addressList = addressService.findAddressesByMemberId(memberId);
+        List<AddressDto> addressDtoList = AddressDto.makeAddressDtoList(addressList);
 
         // 주문 확인 페이지에서 뿌려줄 데이터
         // 1. 주문하려는 상품과 수량 보여주기. 가격 계산은 프론트에서
@@ -225,7 +225,7 @@ public class OrderController {
             orderPreviewDtoList.add(orderPreviewDto);
         });
 
-        CheckoutOrderWrapper<Object> result = new CheckoutOrderWrapper<>(orderPreviewDtoList, memberDto);
+        CheckoutOrderWrapper<Object> result = new CheckoutOrderWrapper<>(orderPreviewDtoList, addressDtoList);
 
         // 위 로직 전부 지하화 하기
 
@@ -235,10 +235,8 @@ public class OrderController {
     @Data
     @AllArgsConstructor
     public static class CheckoutOrderWrapper<T> {
-
         private T itemList;
         private T Address;
-
     }
 
     // 주문 저장
