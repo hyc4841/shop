@@ -39,6 +39,9 @@ public class Address {
     @Column
     private String detailedAddress;
 
+    @Column
+    private Boolean isActivate; // 주소지 삭제 여부. 아예 삭제하면 이전에 이 주소로 주문했던건에 대해서 오류가 생기니까 아예 삭제는 안하고 남겨둔다.
+
     // 리플렉션이나 프록시 같은 기술 때문에 기본 생성자가 필요함. 이때 public으로 완전히 열어두면 좀 그래서 안전하게 protected로 설정
     /*
     protected Address() {
@@ -60,11 +63,13 @@ public class Address {
         this.detailedAddress = detailedAddress;
     }
 
-
-
     public void setMember(Member member) {
         this.member = member;
         member.addAddress(this);
+    }
+
+    public void setIsActivate(Boolean isActivate) {
+        this.isActivate = isActivate;
     }
 
     public void setDelivery(Delivery delivery) {
