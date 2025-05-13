@@ -4,12 +4,14 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.UnauthorizedAccessException;
 import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.address.Address;
 import love.shop.domain.cart.Cart;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.MemberRole;
 import love.shop.domain.member.Role;
+import love.shop.repository.address.AddressRepository;
 import love.shop.repository.member.MemberRepository;
 import love.shop.service.RedisService;
 import love.shop.web.login.dto.MemberDto;
@@ -37,6 +39,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
     private final RedisService redisService;
+    private final AddressRepository addressRepository;
 
     private void makeBindingError(BindingResult bindingResult, String field, String message) throws MethodArgumentNotValidException {
         bindingResult.rejectValue(field, null, message);
@@ -216,6 +219,23 @@ public class MemberService {
         Address address = new Address(addressDto.getNewCity(), addressDto.getNewStreet(), addressDto.getNewZipcode(), addressDto.getNewDetailedAddress(), member);
 
         return member;
+    }
+
+    // 주소 삭제
+    @Transactional
+    public Member deleteAddress(Long addressId, Long memberId) {
+        Address address = addressRepository.findAddressById(addressId);
+        Long findMemberId = address.getMember().getId();
+        if (!Objects.equals(memberId, findMemberId)) {
+            throw new UnauthorizedAccessException();
+        }
+        address.setIsActivate(false);
+        addressRepository.save(address);
+
+        // 현재 이 로직은 검증이 필요합니다.
+        Member member = memberRepository.findMemberById(memberId).orElseThrow(() -> new UserNotExistException());
+
+        return member; // 지금 이건 심각하게 검증이 안된 로직임. 이렇게 해서 더티 체킹 이후에 멤버에 반영이 안될 가능성이 매우 높다.
     }
 
     private Member findOne(Long memberId) {
