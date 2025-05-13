@@ -13,6 +13,7 @@ import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
 import love.shop.service.login.LoginService;
 import love.shop.service.member.MemberService;
+import love.shop.web.address.dto.DeleteAddressDto;
 import love.shop.web.login.dto.*;
 import love.shop.web.member.dto.*;
 import love.shop.web.signup.dto.*;
@@ -269,6 +270,17 @@ public class MemberController {
         MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
 
         return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/member/info/address")
+    public ResponseEntity<?> deleteAddress(@RequestBody DeleteAddressDto addressDto) {
+
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        Member member = memberService.deleteAddress(addressDto.getAddressId(), memberId);
+        MemberDto memberDto = new MemberDto(member);
+
+        return ResponseEntity.ok(memberDto);
     }
 
 
