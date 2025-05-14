@@ -224,6 +224,7 @@ public class MemberService {
     // 주소 삭제
     @Transactional
     public Member deleteAddress(Long addressId, Long memberId) {
+        log.info("주소 삭제 실행={}", addressId);
         Address address = addressRepository.findAddressById(addressId);
         Long findMemberId = address.getMember().getId();
         if (!Objects.equals(memberId, findMemberId)) {
