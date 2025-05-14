@@ -275,6 +275,8 @@ public class MemberController {
     @DeleteMapping("/member/info/address")
     public ResponseEntity<?> deleteAddress(@RequestBody DeleteAddressDto addressDto) {
 
+        log.info("제대로 오나?={}", addressDto);
+
         Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         Member member = memberService.deleteAddress(addressDto.getAddressId(), memberId);
