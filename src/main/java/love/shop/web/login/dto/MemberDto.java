@@ -28,6 +28,7 @@ public class MemberDto {
         this.birthDate = member.getBirthDate();
         this.gender = member.getGender();
         this.address = member.getAddress().stream()
+                .filter(address -> address.getIsActivate())
                 .map(address -> new AddressDto(address))
                 .collect(Collectors.toList());
 
