@@ -57,7 +57,8 @@ public class OrderService {
             // 회원이 등록해놓은 주소 조회
             address = addressRepository.findAddressById(orderReqDto.getAddressId());
         } else if (orderReqDto.getAddressId() == null && orderReqDto.getZipcode() != null){
-            address = new Address(orderReqDto.getCity(), orderReqDto.getStreet(), orderReqDto.getZipcode(), orderReqDto.getDetailedAddress(), member);
+            address = new Address(orderReqDto.getCity(), orderReqDto.getStreet(), orderReqDto.getZipcode(),
+                    orderReqDto.getDetailedAddress(), member, null);
             address.setMember(member);
             addressRepository.save(address);
         }
@@ -99,7 +100,7 @@ public class OrderService {
 
         // 새로운 주소지 자체 생성
         Address address = new Address(orderUpdateDto.getCity(), orderUpdateDto.getStreet(),
-                orderUpdateDto.getZipcode(), orderUpdateDto.getDetailedAddress(), member);
+                orderUpdateDto.getZipcode(), orderUpdateDto.getDetailedAddress(), member, null);
         // 주소 저장
         addressRepository.save(address);
         log.info("새로 저장한 주소={}", address.getId());
