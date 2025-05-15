@@ -41,6 +41,17 @@ public class MemberService {
     private final RedisService redisService;
     private final AddressRepository addressRepository;
 
+    @Transactional
+    public Member addAddress(Integer zipcode, String city, String street, String detailedAddress, Member member, String addressName) {
+
+        Address address = new Address(city, street, zipcode.toString(), detailedAddress, member, addressName);
+        address.setMember(member);
+
+        addressRepository.save(address);
+
+        return member;
+    }
+
     private void makeBindingError(BindingResult bindingResult, String field, String message) throws MethodArgumentNotValidException {
         bindingResult.rejectValue(field, null, message);
         throw new MethodArgumentNotValidException(null, bindingResult);
@@ -216,7 +227,8 @@ public class MemberService {
     @Transactional
     public Member updateAddress(AddressUpdateReqDto addressDto, Long memberId) {
         Member member = findOne(memberId);
-        Address address = new Address(addressDto.getNewCity(), addressDto.getNewStreet(), addressDto.getNewZipcode(), addressDto.getNewDetailedAddress(), member);
+        Address address = new Address(addressDto.getNewCity(), addressDto.getNewStreet(), addressDto.getNewZipcode(),
+                addressDto.getNewDetailedAddress(), member, addressDto.getAddressName());
 
         return member;
     }
