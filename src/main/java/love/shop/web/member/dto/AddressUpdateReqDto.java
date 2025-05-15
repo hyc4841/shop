@@ -17,4 +17,6 @@ public class AddressUpdateReqDto {
     @NotBlank(message = "상세 주소를 입력해주세요.")
     private String newDetailedAddress;
 
+    private String addressName;
+
 }
