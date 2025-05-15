@@ -13,6 +13,7 @@ import love.shop.common.exception.UserNotExistException;
 import love.shop.domain.member.Member;
 import love.shop.service.login.LoginService;
 import love.shop.service.member.MemberService;
+import love.shop.web.address.dto.AddAddressDto;
 import love.shop.web.address.dto.DeleteAddressDto;
 import love.shop.web.login.dto.*;
 import love.shop.web.member.dto.*;
@@ -281,6 +282,20 @@ public class MemberController {
 
         Member member = memberService.deleteAddress(addressDto.getAddressId(), memberId);
         MemberDto memberDto = new MemberDto(member);
+
+        return ResponseEntity.ok(memberDto);
+    }
+
+    @PostMapping("/member/info/address")
+    public ResponseEntity<?> addAddress(@RequestBody @Validated AddAddressDto addressDto) {
+        log.info("주소 추가={}", addressDto);
+        // 로그인 한 상태여야지 주소 추가가 가능하다
+        Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Member member = memberService.findMemberById(memberId);
+
+        Member savedMember = memberService.addAddress(addressDto.getZipcode(), addressDto.getCity(),
+                addressDto.getStreet(), addressDto.getDetailedAddress(), member, addressDto.getAddressName());
+        MemberDto memberDto = new MemberDto(savedMember);
 
         return ResponseEntity.ok(memberDto);
     }
