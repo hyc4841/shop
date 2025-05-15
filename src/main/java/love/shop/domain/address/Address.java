@@ -48,12 +48,14 @@ public class Address {
     }
      */
 
-    public Address(String city, String street, String zipcode, String detailedAddress, Member member) {
+    public Address(String city, String street, String zipcode, String detailedAddress, Member member, String addressName) {
         this.city = city;
         this.street = street;
         this.zipcode = zipcode;
         this.detailedAddress = detailedAddress;
         this.member = member;
+        this.isActivate = true;
+        this.addressName = addressName;
     }
 
     public Address(String city, String street, String zipcode, String detailedAddress) {
