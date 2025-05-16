@@ -29,8 +29,10 @@ public class AddressDto {
         List<AddressDto> addressDtoList = new ArrayList<>();
 
         for (Address address : addressList) {
-            AddressDto addressDto = new AddressDto(address);
-            addressDtoList.add(addressDto);
+            if (address.getIsActivate()) {
+                AddressDto addressDto = new AddressDto(address);
+                addressDtoList.add(addressDto);
+            }
         }
 
         return addressDtoList;
