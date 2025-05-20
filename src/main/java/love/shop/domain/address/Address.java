@@ -63,6 +63,7 @@ public class Address {
         this.street = street;
         this.zipcode = zipcode;
         this.detailedAddress = detailedAddress;
+        this.isActivate = true;
     }
 
     public void setMember(Member member) {
