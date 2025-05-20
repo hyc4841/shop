@@ -37,8 +37,8 @@ public class InitDb {
 //        service.initCategories();
 //        service.initMember();
 //        service.initItem();
-//        service.pageInit();
 //        service.initItemSpec();
+//        service.pageInit();
     }
 
     @Component
