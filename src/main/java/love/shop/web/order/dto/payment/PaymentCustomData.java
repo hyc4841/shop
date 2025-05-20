@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class PaymentCustomData {
 
-    private List<PaymentItemData> itemData;
+    private List<PaymentItemData> orderItemSets;
 
 }
