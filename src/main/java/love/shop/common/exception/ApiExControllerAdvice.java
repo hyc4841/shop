@@ -138,6 +138,13 @@ public class ApiExControllerAdvice {
         return new ErrorApi(400, "결제 검증 오류 발생");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(SalesPageNotExistException.class)
+    public ErrorApi salesPageNotExistException(SalesPageNotExistException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorApi(400, "해당 상품 페이지가 존재하지 않음.");
+    }
+
 
 
 
