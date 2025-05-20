@@ -70,6 +70,11 @@ public class Order {
         delivery.setOrder(this);
     }
 
+    public void setSalesPage(SalesPage salesPage) {
+        this.salesPage = salesPage;
+        salesPage.getOrders().add(this);
+    }
+
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
@@ -83,22 +88,23 @@ public class Order {
     }
 
     // 주문 생성 메서드
-    public static Order createOrder(Member member, Delivery delivery, List<OrderItem> orderItems) {
+    public static Order createOrder(Member member, Delivery delivery, List<OrderItem> orderItems, SalesPage salesPage) {
         Order order = new Order();
         order.setMember(member);                 // 멤버 설정(ManyToTone 관계)
         order.setDelivery(delivery);             // 배송 설정(OneToOne 관계)
         for (OrderItem orderItem : orderItems) { //
             order.addOrderItem(orderItem);
         }
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(OrderStatus.PENDING_PAYMENT);
         order.setOrderDate(LocalDateTime.now());
+        order.setSalesPage(salesPage);
         return order;
     }
 
     // 비즈니스 로직
     // 주문 취소
     public void cancel() {
-        if (this.delivery.getStatus() == DeliveryStatus.SHIPPED) {
+        if (this.delivery.getStatus() == DeliveryStatus.PICKED_UP) {
             throw new IllegalStateException("이미 배송중인 상품은 취소가 불가합니다.");
         }
 
