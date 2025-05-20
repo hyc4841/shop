@@ -37,7 +37,7 @@ public class Delivery {
     }
 
     public static Delivery createDelivery(Address address) {
-        return new Delivery(address, DeliveryStatus.PENDING);
+        return new Delivery(address, DeliveryStatus.PENDING_PAYMENT);
     }
 
     // 배송 취소 메서드
