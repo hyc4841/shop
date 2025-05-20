@@ -1,5 +1,6 @@
 package love.shop.web.order.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 @Data
 public class OrderReqDto {
 
+    @NotNull
     private Long salesPageId;
 
     // 배송 주소. 유저가 직접 입력한 경우
@@ -18,12 +20,11 @@ public class OrderReqDto {
     // 배송 주소. 유저가 미리 저장해둔 배송지를 선택한 경우
     private Long addressId;
 
-
-
+    @NotNull
     private List<OrderItemSet> orderItemSets;
 //    private List<Long> itemId;  // 주문 상품
 //    private Integer count;      // 주문 개수
     // 위 두 개가 한 묶음이어야 한다.
 
-     // 결재 금액, 결재 방식
+    // 결재 금액, 결재 방식
 }
