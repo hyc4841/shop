@@ -145,7 +145,12 @@ public class ApiExControllerAdvice {
         return new ErrorApi(400, "해당 상품 페이지가 존재하지 않음.");
     }
 
-
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AddressNullException.class)
+    public ErrorApi addressNullException(AddressNullException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorApi(400, "주소가 없습니다. 주소를 입력해주세요.");
+    }
 
 
 }
