@@ -8,10 +8,7 @@ import io.portone.sdk.server.payment.VirtualAccountIssuedPayment;
 import io.portone.sdk.server.webhook.WebhookVerifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import love.shop.common.exception.OrderMemberNotMatchException;
-import love.shop.common.exception.SalesPageNotExistException;
-import love.shop.common.exception.SyncPaymentException;
-import love.shop.common.exception.UserNotExistException;
+import love.shop.common.exception.*;
 import love.shop.domain.address.Address;
 import love.shop.domain.delivery.Delivery;
 import love.shop.domain.delivery.DeliveryStatus;
@@ -180,13 +177,14 @@ public class OrderService {
 
     // 주문 취소
     @Transactional
-    public void cancelOrder(Long orderId, Long memberId) {
+    public Order cancelOrder(Long orderId, Long memberId) {
         // 주문 조회
         Order order = orderRepository.findOne(orderId);
 
         if (Objects.equals(order.getMember().getId(), memberId)) {
             // 주문 취소
             order.cancel();
+            return order;
         } else {
             throw new OrderMemberNotMatchException();
         }
