@@ -52,6 +52,8 @@ public class Order {
     @JoinColumn(name = "sales_page_id")
     private SalesPage salesPage;
 
+    private String paymentId;
+
     // 연관관계 메서드. 양방향 연관관계의 경우 이런 식으로 양쪽에 한번에 값을 넣어주는 메서드를 작성해주면 편리하다.
     // 연관관계 메서드는 값을 많이 컨트롤? 하는 쪽이 좋다고 함.
     public void setMember(Member member) {
@@ -85,6 +87,10 @@ public class Order {
 
     public void setReview(Review review) {
         this.review = review;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
     }
 
     // 주문 생성 메서드
