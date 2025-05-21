@@ -195,14 +195,22 @@ public class OrderController {
     // 멤버 주문 조회
     @GetMapping("/orders")
     public ResponseEntity<?> findOrdersByMember(@RequestParam(value = "offset", defaultValue = "0") int offset,
-                                                                        @RequestParam(value = "limit", defaultValue = "100") int limit) {
+                                                @RequestParam(value = "limit", defaultValue = "100") int limit) {
+
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
 
         List<Order> orders = orderService.findOrdersByMemberId(memberId, offset, limit);
         List<OrderDto> result = orders.stream()
                 .map(o -> new OrderDto(o))
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(new AllOrders<List<OrderDto>>(result, result.size()));
+    }
+    @Data
+    @AllArgsConstructor
+    static class AllOrders<T> {
+        private T orders;
+        private int count;
     }
 
     // 주문 페이지에 필요한 정보
@@ -305,12 +313,7 @@ public class OrderController {
         private int count; // 주문 개수
     }
 */
-    @Data
-    @AllArgsConstructor
-    static class AllOrders<T> {
-        private T orders;
-        private int count;
-    }
+
 
 
 
