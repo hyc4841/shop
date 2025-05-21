@@ -17,12 +17,12 @@ public class AddressDto {
     private String addressName;
 
     public AddressDto(Address address) {
-        this.addressId = address.getId();
-        this.city = address.getCity();
-        this.street = address.getStreet();
-        this.zipcode = address.getZipcode();
-        this.detailedAddress = address.getDetailedAddress();
-        this.addressName = address.getAddressName();
+        this.addressId = address == null ? null : address.getId();
+        this.city = address == null ? null : address.getCity();
+        this.street = address == null ? null : address.getStreet();
+        this.zipcode = address == null ? null : address.getZipcode();
+        this.detailedAddress = address == null ? null : address.getDetailedAddress();
+        this.addressName = address == null ? null : address.getAddressName();
     }
 
     public static List<AddressDto> makeAddressDtoList(List<Address> addressList) {
