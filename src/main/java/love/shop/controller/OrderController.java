@@ -1,16 +1,13 @@
 package love.shop.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.portone.sdk.server.payment.PaymentClient;
-import io.portone.sdk.server.payment.PaidPayment;
-import io.portone.sdk.server.payment.VirtualAccountIssuedPayment;
 import io.portone.sdk.server.webhook.WebhookVerifier;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import love.shop.common.exception.AddressNullException;
 import love.shop.common.exception.OrderMemberNotMatchException;
 import love.shop.common.exception.UnauthorizedAccessException;
 import love.shop.domain.address.Address;
@@ -50,6 +47,16 @@ public class OrderController {
     private final PaymentClient portone;
     private final WebhookVerifier portoneWebHook;
 
+    @DeleteMapping("/order/payment")
+    public ResponseEntity<?> paymentCancel(@RequestBody PaymentCancelDto paymentCancel) {
+        log.info("결제 취소={}", paymentCancel);
+        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        Order order = orderService.cancelOrder(paymentCancel.getOrderId(), memberId);
+        OrderDto orderDto = new OrderDto(order);
+
+        return ResponseEntity.ok(orderDto);
+    }
+
     // 클라이언트에서 결제 후 서버에서 결제 검증 컨트롤러
     @PostMapping("/order/payment")
     public ResponseEntity<?> paymentComplete(@RequestBody PaymentCompleteDto paymentCompleteDto) throws ExecutionException, InterruptedException {
@@ -65,6 +72,12 @@ public class OrderController {
     public ResponseEntity<OrderDto> saveOrder(@RequestBody OrderReqDto orderReqDto) {
         // 아이템 id 가져오는건 그대로
         log.info("주문 요청 데이터={}", orderReqDto);
+
+        if (orderReqDto.getCity() == null && orderReqDto.getAddressId() == null) {
+            // 주소 선택, 주소 직접 입력 둘다 없을 경우
+            throw new AddressNullException();
+        }
+
         // 결재 방식, 결재 정보도 필요함
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId(); // jwt 토큰으로 부터 멤버 정보 가져오기
 
