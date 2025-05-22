@@ -103,9 +103,10 @@ public class MemberService {
         message.addRecipients(MimeMessage.RecipientType.TO, email);
         message.setFrom("hyc4841@gmail.com");
         message.setSubject("이메일 인증");
+
         String code = redisService.generateCode(email);
         log.info("이메일 인증 코드={}", code);
-        message.setText(code);
+        message.setText(code); // 이메일 전송
 
         javaMailSender.send(message);
     }
@@ -114,7 +115,14 @@ public class MemberService {
     @Transactional
     public void confirmEmailCertification(String email, String code, BindingResult bindingResult) throws MethodArgumentNotValidException {
 
-        String matchingEmail = redisService.getValue(code); // 해당 코드에 발급된 인증 코드가 있는지 확인
+        if (Objects.equals(code, "")) {
+            FieldError error = new FieldError(code, "code",
+                    "인증 코드를 입력해주세요.");
+            bindingResult.addError(error);
+            throw new MethodArgumentNotValidException(null, bindingResult);
+        }
+
+        String matchingEmail = redisService.getValue(code); // 코드로 이메일 찾기
         String isSent = redisService.getValue(email);       // 인증 코드 이메일 전송 여부 확인
 
         if (isSent == null) {
@@ -139,10 +147,7 @@ public class MemberService {
 
             throw new MethodArgumentNotValidException(null, bindingResult);
         }
-
-
     }
-
 
     public void loginIdDuplicationValidation(String loginId, BindingResult bindingResult) throws MethodArgumentNotValidException {
         Member member = memberRepository.findMemberByLoginId(loginId).orElse(null);
@@ -150,7 +155,6 @@ public class MemberService {
             makeBindingError(bindingResult, "loginId", "이미 등록된 ID 입니다.");
         }
     }
-
 
     public MemberDto memberInfo(Long memberId) {
         Member member = findOne(memberId);
