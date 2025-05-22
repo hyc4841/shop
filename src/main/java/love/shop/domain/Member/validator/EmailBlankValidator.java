@@ -13,7 +13,9 @@ public class EmailBlankValidator implements ConstraintValidator<ValidEmailBlank,
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
+
         boolean matches = email.matches(".*\\s+.*");// 정규 표현식으로 공백 포함되어 있는지 검사
+        log.info("공백검사={}", matches);
 
         return !matches;
     }
