@@ -11,7 +11,7 @@ public class EmailUpdateReqDto {
 
     @NotBlank
     @Email(message = "이메일 형식에 맞게 입력해주세요.")
-    @ValidEmailDuplication
     @ValidEmailBlank
+    @ValidEmailDuplication
     private String newEmail;
 }
