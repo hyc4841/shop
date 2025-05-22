@@ -133,9 +133,9 @@ public class MemberController {
         // 토큰 안에 있는 memberId로 멤버 조회. 엑세스 토큰에 아예 memberId가 박혀 있다
         // 토큰 정보는 SecurityContextHolder에 있다. 이것 안에 memberId를 가져온다.
         Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
-        MemberDto memberInfo = memberService.memberInfo(memberId);
+        MemberDto memberDto = memberService.memberInfo(memberId);
 
-        return ResponseEntity.ok(memberInfo);
+        return ResponseEntity.ok(memberDto);
     }
 
     // 비밀번호 변경
@@ -158,36 +158,39 @@ public class MemberController {
         // 3. 최종적으로 변경할 비밀번호를 데이터이스에 저장
         Member member = memberService.updatePassword(passwordDto.getNewPwd(), memberId);
         MemberDto memberDto = new MemberDto(member);
-        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
+//        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(memberDto);
     }
 
     // 아이디 변경
-    @PostMapping("/member/id")
+    @PutMapping("/member/id")
     public ResponseEntity<?> loginIdUpdate(@RequestBody @Validated LoginIdUpdateReqDto loginIdDto) {
         // 1. 유저가 입력한 아이디가 기존 유저 아이디 중에 중복되는 것이 있는지 확인.
         // 1번은 필드 검증으로 위임
         // 2. 중복 확인이 되면 변경
 //        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
+        log.info("아이디 변경={}", loginIdDto);
         Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         Member member = memberService.updateLoginId(loginIdDto.getNewLoginId(), memberId);
         MemberDto memberDto = new MemberDto(member);
-        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
+//        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
         // 만약 어떤 두 유저가 같은 아이디로 동시에 바꿀려고 하면 최종적으로는 데이터베이스에서 유니크 제약조건으로 막아줘야 한다.
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(memberDto);
     }
 
     // 이메일 변경
-    @PostMapping("/member/email")
-    public ResponseEntity<?> emailUpdate(@RequestBody @Validated EmailUpdateReqDto emailDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
+    @PostMapping("/member/email")                                                       // 파라미터로 BindingResult를 받으면 객체 필드에 설정해놓은 어노테이션 기반의 로직이 작동을 제대로 안함.
+    public ResponseEntity<?> emailUpdate(@RequestBody @Valid EmailUpdateReqDto emailDto, BindingResult bindingResult) throws MethodArgumentNotValidException {
         // 0. 이메일 인증. 이메일 인증은 클라이언트 쪽에서 진행해야 할듯? 아니면 서버쪽에서 인증 이메일 보내는거 해줘도 되고?
         // 1. 이메일 형식 검사 (필드 검증으로 위임)
         // 2. 이메일 중복 검사 (필드 검증으로 위임)
         // 3. 이메일 인증 확인
-        memberService.checkEmailCertification(emailDto.getNewEmail(), bindingResult);
 
+        log.info("이메일 변경={}", emailDto);
+
+        memberService.checkEmailCertification(emailDto.getNewEmail(), bindingResult);
 
         // 3. 이메일 변경
 //        Long memberId = ((CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberId();
@@ -195,13 +198,15 @@ public class MemberController {
         Member member = memberService.updateEmail(emailDto.getNewEmail(), memberId);
 
         MemberDto memberDto = new MemberDto(member);
-        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
+//        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(memberDto);
     }
 
+    // 이메일 인증 코드 전송
     @PostMapping("/member/email/auth")
     public ResponseEntity<?> sendUpdateEmailCertification(@RequestBody @Valid EmailCertificationDto emailDto) throws MessagingException {
+        log.info("이메일 변경 요청={}", emailDto);
         Long memberId = currentUser(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         memberService.sendEmailCertification(emailDto.getEmail());
@@ -210,9 +215,11 @@ public class MemberController {
     }
 
     // 이메일 변경 인증을 완전히 분리해야 할까?
+    // 변경 코드 입력
     @PostMapping("/member/email/auth/confirm")
     public ResponseEntity<?> updateEmailCertificationConfirm(@RequestBody @Valid EmailCertificationConfirmReqDto confirmDto,
                                                              BindingResult bindingResult) throws MethodArgumentNotValidException {
+                                                            // BindingResult 를 매개변수로 받으면 어노테이션 기반 Validation이 작동하지 않는다
 
         log.info("인증 코드 확인 ={}", confirmDto.getCode());
         log.info("인증 이메일 확인 ={}", confirmDto.getEmail());
@@ -254,9 +261,9 @@ public class MemberController {
 
         Member member = memberService.updatePhoneNum(phoneNumDto.getNewPhoneNum(), memberId);
         MemberDto memberDto = new MemberDto(member);
-        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
+//        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(memberDto);
     }
 
     @PostMapping("/member/address")
@@ -268,9 +275,9 @@ public class MemberController {
         Member member = memberService.updateAddress(addressDto, memberId);
 
         MemberDto memberDto = new MemberDto(member);
-        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
+//        MemberInfoResult<MemberDto> result = new MemberInfoResult<>(memberDto);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(memberDto);
     }
 
     @DeleteMapping("/member/info/address")
