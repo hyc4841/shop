@@ -128,7 +128,7 @@ public class RedisService {
         String code;
         do {
             code = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
-        } while (Boolean.TRUE.equals(redisTemplate.hasKey(code)));
+        } while (Boolean.TRUE.equals(redisTemplate.hasKey(code))); // 이메일로 전송하려는 코드가 redis에 있는지 중복 검사
         //       stringRedisTemplate.hasKey(String.valueOf(code));
 
         saveDataWithExpire(code, email, 60 * 5L); // redis에 저장
