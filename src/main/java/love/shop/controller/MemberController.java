@@ -221,6 +221,8 @@ public class MemberController {
                                                              BindingResult bindingResult) throws MethodArgumentNotValidException {
                                                             // BindingResult 를 매개변수로 받으면 어노테이션 기반 Validation이 작동하지 않는다
 
+        // BindingResult 때문에 어노테이션 검증기가 작동하지 않기 때문에 컨트롤러 또는 서비스 계층에서 예외 처리를 해줘야 함.
+
         log.info("인증 코드 확인 ={}", confirmDto.getCode());
         log.info("인증 이메일 확인 ={}", confirmDto.getEmail());
 
