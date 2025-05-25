@@ -1,3 +1,5 @@
+<img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=header"/>
+
 ## 프로젝트 소개
 ### 프로젝트 설명 : 카테고리 및 필터링 검색이 가능한 종합 쇼핑몰.
 ### 프로젝트 목적 : 다나와 사이트를 참고하였으며, 개층형 카테고리 검색과 필터링 검색이 가능한 종합 쇼핑몰 구현을 목적으로한 프로젝트.
@@ -62,5 +64,6 @@
    - jwt를 이용한 로그인 인증/인가 구현
    - redis를 이용한 리프레시 토큰 관리
 
+<img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=footer"/>
 
 
