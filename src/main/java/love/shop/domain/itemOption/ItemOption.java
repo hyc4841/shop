@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import love.shop.domain.cartSalesPage.CartSalesPage;
 import love.shop.domain.item.Item;
 import love.shop.domain.salesPage.SalesPage;
 
@@ -38,6 +39,10 @@ public class ItemOption { // 판매 페이지의 계층형 상품 옵션
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sales_page_id")
     private SalesPage salesPage;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_sales_page_id")
+    private CartSalesPage cartSalesPage;
 
     private Integer optionNum; // 옵션 저장 과정에서 부모 자식 식별용 속성
 
