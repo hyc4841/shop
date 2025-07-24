@@ -16,6 +16,7 @@ public class CartDto {
     private Long member;
     private List<ItemCartDto> itemCarts;
 
+    /*
     public CartDto(Cart cart) {
         this.id = cart.getId();
         this.member = cart.getMember().getId();
@@ -23,4 +24,6 @@ public class CartDto {
                 .map(itemCart -> new ItemCartDto(itemCart))
                 .collect(Collectors.toList()) : null;
     }
+
+     */
 }
