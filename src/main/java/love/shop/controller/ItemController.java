@@ -40,6 +40,7 @@ public class ItemController {
         return ResponseEntity.ok(savedItemDto);
     }
 
+    /*
     // 카테고리 중분류 아이템 조건 검색
     // 아이템 조회--
 //    @GetMapping("/items")
@@ -82,6 +83,8 @@ public class ItemController {
 
         return ResponseEntity.ok(objectItemListPageResult);
     }
+
+     */
 
     @Data
     @AllArgsConstructor
