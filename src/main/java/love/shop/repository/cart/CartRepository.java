@@ -22,6 +22,7 @@ public class CartRepository {
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
 
+    /*
     QCart cart = QCart.cart;
     QItemCart itemCart = QItemCart.itemCart;
     QItem item = QItem.item;
@@ -58,4 +59,6 @@ public class CartRepository {
     public void deleteItemCart(ItemCart itemCart) {
         em.remove(itemCart);
     }
+
+     */
 }
