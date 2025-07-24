@@ -26,9 +26,12 @@ public class Cart { // 장바구니
     @JoinColumn(name = "member_id")
     private Member member; // 해당 장바구니 주인.
 
+    public Cart(Member member) {
+        this.member = member;
+    }
 
 
-    /*
+/*
     @OneToMany(mappedBy = "cart")
     private List<SalesPage> salesPages; // 해당 페이지에서 선택한 아템.
 
