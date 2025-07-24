@@ -18,6 +18,7 @@ public class CartController {
 
     private final CartService cartService;
 
+    /*
     // 장바구니에 상품 추가
     @PostMapping("/cart")
     public ResponseEntity<?> addItem(@RequestBody AddItemToCartDto addItemToCartDto) {
@@ -69,4 +70,6 @@ public class CartController {
 
         return ResponseEntity.ok(new CartDto(cart));
     }
+
+     */
 }
