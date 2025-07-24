@@ -27,10 +27,12 @@ public class CartService {
     private final ItemService itemService;
     private final MemberRepository memberRepository;
 
+    /*
     @Transactional
     public void saveCart(Cart cart) {
         cartRepository.saveCart(cart);
     }
+
 
     // 회원가입시 해당 멤버의 장바구니 생성
     @Transactional
@@ -97,6 +99,8 @@ public class CartService {
         return cart;
     }
 
+
+
     public Cart findCartByCartId(Long cartId) {
         return cartRepository.findCartByCartId(cartId).orElseThrow(() -> new RuntimeException("해당 장바구니가 존재하지 않음."));
     }
@@ -104,4 +108,6 @@ public class CartService {
     public ItemCart findItemCartByCartItemId(Long itemCartId) {
         return cartRepository.findItemCartByCartItemId(itemCartId).orElseThrow(() -> new RuntimeException("해당 itemCart가 존재하지 않음"));
     }
+
+     */
 }
