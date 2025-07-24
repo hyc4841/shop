@@ -2,9 +2,8 @@ package love.shop.web.item.searchFilter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import love.shop.web.item.spec.lapTop.*;
+import love.shop.domain.itemSpec.spec.lapTop.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -25,6 +24,7 @@ public class LapTopSearchFilter extends SearchFilter {
         this.lapTopManufactureBrands = lapTopManufactureBrands;
     }
 
+    /*
     public static LapTopSearchFilter createLapTopFilter() {
         LapTopSearchFilter lapTopSearchFilter = new LapTopSearchFilter();
         lapTopSearchFilter.setLapTopBrands(Arrays.asList(LapTopBrand.values()));
@@ -36,6 +36,8 @@ public class LapTopSearchFilter extends SearchFilter {
         return lapTopSearchFilter;
     }
 
+
+     */
 
 
     public LapTopSearchFilter() {
