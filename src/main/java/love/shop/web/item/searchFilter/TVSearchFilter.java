@@ -2,7 +2,7 @@ package love.shop.web.item.searchFilter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import love.shop.web.item.spec.tv.*;
+import love.shop.domain.itemSpec.spec.tv.*;
 
 import java.util.List;
 

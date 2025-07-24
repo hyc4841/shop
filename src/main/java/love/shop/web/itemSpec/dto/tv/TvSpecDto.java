@@ -3,7 +3,7 @@ package love.shop.web.itemSpec.dto.tv;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import love.shop.domain.itemSpec.TvSpec;
+import love.shop.domain.itemSpec.spec.tv.TvSpec;
 import love.shop.web.itemSpec.dto.ItemSpecDto;
 
 import java.util.List;

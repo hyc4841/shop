@@ -1,18 +1,18 @@
-package love.shop.web.item.spec.tv;
+package love.shop.domain.itemSpec.spec.tv;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import love.shop.domain.itemSpec.TvSpec;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TvDisplayType { // 화면 종류
+public class TvPictureQuality { // 화질
+
     @Id
     @GeneratedValue
-    @Column(name = "tv_display_type_id")
+    @Column(name = "tv_picture_quality_id")
     private Long id;
     private String specName;
     private Boolean isPopularSpec;
@@ -21,10 +21,10 @@ public class TvDisplayType { // 화면 종류
     @JoinColumn(name = "tv_spec_id")
     private TvSpec tvSpec;
 
-    public TvDisplayType(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
+    public TvPictureQuality(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
         this.specName = specName;
         this.tvSpec = tvSpec;
-        tvSpec.getTvDisplayTypes().add(this);
+        tvSpec.getTvPictureQualities().add(this);
         this.isPopularSpec = isPopularSpec;
     }
 }

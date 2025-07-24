@@ -1,10 +1,9 @@
-package love.shop.web.item.spec.tv;
+package love.shop.domain.itemSpec.spec.tv;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import love.shop.domain.itemSpec.TvSpec;
 
 @Entity
 @Getter

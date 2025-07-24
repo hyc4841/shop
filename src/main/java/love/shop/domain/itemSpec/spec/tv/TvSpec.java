@@ -1,11 +1,11 @@
-package love.shop.domain.itemSpec;
+package love.shop.domain.itemSpec.spec.tv;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import love.shop.web.item.spec.tv.*;
+import love.shop.domain.itemSpec.ItemSpec;
 
 import java.util.ArrayList;
 import java.util.List;

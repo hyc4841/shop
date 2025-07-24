@@ -2,7 +2,7 @@ package love.shop.web.itemSpec.dto.tv;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import love.shop.web.item.spec.tv.TvRefreshRate;
+import love.shop.domain.itemSpec.spec.tv.TvRefreshRate;
 
 @Data
 @NoArgsConstructor

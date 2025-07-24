@@ -1,19 +1,18 @@
-package love.shop.web.item.spec.tv;
+package love.shop.domain.itemSpec.spec.tv;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import love.shop.domain.itemSpec.TvSpec;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TvSpeakerOutput {
+public class TvProcessor { // 프로세서. 요즘엔 tv에 프로세서 달아주나봄
 
     @Id
     @GeneratedValue
-    @Column(name = "tv_speaker_output_id")
+    @Column(name = "tv_processor_id")
     private Long id;
     private String specName;
     private Boolean isPopularSpec;
@@ -22,10 +21,10 @@ public class TvSpeakerOutput {
     @JoinColumn(name = "tv_spec_id")
     private TvSpec tvSpec;
 
-    public TvSpeakerOutput(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
+    public TvProcessor(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
         this.specName = specName;
         this.tvSpec = tvSpec;
-        tvSpec.getTvSpeakerOutputs().add(this);
+        tvSpec.getTvProcessors().add(this);
         this.isPopularSpec = isPopularSpec;
     }
 

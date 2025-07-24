@@ -1,19 +1,18 @@
-package love.shop.web.item.spec.tv;
+package love.shop.domain.itemSpec.spec.tv;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import love.shop.domain.itemSpec.TvSpec;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TvResolution { // 해상도
+public class TvHDR { // HDR 기술
 
     @Id
     @GeneratedValue
-    @Column(name = "tv_resolution_id")
+    @Column(name = "tv_hdr_id")
     private Long id;
     private String specName;
     private Boolean isPopularSpec;
@@ -22,11 +21,10 @@ public class TvResolution { // 해상도
     @JoinColumn(name = "tv_spec_id")
     private TvSpec tvSpec;
 
-    public TvResolution(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
+    public TvHDR(String specName, TvSpec tvSpec, Boolean isPopularSpec) {
         this.specName = specName;
         this.tvSpec = tvSpec;
-        tvSpec.getTvResolutions().add(this);
+        tvSpec.getTvHDRS().add(this);
         this.isPopularSpec = isPopularSpec;
     }
-
 }
