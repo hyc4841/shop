@@ -2,7 +2,7 @@ package love.shop.web.item.searchCond;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.*;
-import love.shop.web.item.spec.lapTop.*;
+import love.shop.domain.itemSpec.spec.lapTop.*;
 
 import java.util.List;
 
