@@ -1,4 +1,4 @@
-package love.shop.repository.ItemPage;
+package love.shop.repository.salesPage;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -16,7 +16,6 @@ import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.itemSalesPage.QItemSalesPage;
 import love.shop.domain.salesPage.QSalesPage;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.web.item.spec.lapTop.*;
 import love.shop.web.item.searchCond.SearchCond;
 import org.springframework.stereotype.Repository;
 
@@ -144,35 +143,36 @@ public class SalesPageRepository {
                 case "lapTopBrands":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String lapTopBrand : filters.get(key)) {
-                            builder.or(lapTop.lapTopBrand.eq(LapTopBrand.valueOf(lapTopBrand)));
+                            builder.or(lapTop.lapTopBrand.eq(lapTopBrand));
                         }
                     }
                     break;
                 case "lapTopCpus":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String lapTopCpu : filters.get(key)) {
-                            builder.or(lapTop.lapTopCpu.eq(LapTopCpu.valueOf(lapTopCpu)));
+                            builder.or(lapTop.lapTopCpu.eq(lapTopCpu));
                         }
                     }
                     break;
                 case "lapTopStorages":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String lapTopStorage : filters.get(key)) {
-                            builder.or(lapTop.lapTopStorage.eq(LapTopStorage.valueOf(lapTopStorage)));
+                            builder.or(lapTop.lapTopStorage.eq(lapTopStorage));
                         }
                     }
                     break;
                 case "lapTopScreenSizes":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String lapTopScreenSize : filters.get(key)) {
-                            builder.or(lapTop.lapTopScreenSize.eq(LapTopScreenSize.valueOf(lapTopScreenSize)));
+                            builder.or(lapTop.lapTopScreenSize.eq(lapTopScreenSize));
                         }
+
                     }
                     break;
                 case "lapTopManufactureBrands":
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String lapTopManufactureBrand : filters.get(key)) {
-                            builder.or(lapTop.lapTopManufactureBrand.eq(LapTopManufactureBrand.valueOf(lapTopManufactureBrand)));
+                            builder.or(lapTop.lapTopManufactureBrand.eq(lapTopManufactureBrand));
                         }
                     }
                     break;
