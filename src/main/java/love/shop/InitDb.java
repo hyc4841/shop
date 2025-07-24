@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.category.Category;
 import love.shop.domain.item.Item;
 import love.shop.domain.itemOption.ItemOption;
-import love.shop.domain.itemSpec.TvSpec;
+import love.shop.domain.itemSpec.spec.lapTop.*;
+import love.shop.domain.itemSpec.spec.tv.TvSpec;
+import love.shop.domain.itemSpec.spec.tv.*;
 import love.shop.domain.member.Gender;
 import love.shop.domain.member.Member;
 import love.shop.domain.member.PasswordAndCheck;
@@ -16,7 +18,6 @@ import love.shop.service.item.ItemService;
 import love.shop.service.member.MemberService;
 import love.shop.service.page.PageService;
 import love.shop.web.item.saveDto.TVSaveReqDto;
-import love.shop.web.item.spec.tv.*;
 import love.shop.web.signup.dto.SignupRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +53,52 @@ public class InitDb {
         private final MemberService memberService;
 
         public void initItemSpec() {
+
+            LapTopSpec lapTopSpec = new LapTopSpec("LapTop");
+
+            new LapTopManufactureBrand("msi", true, lapTopSpec);
+            new LapTopManufactureBrand("LG전자", true, lapTopSpec);
+            new LapTopManufactureBrand("삼성전자", true, lapTopSpec);
+            new LapTopManufactureBrand("레노버", true, lapTopSpec);
+            new LapTopManufactureBrand("ASUS", true, lapTopSpec);
+            new LapTopManufactureBrand("HP", false, lapTopSpec);
+            new LapTopManufactureBrand("APPLE", false, lapTopSpec);
+
+            new LapTopCpu("코어7", true, lapTopSpec);
+            new LapTopCpu("코어5", true, lapTopSpec);
+            new LapTopCpu("라이젠9", true, lapTopSpec);
+            new LapTopCpu("라이젠7", true, lapTopSpec);
+            new LapTopCpu("M1", true, lapTopSpec);
+            new LapTopCpu("M2", false, lapTopSpec);
+            new LapTopCpu("코어3", false, lapTopSpec);
+            new LapTopCpu("라이젠5", false, lapTopSpec);
+
+            new LapTopBrand("갤럭시북5 프로", true, lapTopSpec);
+            new LapTopBrand("아이디어패드", true, lapTopSpec);
+            new LapTopBrand("오멘", true, lapTopSpec);
+            new LapTopBrand("갤럭시북", true, lapTopSpec);
+            new LapTopBrand("그램16", true, lapTopSpec);
+            new LapTopBrand("그램15", false, lapTopSpec);
+            new LapTopBrand("맥북에어13", false, lapTopSpec);
+            new LapTopBrand("맥북에어15", false, lapTopSpec);
+
+            new LapTopScreenSize("14인치", true, lapTopSpec);
+            new LapTopScreenSize("15인치", true, lapTopSpec);
+            new LapTopScreenSize("16인치", true, lapTopSpec);
+            new LapTopScreenSize("17인치", true, lapTopSpec);
+            new LapTopScreenSize("13인치", false, lapTopSpec);
+            new LapTopScreenSize("12인치", false, lapTopSpec);
+            new LapTopScreenSize("8인치", false, lapTopSpec);
+
+            new LapTopStorage("128GB", true, lapTopSpec);
+            new LapTopStorage("256GB", true, lapTopSpec);
+            new LapTopStorage("512GB", true, lapTopSpec);
+            new LapTopStorage("1TB", true, lapTopSpec);
+            new LapTopStorage("2TB", false, lapTopSpec);
+            new LapTopStorage("3TB", false, lapTopSpec);
+
+            itemService.saveItemSpecList(lapTopSpec);
+
             TvSpec tvSpec = new TvSpec("Tv");
             // tvBrand 영역
             new TvBrand("나노셀", tvSpec, true);
