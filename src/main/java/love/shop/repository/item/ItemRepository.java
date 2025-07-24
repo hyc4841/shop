@@ -1,7 +1,6 @@
 package love.shop.repository.item;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +13,11 @@ import love.shop.domain.item.type.QBook;
 import love.shop.domain.item.type.QLapTop;
 import love.shop.domain.itemSpec.ItemSpec;
 import love.shop.domain.itemSpec.QItemSpec;
-import love.shop.web.item.spec.lapTop.*;
-import love.shop.web.item.searchCond.*;
 import love.shop.web.item.updateDto.BookUpdateReqDto;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -139,6 +135,7 @@ public class ItemRepository {
                 .fetch();
     }
 
+    /*
         // 아이템 조건 검색
     public List<Item> findItemsBySearchCond(SearchCond searchCond, Map<String, List<String>> filters, int offset, int limit) {
 
@@ -152,14 +149,14 @@ public class ItemRepository {
         if (searchCond.getItemName() != null && !searchCond.getItemName().isBlank()) { // isEmpty? isBlank?
             basicCond.and(item.name.like("%" + searchCond.getItemName() + "%"));
         }
-        /*
-        // 카테고리 조건
+
+        // 카테고리 조건. 사용안함.
         if (searchCond.getCategories() != null && !searchCond.getCategories().isEmpty()) {
             for (Long categoryId : searchCond.getCategories()) {
                 basicCond.or(category.id.eq(categoryId));
             }
         }
-         */
+
         if (searchCond.getCategories() != null) {
 //            basicCond.and(category.id.eq(searchCond.getCategories()));
             basicCond.and(category.id.eq(searchCond.getCategories()));
@@ -202,12 +199,13 @@ public class ItemRepository {
                 case "WiredHeadphones" -> wiredHeadphonesSearchCond((WiredHeadphonesSearchCond) searchCond, basicCond);
                 case "WirelessHeadset" -> wirelessHeadsetSearchCond((WirelessHeadsetSearchCond) searchCond, basicCond);
                 case "WiredHeadset" -> wiredHeadsetSearchCond((WiredHeadsetSearchCond) searchCond, basicCond)
-                     */
+
                 default:
                     log.info("유효한 카테고리가 없습니다={}", searchCond.getType());
                     break;
             }
         }
+
 
 
 
@@ -219,6 +217,8 @@ public class ItemRepository {
                 .limit(limit)
                 .fetch();
     }
+
+
 
     private void lapTopSearchCond(BooleanBuilder builder, Map<String, List<String>> filters) {
         log.info("변환된 필터에 뭐들어오는데?={}", filters);
@@ -232,7 +232,7 @@ public class ItemRepository {
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String lapTopBrand : filters.get(key)) {
                             log.info("여기 뭐들어오는데?={}", lapTopBrand);
-                            builder.or(lapTop.lapTopBrand.eq(LapTopBrand.valueOf(lapTopBrand)));
+                            builder.or(lapTop.lapTopBrand.eq(lapTopBrand);
                         }
                     }
                     break;
@@ -240,29 +240,20 @@ public class ItemRepository {
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String lapTopCpu : filters.get(key)) {
                             log.info("여기 뭐들어오는데?={}", lapTopCpu);
-                            builder.or(lapTop.lapTopCpu.eq(LapTopCpu.valueOf(lapTopCpu)));
+                            builder.or(lapTop.lapTopCpu.eq(lapTopCpu);
                         }
                     }
                     break;
                 case "lapTopStorages":
-                    log.info("비었어?={}", filters.get(key).isEmpty());
-                    log.info("크기 몇인데?={}", filters.get(key).size());
-                    log.info("그래서 뭐 어떻게 해야하는데?={}", filters.get(key).get(0).isBlank());
-
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String lapTopStorage : filters.get(key)) {
-                            log.info("여기 뭐들어오는데?={}", lapTopStorage);
-                            builder.or(lapTop.lapTopStorage.eq(LapTopStorage.valueOf(lapTopStorage)));
+                            builder.or(lapTop.lapTopStorage.eq(lapTopStorage);
                         }
                     }
                     break;
                 case "lapTopScreenSizes":
-                    log.info("비었어?={}", filters.get(key).isEmpty());
-                    log.info("크기 몇인데?={}", filters.get(key).size());
-
                     if (!filters.get(key).get(0).isBlank()) {
                         for (String lapTopScreenSize : filters.get(key)) {
-                            log.info("여기 뭐들어오는데?={}", lapTopScreenSize);
                             builder.or(lapTop.lapTopScreenSize.eq(LapTopScreenSize.valueOf(lapTopScreenSize)));
                         }
                     }
@@ -280,6 +271,8 @@ public class ItemRepository {
             }
         }
     }
+
+     */
 
     /*
     private void bookScreenSearchCond(BookSearchCond searchCond, BooleanBuilder builder) {
