@@ -9,7 +9,7 @@ import love.shop.domain.member.Member;
 import love.shop.domain.order.Order;
 import love.shop.domain.review.Review;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.repository.ItemPage.SalesPageRepository;
+import love.shop.repository.salesPage.SalesPageRepository;
 import love.shop.repository.member.MemberRepository;
 import love.shop.repository.order.OrderRepository;
 import love.shop.repository.review.ReviewRepository;

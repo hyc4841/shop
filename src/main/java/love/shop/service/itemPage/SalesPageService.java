@@ -6,7 +6,7 @@ import love.shop.domain.item.Item;
 import love.shop.domain.itemOption.ItemOption;
 import love.shop.domain.itemSalesPage.ItemSalesPage;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.repository.ItemPage.SalesPageRepository;
+import love.shop.repository.salesPage.SalesPageRepository;
 import love.shop.repository.item.ItemRepository;
 import love.shop.web.item.searchCond.SearchCond;
 import love.shop.web.itemOption.dto.CreateItemOptionReqDto;

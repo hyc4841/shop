@@ -18,7 +18,7 @@ import love.shop.domain.order.Order;
 import love.shop.domain.order.OrderStatus;
 import love.shop.domain.orderItem.OrderItem;
 import love.shop.domain.salesPage.SalesPage;
-import love.shop.repository.ItemPage.SalesPageRepository;
+import love.shop.repository.salesPage.SalesPageRepository;
 import love.shop.repository.address.AddressRepository;
 import love.shop.repository.item.ItemRepository;
 import love.shop.repository.member.MemberRepository;
