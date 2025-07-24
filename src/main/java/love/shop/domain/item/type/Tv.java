@@ -27,13 +27,8 @@ public class Tv extends Item {
     private String tvSounds;
     private String tvSpeakerChannels;
     private String tvSpeakerOutputs;
-
     private final String dataType = "Tv";
 
-    @Override
-    public String getType() {
-        return dataType;
-    }
 
     public Tv(String name, int price, int stockQuantity, String tvBrands, String tvDisplayPanels, String tvDisplayTypes, String tvHDRs, String tvManufacturers, String tvPictureQualities, String tvProcessors, String tvRefreshRates, String tvResolutions, String tvScreenSizes, String tvSounds, String tvSpeakerChannels, String tvSpeakerOutputs) {
         super(name, price, stockQuantity);
@@ -67,5 +62,10 @@ public class Tv extends Item {
         this.tvSounds = tvDto.getTvSounds();
         this.tvSpeakerChannels = tvDto.getTvSpeakerChannels();
         this.tvSpeakerOutputs = tvDto.getTvSpeakerOutputs();
+    }
+
+    @Override
+    public String getType() {
+        return dataType;
     }
 }
