@@ -62,6 +62,7 @@ public class SalesPageController {
         log.info("타입 확인={}", type);
 
         ItemSpecDto filters = itemService.findItemSpec(type);
+        log.info("아이템 스펙={}", filters);
 
         // 상품 스펙(상품 필터) 데이터베이스로 이전 시작
         // 필터 뿌려주는 로직 바꿔야함.
