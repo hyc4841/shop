@@ -156,10 +156,12 @@ public class ItemService {
         return itemRepository.findCategoryById(categoryId).orElseThrow(() -> new CategoryNotExistException("해당 카테고리는 존재하지 않습니다."));
     }
 
+    /*
     // 아이템 조건 검색
     public List<Item> findItemsBySearchCond(SearchCond searchCond, Map<String, List<String>> filters, int offset, int limit) {
         return itemRepository.findItemsBySearchCond(searchCond, filters, offset, limit);
     }
+     */
 
     public List<Item> findItemsByCategories(List<String> categories) {
         return itemRepository.findItemsByCategories(categories);
