@@ -3,7 +3,7 @@ package love.shop.web.item.saveDto;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import love.shop.web.item.spec.lapTop.*;
+import love.shop.domain.itemSpec.spec.lapTop.*;
 
 import java.util.List;
 
@@ -12,18 +12,21 @@ import java.util.List;
 @Data
 public class LapTopSaveReqDto extends ItemSaveReqDto {
 
-    @NotNull
-    private LapTopBrand lapTopBrand;
-    @NotNull
-    private LapTopCpu lapTopCpu;
-    @NotNull
-    private LapTopStorage lapTopStorage;
-    @NotNull
-    private LapTopScreenSize lapTopScreenSize;
+    private String lapTopBrand;
+    private String lapTopCpu;
+    private String lapTopStorage;
+    private String lapTopScreenSize;
+    private String lapTopManufactureBrand;
 
-    private LapTopManufactureBrand lapTopManufactureBrand;
+    public LapTopSaveReqDto(String lapTopBrand, String lapTopCpu, String lapTopStorage, String lapTopScreenSize, String lapTopManufactureBrand) {
+        this.lapTopBrand = lapTopBrand;
+        this.lapTopCpu = lapTopCpu;
+        this.lapTopStorage = lapTopStorage;
+        this.lapTopScreenSize = lapTopScreenSize;
+        this.lapTopManufactureBrand = lapTopManufactureBrand;
+    }
 
-    public LapTopSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String dataType, LapTopBrand lapTopBrand, LapTopCpu lapTopCpu, LapTopStorage lapTopStorage, LapTopScreenSize lapTopScreenSize, LapTopManufactureBrand lapTopManufactureBrand) {
+    public LapTopSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String dataType, String lapTopBrand, String lapTopCpu, String lapTopStorage, String lapTopScreenSize, String lapTopManufactureBrand) {
         super(name, price, stockQuantity, categoriesId, dataType);
         this.lapTopBrand = lapTopBrand;
         this.lapTopCpu = lapTopCpu;
