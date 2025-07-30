@@ -529,31 +529,31 @@ public class InitDb {
         public void initItem() {
             // 1. ItemSaveReqDto 생성
             List<Integer> categories1 = new ArrayList<>(Arrays.asList(2, 23, 193));
-            TVSaveReqDto tv1 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+            TVSaveReqDto tv1 = new TVSaveReqDto("LG노트북1", 1000000, 9999, categories1, "TV",
                     "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
                     null, null, "Hz_60", "QHD", "27인치",
                     "돌비애트모스", null, null);
             itemService.saveItemWithCategory(tv1);
 
-            TVSaveReqDto tv2 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+            TVSaveReqDto tv2 = new TVSaveReqDto("27LX6TPGA", 2000000, 9999, categories1, "TV",
                     "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
                     null, null, "Hz_60", "QHD", "27인치",
                     "돌비애트모스", null, null);
             itemService.saveItemWithCategory(tv2);
 
-            TVSaveReqDto tv3 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+            TVSaveReqDto tv3 = new TVSaveReqDto("27LX6TPGA", 3000000, 9999, categories1, "TV",
                     "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
                     null, null, "Hz_60", "QHD", "27인치",
                     "돌비애트모스", null, null);
             itemService.saveItemWithCategory(tv3);
 
-            TVSaveReqDto tv4 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+            TVSaveReqDto tv4 = new TVSaveReqDto("27LX6TPGA", 4000000, 9999, categories1, "TV",
                     "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
                     null, null, "Hz_60", "QHD", "27인치",
                     "돌비애트모스", null, null);
             itemService.saveItemWithCategory(tv4);
 
-            TVSaveReqDto tv5 = new TVSaveReqDto("27LX6TPGA", 1103200, 9999, categories1, "TV",
+            TVSaveReqDto tv5 = new TVSaveReqDto("27LX6TPGA", 5000000, 9999, categories1, "TV",
                     "스탠바이미", "IPS","LED_TV", "HDR10", "LG전자",
                     null, null, "Hz_60", "QHD", "27인치",
                     "돌비애트모스", null, null);
@@ -600,7 +600,7 @@ public class InitDb {
             List<String> images = new ArrayList<>();
             images.add("테스트 이미지 1");
             // 상품 판매 페이지 생성
-            SalesPage salesPage = new SalesPage("상품 테스트 페이지 노트북 판매", images, "이것은 테스트이며 노트북 판매 페이지 입니다.");
+            SalesPage salesPage = new SalesPage("판매 페이지 이름.", images, "상품 설명 부분입니다.");
 
             ItemOption topOption = new ItemOption("모델", 0);
             topOption.setSalesPage(salesPage);
