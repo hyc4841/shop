@@ -51,10 +51,17 @@ public class ItemRepository {
         em.persist(itemSpec);
     }
 
+    // 데이터 타입으로 상품 스펙 조회
     public Optional<ItemSpec> findItemSpec(String dtype) {
         return Optional.ofNullable(queryFactory.selectFrom(itemSpec)
                 .where(itemSpec.dataType.eq(dtype))
                 .fetchOne());
+    }
+
+    // 모든 상품 스펙 조회
+    public List<ItemSpec> findAllItemSpec() {
+        return queryFactory.selectFrom(itemSpec)
+                .fetch();
     }
 
     // 아이템 저장
