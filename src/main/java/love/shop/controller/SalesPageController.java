@@ -31,6 +31,8 @@ public class SalesPageController {
     private final SalesPageService salesPageService;
 
     // 상품 페이지 필터링 조회
+    // 상품 필터는 여기서 보내준다.
+    // 페이징 구헌해야 함.
     @GetMapping("/items")
     public ResponseEntity<?> items(@ModelAttribute SearchCond searchCond, // 중분류 카테고리로 뿌려주는걸로 만들자
                                    @RequestParam Map<String, String> checkedFilter,
