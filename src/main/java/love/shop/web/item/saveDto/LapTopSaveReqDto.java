@@ -18,6 +18,10 @@ public class LapTopSaveReqDto extends ItemSaveReqDto {
     private String lapTopScreenSize;
     private String lapTopManufactureBrand;
 
+    public LapTopSaveReqDto() {
+
+    }
+
     public LapTopSaveReqDto(String lapTopBrand, String lapTopCpu, String lapTopStorage, String lapTopScreenSize, String lapTopManufactureBrand) {
         this.lapTopBrand = lapTopBrand;
         this.lapTopCpu = lapTopCpu;
