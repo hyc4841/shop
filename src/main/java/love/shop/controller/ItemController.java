@@ -31,60 +31,82 @@ public class ItemController {
     private final ItemService itemService;
     private final ItemRepository itemRepository;
 
+    /***
+     * test
+     * 모든 상품 스펙 데이터 타입별로 조회.
+     */
+    @GetMapping("/test/item-spec")
+    public ResponseEntity<?> findAllItemSpec() {
+
+        List<ItemSpec> allItemSpec = itemService.findAllItemSpec();
+
+        Map<String, List<ItemSpecDto>> itemSpecDtoMap = new HashMap<>();
+
+        for (ItemSpec itemSpec : allItemSpec) {
+            ItemSpecDto filter = SearchFilter.findFilter(itemSpec.getDataType(), itemSpec);
+            if (itemSpecDtoMap.get(itemSpec.getDataType()) == null) {
+                List<ItemSpecDto> itemSpecDtos = new ArrayList<>();
+                itemSpecDtos.add(filter);
+                itemSpecDtoMap.put(itemSpec.getDataType(), itemSpecDtos);
+            } else {
+                itemSpecDtoMap.get(itemSpec.getDataType()).add(filter);
+            }
+        }
+
+        return ResponseEntity.ok(itemSpecDtoMap);
+    }
+
+
+
+    @GetMapping("/item")
+    public ResponseEntity<?> saveItemPage() {
+        // 아이템 추가 페이지에 넘겨줘야할 데이터
+        // 모든 카테고리(계층으로 정리해서) - 성공.
+        // 모든 상품 스펙(상품 타입에 맞게 정리해서) - 성공
+
+        // 모든 상품 스펙.
+        List<ItemSpec> allItemSpec = itemService.findAllItemSpec();
+        Map<String, List<ItemSpecDto>> itemSpecDtoMap = new HashMap<>(); // <데이터 타입, 상품 스펙> 상품 스펙 리스트
+        List<String> itemDataType = new ArrayList<>(); // 상품 데이터 타입
+
+        for (ItemSpec itemSpec : allItemSpec) {
+            ItemSpecDto filter = SearchFilter.findFilter(itemSpec.getDataType(), itemSpec);
+            if (itemSpecDtoMap.get(itemSpec.getDataType()) == null) {
+                List<ItemSpecDto> itemSpecDtos = new ArrayList<>();
+                itemSpecDtos.add(filter);
+                itemSpecDtoMap.put(itemSpec.getDataType(), itemSpecDtos);
+                itemDataType.add(itemSpec.getDataType());
+            } else {
+                itemSpecDtoMap.get(itemSpec.getDataType()).add(filter);
+            }
+        }
+
+        List<CategoryDto> depthCategory = itemService.getDepthCategory();
+
+        ItemSavePageResult<Object> result = new ItemSavePageResult<>(itemSpecDtoMap, depthCategory, itemDataType);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class ItemSavePageResult<T> {
+        private T allItemSpec;
+        private T allCategories;
+        private T itemDataType;
+    }
+
+
     // 아이템 저장.
     @PostMapping("/item")
     public ResponseEntity<?> saveItemWithCategory(@RequestBody @Validated ItemSaveReqDto itemDto) {
+        log.info("받은 데이터={}", itemDto);
+
         Item savedItem = itemService.saveItemWithCategory(itemDto);
         ItemDto savedItemDto = ItemDto.createItemDto(savedItem);
 
         return ResponseEntity.ok(savedItemDto);
     }
-
-    /*
-    // 카테고리 중분류 아이템 조건 검색
-    // 아이템 조회--
-//    @GetMapping("/items")
-    public ResponseEntity<?> items(@ModelAttribute SearchCond searchCond, // 중분류 카테고리로 뿌려주는걸로 만들자
-                                   @RequestParam Map<String, String> checkedFilter,
-                                   @RequestParam(value = "offset", defaultValue = "0") int offset,
-                                   @RequestParam(value = "limit", defaultValue = "50") int limit) {
-
-        checkedFilter.remove("itemName");
-        checkedFilter.remove("morePrice");
-        checkedFilter.remove("categories");
-        checkedFilter.remove("type");
-        checkedFilter.remove("lessPrice");
-
-        // 1. 스트링으로 들어온 Map<String, String> filter 를 Map<String, List<String>> 으로 변환하기
-        Map<String, List<String>> convertedFilter = new HashMap<>();
-
-        for (String key : checkedFilter.keySet()) {
-            List<String> values = List.of(checkedFilter.get(key).split(","));
-            convertedFilter.put(key, values);
-        }
-
-        log.info("들어온 조건들={}", checkedFilter);
-        log.info("변환한 조건들={}", convertedFilter);
-        log.info("searchCond={}", searchCond);
-
-        // 타입이 없고 카테고리 id만 넘어온다면
-        Category category = itemService.findCategoryById(searchCond.getCategories());
-        String type = category.getType(); // 해당 카테고리의 데이터 타입 확인
-
-        ItemSpecDto filters = itemService.findItemSpec(type);
-
-        List<Item> items = itemService.findItemsBySearchCond(searchCond, convertedFilter, offset, limit);
-        log.info("조건으로 찾은 items={}", items);
-        // 검색 조건으로 찾은 아이템 Dto로 변환
-        List<ItemDto> itemDtoList = ItemDto.createItemDtoList(items);
-
-        // 응답 데이터 형태로 감싸기
-        ItemListPageResult<Object> objectItemListPageResult = new ItemListPageResult<>(itemDtoList, filters, type);
-
-        return ResponseEntity.ok(objectItemListPageResult);
-    }
-
-     */
 
     @Data
     @AllArgsConstructor
@@ -134,7 +156,7 @@ public class ItemController {
         return ResponseEntity.ok(categoryDtos);
     }
 
-    // 대분류 카테고리 조회
+    // 대분류 카테고리 조회. 모든 카테고리 끌고와서 계층 만들어 주는
     @GetMapping("/category/major")
     public ResponseEntity<?> findMajorCategory() {
         log.info("대분류 카테고리 조회");
