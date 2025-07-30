@@ -25,6 +25,10 @@ public class TVSaveReqDto extends ItemSaveReqDto {
     private String tvSpeakerChannels;
     private String tvSpeakerOutputs;
 
+    public TVSaveReqDto() {
+
+    }
+
     public TVSaveReqDto(String name, int price, int stockQuantity, List<Integer> categoriesId, String dataType,
                         String tvBrands, String tvDisplayPanels, String tvDisplayTypes, String tvHDRs,
                         String tvManufacturers, String tvPictureQualities, String tvProcessors,
