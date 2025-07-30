@@ -3,8 +3,10 @@ package love.shop.web.item.searchFilter;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import love.shop.domain.itemSpec.ItemSpec;
+import love.shop.domain.itemSpec.spec.lapTop.LapTopSpec;
 import love.shop.domain.itemSpec.spec.tv.TvSpec;
 import love.shop.web.itemSpec.dto.ItemSpecDto;
+import love.shop.web.itemSpec.dto.lapTop.LapTopSpecDto;
 import love.shop.web.itemSpec.dto.tv.TvSpecDto;
 
 @Slf4j
@@ -23,7 +25,7 @@ public class SearchFilter {
         }
         switch (type) {
             case "LapTop":
-//                return LapTopSearchFilter.createLapTopFilter();
+                return new LapTopSpecDto((LapTopSpec) itemSpec);
             case "Book":
                 break;
             case "Tv":
