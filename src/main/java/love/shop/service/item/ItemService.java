@@ -34,6 +34,15 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
+    /**
+     * Test
+     * 모든 상품 스펙 조회
+     */
+    public List<ItemSpec> findAllItemSpec() {
+        return itemRepository.findAllItemSpec();
+    }
+
+
     // 아이템 단일 저장
     @Transactional
     public void save(Item item) {
@@ -104,7 +113,7 @@ public class ItemService {
     @Transactional
     public Item saveItemWithCategory(ItemSaveReqDto saveReqDto) {
 
-        Item item = Item.createItem(saveReqDto);// 아이템 저장 요청으로 들어온 DTO를 각 데이터타입에 맞게 구분한 후 해당 데이터타입의
+        Item item = Item.createItem(saveReqDto); // 아이템 저장 요청으로 들어온 DTO를 각 데이터타입에 맞게 구분한 후 해당 데이터타입의
 
         if (item != null) {
             // 아이템에 카테고리 등록
